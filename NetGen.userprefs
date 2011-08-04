@@ -1,0 +1,27 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|Mixed Platforms" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/DemoSimulation/Program.cs">
+    <Files>
+      <File FileName="NETGen.Core/Edge.cs" Line="7" Column="2" />
+      <File FileName="NETGen.Core/Network.cs" Line="185" Column="18" />
+      <File FileName="NETGen.Core/Vertex.cs" Line="1" Column="1" />
+      <File FileName="Simulations/DemoSimulation/Program.cs" Line="14" Column="2" />
+      <File FileName="NETGen.GUI/NetDisplay.cs" Line="27" Column="51" />
+      <File FileName="NETGen.Visualization/Vector3D.cs" Line="190" Column="60" />
+      <File FileName="NETGen.Visualization/ILayoutProvider.cs" Line="11" Column="6" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="20" Column="40" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True" selected="True">
+          <Node name="LayoutProviders" expanded="True" />
+          <Node name="Simulations" expanded="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
