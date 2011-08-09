@@ -7,11 +7,19 @@ using NETGen.Core;
 
 namespace NETGen.Layout.Positioned
 {
-    public class PositionedLayout : Dictionary<Vertex, Point3D>, ILayoutProvider 
+    public class PositionedLayout : Dictionary<Vertex, Vector3>, ILayoutProvider 
     {
-        public Point3D GetPositionFromNode(Vertex v)
+        public void DoLayout(double width, double height, Network n)
         {
-            return this[v];
+            // nothing to do here I guess ... 
+        }
+
+        public Vector3 GetPositionOfNode(Vertex v)
+        {
+            if (!ContainsKey(v))
+                return new Vector3();
+            else
+                return this[v];
         }
     }
 }

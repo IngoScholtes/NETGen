@@ -8,66 +8,158 @@ using System.Runtime.CompilerServices;
 
 namespace NETGen.Visualization
 {
+    public sealed class CustomColorIndexer
+    {
+        private Dictionary<Vertex, SolidBrush> _customVertexColors = new Dictionary<Vertex, SolidBrush>();
+        private Dictionary<Edge, Pen> _customEdgeColors = new Dictionary<Edge, Pen>();
+
+        internal CustomColorIndexer()
+        {
+            _customEdgeColors = new Dictionary<Edge, Pen>();
+            _customVertexColors = new Dictionary<Vertex, SolidBrush>();
+        }
+
+        internal SolidBrush GetVertexBrush(Vertex v)
+        {
+            if (_customVertexColors.ContainsKey(v))
+                return _customVertexColors[v];
+            else return (NetworkVisualizer.PresentationSettings.VertexBrush as SolidBrush);
+        }
+
+        internal Pen GetEdgePen(Edge e)
+        {
+            if (_customEdgeColors.ContainsKey(e))
+                return _customEdgeColors[e];
+            else return NetworkVisualizer.PresentationSettings.EdgePen;
+        }
+
+        public Color this[Vertex v]
+        {
+            get
+            {
+                if (_customVertexColors.ContainsKey(v))
+                    return _customVertexColors[v].Color;
+                else return (NetworkVisualizer.PresentationSettings.VertexBrush as SolidBrush).Color;
+            }
+            set
+            {
+                _customVertexColors[v] = new SolidBrush(value);
+            }
+        }
+
+        public Color this[Edge e]
+        {
+            get
+            {
+                if (_customEdgeColors.ContainsKey(e))
+                    return _customEdgeColors[e].Color;
+                else return NetworkVisualizer.PresentationSettings.EdgePen.Color;
+            }
+            set
+            {
+                _customEdgeColors[e] = new Pen(value);
+            }
+        }
+    }
+
+
     public static class NetworkVisualizer
     {
+        private static BufferedGraphicsContext _context;
+        private static BufferedGraphics _bufferedGraphics;
+        private static Graphics _graphics;
+        private static Dictionary<Edge, Point[]> _arrowDictionary = new Dictionary<Edge, Point[]>();        
+        private static Network _network = null;
+        public static CustomColorIndexer CustomColors { get; private set; }
+        private static PresentationSettings _presentationSettings = null;
 
-        public static ILayoutProvider LayoutProvider
-        {
-            get;
-            set;
+        /// <summary>
+        /// The network that shall be visualized
+        /// </summary>
+        public static Network Network { 
+            get { return _network; } 
+            set { 
+                _network = value;
+                _arrowDictionary = new Dictionary<Edge, Point[]>();
+                CustomColors = new CustomColorIndexer();
+                
+            }
         }
 
-        public static Graphics Graphics
+        /// <summary>
+        /// The layouting algorithm that assigns nodes topology-dependent positions
+        /// </summary>
+        public static ILayoutProvider LayoutProvider { get; set; }
+
+        /// <summary>
+        /// Initializes the visualizer with a graphics handle and a displayrectangle
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="displayRectangle"></param>
+        public static void Init(Graphics g, Rectangle displayRectangle)
         {
-            get; 
-            set;
+            _graphics = g;
+            _context = BufferedGraphicsManager.Current;
+            _bufferedGraphics = _context.Allocate(g, displayRectangle);
         }
 
-        public static PresentationSettings PresentationSettings
-        {
-            get;
-            set;
+        public static PresentationSettings PresentationSettings 
+        { 
+            get 
+            {
+                if (_presentationSettings == null)
+                    _presentationSettings = new PresentationSettings(100d, 100d, 0d);
+                return _presentationSettings;
+            }
+            set
+            {
+                _presentationSettings = value;
+            }
         }
-
-        public static Network Network
-        {
-            get;
-            set;
-        }
-
+       
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void Draw()
+        public static void Draw(bool layout=false)
         {
-            Graphics.Clear(Color.White);            
+            if (layout)
+                LayoutProvider.DoLayout(NetworkVisualizer.PresentationSettings.ActualWidth, NetworkVisualizer.PresentationSettings.ActualHeight, Network);
+
+            if (_bufferedGraphics == null || _bufferedGraphics.Graphics == null)
+                return;
+            _bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            _bufferedGraphics.Graphics.Clear(Color.White);            
             if (PresentationSettings.DrawEdges)
                 foreach(Edge e in Network.Edges)
                     DrawEdge(e);
             if (PresentationSettings.DrawVertices)
                 foreach (Vertex v in Network.Vertices)
                     DrawVertex(v);
+
+            _bufferedGraphics.Render(_graphics);
         }
+        
 
         private static void DrawVertex(Vertex v)
         {
             PresentationSettings s = PresentationSettings;
-            Point3D p = LayoutProvider.GetPositionFromNode(v);
+            Vector3 p = LayoutProvider.GetPositionOfNode(v);
 
             if (!double.IsNaN(p.X) &&
                !double.IsNaN(p.Y) &&
                !double.IsNaN(p.Z))
-                Graphics.FillEllipse(s.VertexBrush,
-                  s.ScaleX(p.X) - s.VertexSize / 2,
+                _bufferedGraphics.Graphics.FillEllipse(CustomColors.GetVertexBrush(v),
+                  s.ScaleX(p.X) - s.VertexSize  / 2,
                   s.ScaleY(p.Y) - s.VertexSize / 2,
                   s.VertexSize,
-                  s.VertexSize);
+                  s.VertexSize);           
         }
 
         private static void DrawEdge(Edge e)
         {
-            Point3D p1 = LayoutProvider.GetPositionFromNode(e.Source);
-            Point3D p2 = LayoutProvider.GetPositionFromNode(e.Target);
+            PresentationSettings s = PresentationSettings;
+            Vector3 p1 = LayoutProvider.GetPositionOfNode(e.Source);
+            Vector3 p2 = LayoutProvider.GetPositionOfNode(e.Target);
 
-            Graphics.DrawLine(PresentationSettings.EdgePen,
+            _bufferedGraphics.Graphics.DrawLine(CustomColors.GetEdgePen(e),
                     PresentationSettings.ScaleX(p1.X),
                     PresentationSettings.ScaleY(p1.Y),
                     PresentationSettings.ScaleX(p2.X),
@@ -75,9 +167,9 @@ namespace NETGen.Visualization
 
             if (e.EdgeType != EdgeType.Undirected)
             {
-                Point[] p = getArrowPoints(p1, p2);
-
-                Graphics.FillPolygon(PresentationSettings.ArrowBrush, p);
+                if (!_arrowDictionary.ContainsKey(e))
+                    _arrowDictionary[e] = getArrowPoints(p1, p2);
+                _bufferedGraphics.Graphics.FillPolygon(PresentationSettings.ArrowBrush, _arrowDictionary[e]);
             }
         }
 
@@ -85,13 +177,13 @@ namespace NETGen.Visualization
         /// Computes three polygon points for the arrow
         /// </summary>
         /// <returns>An array of three points</returns>
-        private static Point[] getArrowPoints(Point3D posA, Point3D posB)
+        private static Point[] getArrowPoints(Vector3 posA, Vector3 posB)
         {
             Point[] p = new Point[3];
 
             
             // length of hypothenuse and opposite side
-            double h = Point3D.Distance(posA, posB);
+            double h = Vector3.Distance(posA, posB);
             double a = Math.Abs(posB.Y - posA.Y);
 
             int vertexSize = PresentationSettings.VertexSize;
@@ -144,25 +236,6 @@ namespace NETGen.Visualization
         private static double DegToRad(double p)
         {
             return (Math.PI / 180d) * p;
-        }
-
-        public static void StartRendering(double fps)
-        {
-            if(timer == null)
-            timer = new System.Threading.Timer(new System.Threading.TimerCallback(Render), null, 0, (int) (1000d / fps));
-        }
-
-        private static void Render(object o)
-        {
-            Draw();
-        }
-
-        public static void StopRendering()
-        {
-            timer.Dispose();
-            timer = null;
         }       
-
-        private static System.Threading.Timer timer;
     }
 }

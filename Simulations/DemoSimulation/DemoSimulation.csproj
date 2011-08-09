@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +12,21 @@
     <AssemblyName>DemoSimulation</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -24,7 +39,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -35,6 +50,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,6 +63,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LayoutProviders\NETGen.Layout.Radial\NETGen.Layout.Radial.csproj">
+      <Project>{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9}</Project>
+      <Name>NETGen.Layout.Radial</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">
       <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
       <Name>NETGen.Core</Name>
@@ -55,17 +75,13 @@
       <Project>{A27CA90C-C62D-45E0-BEBB-BC96E393977B}</Project>
       <Name>NETGen.GUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NETGen.IO\NETGen.IO.csproj">
-      <Project>{34DF4AFE-FEC2-43DE-930C-CA7DB03EDF9A}</Project>
-      <Name>NETGen.IO</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\NETGen.Visualization\NETGen.Visualization.csproj">
       <Project>{FB24B173-DEFF-49D9-B232-561887EC652C}</Project>
       <Name>NETGen.Visualization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\LayoutProviders\NETGen.Layout.ForceDirected\NETGen.Layout.ForceDirected.csproj">
+    <ProjectReference Include="..\..\LayoutProviders\NETGen.Layout.ForceDirected\NETGen.Layout.FruchtermanReingold.csproj">
       <Project>{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}</Project>
-      <Name>NETGen.Layout.ForceDirected</Name>
+      <Name>NETGen.Layout.FruchtermanReingold</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LayoutProviders\NETGen.Layout.Positioned\NETGen.Layout.Positioned.csproj">
       <Project>{BC0350FF-A9F3-4801-843B-E7EDFB298F4F}</Project>
@@ -75,6 +91,44 @@
       <Project>{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}</Project>
       <Name>NETGen.Layout.Random</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NetworkModels\NETGen.NetworkModels.ErdoesRenyi\NETGen.NetworkModels.ErdoesRenyi.csproj">
+      <Project>{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}</Project>
+      <Name>NETGen.NetworkModels.ErdoesRenyi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetworkModels\NETGen.NetworkModels.Tree\NETGen.NetworkModels.Tree.csproj">
+      <Project>{73A4A13B-B39A-4635-8AAF-F093BD699437}</Project>
+      <Name>NETGen.NetworkModels.Tree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetworkModels\NETGen.NetworkModels.WattsStrogatz\NETGen.NetworkModels.WattsStrogatz.csproj">
+      <Project>{64531B8E-C8B0-41A1-ACC2-330662B77269}</Project>
+      <Name>NETGen.NetworkModels.WattsStrogatz</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetworkModels\PreferentialAttachment\NETGen.NetworkModels.BarabasiAlbert.csproj">
+      <Project>{E9546ABC-586C-4BAE-BE40-2DB84AFA7CFF}</Project>
+      <Name>NETGen.NetworkModels.BarabasiAlbert</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

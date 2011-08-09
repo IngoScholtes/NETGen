@@ -11,14 +11,13 @@ namespace NETGen.Visualization
     /// </summary>
     public class PresentationSettings
     {
-
         private int _drawWidth;
         private int _drawHeight;
-
 
         private double _actualWidth;
         private double _actualHeight;
         private double _actualDepth;
+        private int _vertexSize;
 
         private bool _proportional = false;
 
@@ -30,12 +29,14 @@ namespace NETGen.Visualization
             ActualHeight = height;
             ActualWidth = width;
             ActualDepth = depth;
-            VertexBrush = Brushes.Black;
-            VertexSize = 5;
-            EdgePen = Pens.Blue;
+            VertexBrush = Brushes.DarkCyan;
+            VertexSize = (int)(width/100);
+            EdgePen = Pens.DarkSlateGray;
             ArrowBrush = Brushes.Blue;
             DrawEdges = true;
             DrawVertices = true;
+            XOffset = 0;
+            YOffset = 0;
         }
 
         /// <summary>
@@ -86,9 +87,19 @@ namespace NETGen.Visualization
         public Brush ArrowBrush { get; set; }
 
         /// <summary>
-        /// The size of the vertices
+        /// The (scaled) size of a vertex
         /// </summary>
-        public int VertexSize { get; set; }
+        public int VertexSize 
+        {
+            get
+            {
+                return (int) (_vertexSize * XScale);
+            }
+            set
+            {
+                _vertexSize = value;
+            }
+        }
 
         /// <summary>
         /// The current horizontal scaling that is used when drawing the graph
@@ -103,13 +114,13 @@ namespace NETGen.Visualization
         /// <summary>
         /// The actual width (x-coordinate) of the underlying space
         /// </summary>
-        internal double ActualWidth
+        public double ActualWidth
         {
             get
             {
                 return _actualWidth;
             }
-            set
+            internal set
             {
                 _actualWidth = value;
                 Rescale();
@@ -119,13 +130,13 @@ namespace NETGen.Visualization
         /// <summary>
         /// The actual height (y-coordinate) of the underlying space
         /// </summary>
-        internal double ActualHeight
+        public double ActualHeight
         {
             get
             {
                 return _actualHeight;
             }
-            set
+            internal set
             {
                 _actualHeight = value;
                 Rescale();
@@ -159,6 +170,13 @@ namespace NETGen.Visualization
             }
         }
 
+        public void Rescale(double xscale, double yscale)
+        {
+            DrawWidth = (int) (_actualWidth * xscale);
+            DrawHeight = (int) (_actualHeight * yscale);
+            Rescale();
+        }
+
         private void Rescale()
         {
             XScale = (float)_drawWidth / (float)ActualWidth;
@@ -169,6 +187,10 @@ namespace NETGen.Visualization
                 YScale = XScale;
             }
         }
+
+        public int XOffset { get; set; }
+
+        public int YOffset { get; set; }
 
         /// <summary>
         /// The height of the drawing area
@@ -192,7 +214,7 @@ namespace NETGen.Visualization
         /// <returns>scaled x-coordinate</returns>
         public int ScaleX(double x)
         {
-            return (int)(x * XScale);
+            return XOffset + (int)(x * XScale);
         }
 
         /// <summary>
@@ -202,7 +224,7 @@ namespace NETGen.Visualization
         /// <returns>scaled y-coordinate</returns>
         public int ScaleY(double y)
         {
-            return (int)(y * YScale);
+            return YOffset + (int)(y * YScale);
         }
 
     }    

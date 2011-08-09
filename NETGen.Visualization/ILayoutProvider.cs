@@ -7,6 +7,7 @@ namespace NETGen.Visualization
 {
     public interface ILayoutProvider
     {
-        Point3D GetPositionFromNode(NETGen.Core.Vertex v);
+        Vector3 GetPositionOfNode(NETGen.Core.Vertex v);
+        void DoLayout(double width, double height, NETGen.Core.Network n);
     }
 }

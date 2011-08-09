@@ -6,9 +6,9 @@ using System.Text;
 namespace NETGen.Visualization
 {
     /// <summary>
-    /// A simple 3D vector with some static functions
+    /// A simple 3D vector with some vector math functions
     /// </summary>
-    public struct Point3D
+    public struct Vector3
     {
         /// <summary>
         /// The x coordinate of this vector
@@ -31,7 +31,7 @@ namespace NETGen.Visualization
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        public Point3D(double x, double y, double z)
+        public Vector3(double x, double y, double z)
         {
             X = x;
             Y = y;
@@ -54,8 +54,8 @@ namespace NETGen.Visualization
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (obj is Point3D)
-                return this == (Point3D)obj;
+            if (obj is Vector3)
+                return this == (Vector3)obj;
             else
                 return false;
         }
@@ -66,7 +66,7 @@ namespace NETGen.Visualization
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool operator ==(Point3D a, Point3D b)
+        public static bool operator ==(Vector3 a, Vector3 b)
         {
             return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
         }
@@ -77,7 +77,7 @@ namespace NETGen.Visualization
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool operator !=(Point3D a, Point3D b)
+        public static bool operator !=(Vector3 a, Vector3 b)
         {
             return a.X != b.X || a.Y != b.Y || a.Z == b.Z;
         }
@@ -88,9 +88,9 @@ namespace NETGen.Visualization
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static Point3D operator +(Point3D a, Point3D b)
+        public static Vector3 operator +(Vector3 a, Vector3 b)
         {
-            return new Point3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+            return new Vector3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
         /// <summary>
@@ -99,22 +99,22 @@ namespace NETGen.Visualization
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static Point3D operator -(Point3D a, Point3D b)
+        public static Vector3 operator -(Vector3 a, Vector3 b)
         {
-            return new Point3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+            return new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
 		
-		public static Point3D operator *(Point3D a, double scalar)
+		public static Vector3 operator *(Vector3 a, double scalar)
 		{
 			return Multiply(a, scalar);
 		}
 		
-		public static Point3D operator *(double scalar, Point3D a)
+		public static Vector3 operator *(double scalar, Vector3 a)
 		{
 			return Multiply(a, scalar);
 		}
 		
-		public static Point3D operator /(Point3D a, double scalar)
+		public static Vector3 operator /(Vector3 a, double scalar)
 		{
 			return Multiply(a, 1d/scalar);
 		}
@@ -125,9 +125,9 @@ namespace NETGen.Visualization
         /// <param name="v"></param>
         /// <param name="w"></param>
         /// <returns>The angle in radians </returns>
-        public static double getAngle(Point3D v, Point3D w)
+        public static double getAngle(Vector3 v, Vector3 w)
         {
-            return Math.Acos(Point3D.Dot(Point3D.Normalize(v), Point3D.Normalize(w)));
+            return Math.Acos(Vector3.Dot(Vector3.Normalize(v), Vector3.Normalize(w)));
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace NETGen.Visualization
         /// </summary>
         /// <param name="vec"></param>
         /// <returns></returns>
-        public static Point3D Normalize(Point3D vec)
+        public static Vector3 Normalize(Vector3 vec)
         {
             double length = Math.Sqrt(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z);
             if (length > 0)
@@ -173,7 +173,7 @@ namespace NETGen.Visualization
         /// <param name="vec"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Point3D Multiply(Point3D vec, double scalar)
+        public static Vector3 Multiply(Vector3 vec, double scalar)
         {
             vec.X *= scalar;
             vec.Y *= scalar;
@@ -187,7 +187,7 @@ namespace NETGen.Visualization
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static double Distance(Point3D a, Point3D b)
+        public static double Distance(Vector3 a, Vector3 b)
         {
             double dist = Math.Sqrt(Math.Pow(a.X - b.X, 2d) + Math.Pow(a.Y - b.Y, 2d) + Math.Pow(a.Z - b.Z, 2d));
             return dist;
@@ -198,7 +198,7 @@ namespace NETGen.Visualization
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public static double Length(Point3D a)
+        public static double Length(Vector3 a)
         {
             return Math.Sqrt(a.X*a.X + a.Y*a.Y + a.Z*a.Z);
         }
@@ -209,7 +209,7 @@ namespace NETGen.Visualization
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static double Dot(Point3D a, Point3D b)
+        public static double Dot(Vector3 a, Vector3 b)
         {
             return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
@@ -220,9 +220,9 @@ namespace NETGen.Visualization
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static Point3D Cross(Point3D a, Point3D b)
+        public static Vector3 Cross(Vector3 a, Vector3 b)
         {
-            return new Point3D(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
+            return new Vector3(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         }       
     }
 }

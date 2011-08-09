@@ -5,23 +5,27 @@ using NETGen.Visualization;
 
 namespace NETGen.Layout.RandomLayout
 {
-    public class RandomLayout : Dictionary<Vertex, Point3D>, ILayoutProvider 
+    public class RandomLayout : Dictionary<Vertex, Vector3>, ILayoutProvider 
     {		
-		int width, height, depth;
-		public RandomLayout(int width, int height, int depth)
+
+		public RandomLayout()
 		{
-			this.width = width;
-			this.height = height;
-			this.depth = depth;
 		}
-		
-        public Point3D GetPositionFromNode(Vertex v)
+
+        public void DoLayout(double width, double height, Network n)
         {
-			if (!this.ContainsKey(v))
-				{
-					Random r = new Random();
-					this[v] = new Point3D(r.Next(width), r.Next(height), r.Next(depth));
-				}
+            foreach (Vertex v in n.Vertices)
+            {
+                if (!this.ContainsKey(v))
+                {
+                    Random r = new Random();
+                    this[v] = new Vector3(v.Network.NextRandomDouble() * width, v.Network.NextRandomDouble() * height, 0);
+                }
+            }
+        }
+		
+        public Vector3 GetPositionOfNode(Vertex v)
+        {			
             return this[v];
         }
     }

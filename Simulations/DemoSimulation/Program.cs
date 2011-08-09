@@ -7,43 +7,46 @@ using NETGen.Core;
 using NETGen.GUI;
 using NETGen.Visualization;
 using System.Windows.Forms;
-using NETGen.Layout.ForceDirected;
+using NETGen.Layout.FruchtermanReingold;
 using NETGen.Layout.RandomLayout;
+using NETGen.Layout.Positioned;
+using System.Drawing;
 
 namespace DemoSimulation
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-            Network net = new Network();
-            Vertex root = net.CreateVertex();
-            BuildTree(root, 2, 7);            
+            // create network
+            Network net = new NETGen.NetworkModels.WattsStrogatz.WSNetwork(200, 600, 0.1d);
 
-            ForceDirectedLayout fdlayout = new ForceDirectedLayout(1000, 1000, 100, net);
-			RandomLayout rndlayout = new RandomLayout(1000, 1000, 0);
-            fdlayout.DoLayout();
-
+            // setup visualization and layouting options
             NetworkVisualizer.Network = net;
-            NetworkVisualizer.LayoutProvider = rndlayout;
-            NetworkVisualizer.PresentationSettings = new PresentationSettings(1000d, 1000d, 0d);
-            NetworkVisualizer.PresentationSettings.VertexSize = 10;
+            NetworkVisualizer.LayoutProvider = new NETGen.Layout.Radial.RadialLayout();
+            NetworkVisualizer.PresentationSettings = new PresentationSettings(2000d, 1000d, 0d);
             NetworkVisualizer.PresentationSettings.Proportional = true;
+           
+            // fire up the visualization frontend
+            NetDisplay.ShowDisplay(25d);
 
-            Application.Run(new NetDisplay());
-        }
-		
-		static void BuildTree(Vertex root, int k, int depth)
-		{
-			if(depth == 0)
-				return;
-			
-			for (int i=0; i<k; i++)
-			{
-				Vertex w = root.Network.CreateVertex();
-				root.Network.CreateEdge(root, w);
-				BuildTree(w, k, depth-1);
-			}			
-		}
+            // draw and layout the network
+            NetworkVisualizer.Draw(true);
+
+
+
+            System.Threading.Thread.Sleep(500);
+
+            // add some layouting options to the visualization frontend
+            NetDisplay.LayoutProviders["Radial"] = new NETGen.Layout.Radial.RadialLayout();
+            NetDisplay.LayoutProviders["Fruchterman-Reingold (10)"] = new FruchtermanReingoldLayout(10);
+            NetDisplay.LayoutProviders["Fruchterman-Reingold (20)"] = new FruchtermanReingoldLayout(20);
+            NetDisplay.LayoutProviders["Fruchterman-Reingold (50)"] = new FruchtermanReingoldLayout(50);
+            NetDisplay.LayoutProviders["Fruchterman-Reingold (150)"] = new FruchtermanReingoldLayout(150);
+            NetDisplay.LayoutProviders["Random"] = new RandomLayout();
+
+            Console.ReadLine();
+        }		
     }
 }

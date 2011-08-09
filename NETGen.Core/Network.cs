@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.CompilerServices;
+using System.Xml;
 
 namespace NETGen.Core
 {
@@ -132,6 +133,168 @@ namespace NETGen.Core
         public double NextRandomDouble()
         {
             lock (_random) return _random.NextDouble();
+        }
+
+        public static Network LoadFromGraphML(string path)
+        {
+            if (path == null)
+                return null;
+            Network n = new Network();
+            XmlTextReader reader = new XmlTextReader(path);
+            Dictionary<string, Vertex> _idMapping = new Dictionary<string,Vertex>();
+            while (reader.Read())
+            {
+                XmlNodeType nt = reader.NodeType;
+                if (nt == XmlNodeType.Element)
+                {
+                    if (reader.LocalName == "node")
+                    {
+                        string id = reader.GetAttribute("id");
+                        if (!_idMapping.ContainsKey(id))
+                        {
+                            _idMapping[id] = new Vertex(n);
+                            n.AddVertex(_idMapping[id]);
+                        }
+                    }
+                    else if (reader.LocalName == "edge")
+                    {
+                        string sourceID = reader.GetAttribute("source");
+                        string targetID = reader.GetAttribute("target");
+                        Edge newEdge = new Edge(_idMapping[sourceID], _idMapping[targetID], n, EdgeType.Undirected);
+                        n.AddEdge(newEdge);
+                    }
+                }
+            }          
+            reader.Close();
+            return n;
+        }
+
+        public long VertexCount
+        {
+            get
+            {
+                return _vertices.Count;
+            }
+        }
+
+        public long EdgeCount
+        {
+            get
+            {
+                return _edges.Count;
+            }
+        }
+
+        public static void SaveToGraphML(string path, Network n)
+        {
+            if (path == null || n == null)
+                return;
+
+            Dictionary<Guid, long> _GuidMapping = new Dictionary<Guid, long>();
+
+            XmlTextWriter writer = new XmlTextWriter(path, Encoding.UTF8);
+
+
+            writer.WriteStartDocument();
+
+            writer.WriteStartElement("graphml", "http://graphml.graphdrawing.org/xmlns");
+
+            writer.WriteStartElement("key");
+
+            writer.WriteStartAttribute("id");
+            writer.WriteValue("value0");
+            writer.WriteEndAttribute();
+
+            writer.WriteStartAttribute("for");
+            writer.WriteValue("node");
+            writer.WriteEndAttribute();
+
+            writer.WriteStartAttribute("attr.name");
+            writer.WriteValue("strength");
+            writer.WriteEndAttribute();
+
+            writer.WriteStartAttribute("attr.type");
+            writer.WriteValue("double");
+            writer.WriteEndAttribute();
+
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("graph");
+            writer.WriteStartAttribute("id");
+            writer.WriteValue("g");
+            writer.WriteEndAttribute();
+            writer.WriteStartAttribute("edgedefault");
+            writer.WriteValue("undirected");
+            writer.WriteEndAttribute();
+            long counter = 0;
+
+            foreach (Vertex v in n.Vertices)
+            {
+                writer.WriteStartElement("node");
+                writer.WriteStartAttribute("id");
+                _GuidMapping[v.ID] = counter++;
+                writer.WriteValue("n" + _GuidMapping[v.ID].ToString());
+                writer.WriteEndAttribute();
+                writer.WriteStartElement("data");
+                writer.WriteStartAttribute("key");
+                writer.WriteValue("value0");
+                writer.WriteEndAttribute();
+                if (v.Tag != null)
+                    writer.WriteValue(v.Tag);
+                else
+                    writer.WriteValue(0d);
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+            }
+
+            foreach (Edge e in n.Edges)
+            {
+                writer.WriteStartElement("edge");
+
+                if (e.EdgeType == EdgeType.DirectedAB)
+                {
+                    writer.WriteStartAttribute("source");
+                    writer.WriteValue("n" + _GuidMapping[e.Source.ID].ToString());
+                    writer.WriteEndAttribute();
+
+                    writer.WriteStartAttribute("target");
+                    writer.WriteValue("n" + _GuidMapping[e.Target.ID].ToString());
+                    writer.WriteEndAttribute();
+
+                    writer.WriteStartAttribute("directed");
+                    writer.WriteValue("true");
+                    writer.WriteEndAttribute();
+                }
+                else if (e.EdgeType == EdgeType.DirectedBA)
+                {
+                    writer.WriteStartAttribute("source");
+                    writer.WriteValue("n" + _GuidMapping[e.Target.ID].ToString());
+                    writer.WriteEndAttribute();
+
+                    writer.WriteStartAttribute("target");
+                    writer.WriteValue("n" + _GuidMapping[e.Source.ID].ToString());
+                    writer.WriteEndAttribute();
+
+                    writer.WriteStartAttribute("directed");
+                    writer.WriteValue("true");
+                    writer.WriteEndAttribute();
+                }
+                else
+                {
+                    writer.WriteStartAttribute("source");
+                    writer.WriteValue("n" + _GuidMapping[e.Source.ID].ToString());
+                    writer.WriteEndAttribute();
+
+                    writer.WriteStartAttribute("target");
+                    writer.WriteValue("n" + _GuidMapping[e.Target.ID].ToString());
+                    writer.WriteEndAttribute();
+                }
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Close();
         }
 
         /// <summary>
