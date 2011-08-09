@@ -36,7 +36,7 @@ namespace DemoSimulation
 
 
 
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(5000);
 
             // add some layouting options to the visualization frontend
             NetDisplay.LayoutProviders["Radial"] = new NETGen.Layout.Radial.RadialLayout();
@@ -45,8 +45,8 @@ namespace DemoSimulation
             NetDisplay.LayoutProviders["Fruchterman-Reingold (50)"] = new FruchtermanReingoldLayout(50);
             NetDisplay.LayoutProviders["Fruchterman-Reingold (150)"] = new FruchtermanReingoldLayout(150);
             NetDisplay.LayoutProviders["Random"] = new RandomLayout();
-
-            Console.ReadLine();
+			
+			Console.ReadLine();
         }		
     }
 }

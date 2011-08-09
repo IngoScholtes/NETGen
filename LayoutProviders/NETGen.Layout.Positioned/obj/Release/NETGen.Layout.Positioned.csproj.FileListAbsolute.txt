@@ -1,0 +1,8 @@
+C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.Positioned\bin\Release\NETGen.Layout.Positioned.dll
+C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.Positioned\bin\Release\NETGen.Layout.Positioned.pdb
+C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.Positioned\bin\Release\NETGen.Core.dll
+C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.Positioned\bin\Release\NETGen.Visualization.dll
+C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.Positioned\bin\Release\NETGen.Visualization.pdb
+C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.Positioned\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.Positioned\obj\Release\NETGen.Layout.Positioned.dll
+C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.Positioned\obj\Release\NETGen.Layout.Positioned.pdb

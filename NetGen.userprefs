@@ -1,13 +1,24 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|Mixed Platforms" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/DemoSimulation/Program.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ActiveRuntime="Mono 2.10.2" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.GUI/NetDisplay.cs">
     <Files>
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="12" Column="1" />
+      <File FileName="Simulations/DemoSimulation/Program.cs" Line="39" Column="44" />
+      <File FileName="NETGen.Core/Network.cs" Line="101" Column="1" />
+      <File FileName="NetworkModels/NETGen.NetworkModels.WattsStrogatz/WSNetwork.cs" Line="14" Column="1" />
+      <File FileName="NETGen.GUI/NetDisplay.cs" Line="24" Column="44" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
+        <State expanded="True" selected="True">
           <Node name="LayoutProviders" expanded="True" />
+          <Node name="NetworkModels" expanded="True">
+            <Node name="NETGen.NetworkModels.WattsStrogatz" expanded="True" />
+          </Node>
+          <Node name="Simulations" expanded="True">
+            <Node name="DemoSimulation" expanded="True" />
+          </Node>
+          <Node name="NETGen.GUI" expanded="True" />
+          <Node name="NETGen.Visualization" expanded="True" />
         </State>
       </Pad>
     </Pads>
