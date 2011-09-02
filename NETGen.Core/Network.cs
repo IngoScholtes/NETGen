@@ -8,7 +8,7 @@ using System.Xml;
 namespace NETGen.Core
 {
     /// <summary>
-    /// This is NETGen's central class, representing a thread-safe graph consisting of vertices and undirected edges. This class is multi-thread-efficient and thread-safe,
+    /// This is NETGen's central class, representing a thread-safe network consisting of vertices and directed or undirected edges. This class is multi-thread-efficient and thread-safe,
     /// multiple concurrent read accesses are allowed, while concurrent read/write accesses are being synchronized. Please note, that an exception will be thrown when a write-access (like e.g.
     /// AddVertex, RemoveEdge, ... is nested inside a thread-safe iteration (like e.g. the Vertices and Edges iterators). If you need to do such an operation, 
     /// obtain a copy of the thread-safe iterator first. Please refer to the iterators for more information.
@@ -71,7 +71,7 @@ namespace NETGen.Core
         /// <summary>
         /// This is a non-thread-safe dictionary that contains a collection of vertices by vertex label
         /// </summary>
-        protected Dictionary<int, List<Vertex>> _vertexClasses;
+        protected Dictionary<string, Vertex> _vertexLabels;
 
         /// <summary>
         /// This is a non-thread-safe dictinary that contains all edges
@@ -89,7 +89,7 @@ namespace NETGen.Core
             _random = new Random(seed);
             _edges = new Dictionary<Guid, Edge>();
             _vertices = new Dictionary<Guid, Vertex>();
-            _vertexClasses = new Dictionary<int, List<Vertex>>();
+            _vertexLabels = new Dictionary<string, Vertex>();
             _rwl = new System.Threading.ReaderWriterLockSlim(System.Threading.LockRecursionPolicy.SupportsRecursion);
         }
 
@@ -101,7 +101,7 @@ namespace NETGen.Core
             _random = new Random();
             _edges = new Dictionary<Guid, Edge>();
             _vertices = new Dictionary<Guid, Vertex>();
-            _vertexClasses = new Dictionary<int, List<Vertex>>();
+            _vertexLabels = new Dictionary<string, Vertex>();
             _rwl = new System.Threading.ReaderWriterLockSlim(System.Threading.LockRecursionPolicy.SupportsRecursion);
         }
 
@@ -168,6 +168,32 @@ namespace NETGen.Core
             reader.Close();
             return n;
         }
+
+        /// <summary>
+        /// Loads a network from a textfile in which each edge is given by a line of whitespace- or comma-seperated strings representing two nodes
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static Network LoadFromEdgeFile(string path)
+        {
+            string[] lines = System.IO.File.ReadAllLines(path);
+            Network net = new Network();
+            System.Threading.Tasks.Parallel.ForEach(lines, s =>
+            {
+                string[] vertices = s.Split(' ', '\t', ',');
+                if(vertices.Length==2)
+                {
+                    Vertex v1 = net.SearchVertex(vertices[0]);
+                    Vertex v2 = net.SearchVertex(vertices[1]);
+                    if(v1 == null)
+                        v1 = net.CreateVertex(vertices[0]);
+                    if (v2 == null)
+                        v2 = net.CreateVertex(vertices[1]);
+                    net.CreateEdge(v1, v2, EdgeType.Undirected);
+                }
+            });
+            return net;
+        }       
 
         public long VertexCount
         {
@@ -309,6 +335,17 @@ namespace NETGen.Core
         }
 
         /// <summary>
+        /// Adds a new vertex to the graph. This operation is thread-safe and asynchronously fires a OnVertexAdded event. Its complexity is in O(1).
+        /// </summary>
+        /// <returns>A reference to the newly created vertex</returns>
+        public virtual Vertex CreateVertex(string label)
+        {
+            Vertex newVertex = new Vertex(this, label);
+            AddVertex(newVertex);
+            return newVertex;
+        }
+
+        /// <summary>
         /// Adds a specific vertex to the graph. This is only available to derived classes. This operation is thread-safe and asynchronously 
         /// fires a OnVertexAdded event. Its complexity is in O(1).
         /// </summary>
@@ -316,10 +353,10 @@ namespace NETGen.Core
         public virtual void AddVertex(Vertex v)
         {
             if (v.Network != this)
-                throw new Exception("Error. A vertex created for a different graph cannot be added this graph!");
+                throw new Exception("Error. A vertex created for a different network cannot be added this network!");
 
             if(_vertices.ContainsKey(v.ID))
-                throw new Exception("Error. A vertex with this ID has already been added to this graph!");
+                throw new Exception("Error. A vertex with this ID has already been added to this network!");
 
             if (_rwl.IsReadLockHeld)
                 throw new Exception("Synchronization error. You are probably trying to change the graph while iterating through its edges or vertices!");
@@ -327,19 +364,18 @@ namespace NETGen.Core
             if (!_rwl.IsWriteLockHeld)
             {
                 _rwl.EnterWriteLock();
-                if (!_vertexClasses.ContainsKey(v.Class))
-                    _vertexClasses[v.Class] = new List<Vertex>();
+                
                 _vertices.Add(v.ID, v);
-                _vertexClasses[v.Class].Add(v);
+                if (!_vertexLabels.ContainsKey(v.Label))
+                    _vertexLabels[v.Label] = v;                
                 _rwl.ExitWriteLock();
             }
             else
             {
                 _vertices.Add(v.ID, v);
 
-                if (!_vertexClasses.ContainsKey(v.Class))
-                    _vertexClasses[v.Class] = new List<Vertex>();
-                _vertexClasses[v.Class].Add(v);
+                if (!_vertexLabels.ContainsKey(v.Label))
+                    _vertexLabels[v.Label] = v;
             }
 
 
@@ -347,9 +383,7 @@ namespace NETGen.Core
                 System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(delegate
                 {
                     OnVertexAdded(v);
-                }), null);
-                
-
+                }), null);               
         }
 
         /// <summary>
@@ -440,31 +474,74 @@ namespace NETGen.Core
         }
 
         /// <summary>
-        /// Checks whether two vertices are in the same connected component using only edges of a certain label. 
-        /// This operation is thread-safe. Its complexity is in O(n+m) with n being the number of 
-        /// vertices and m being the number of edges.
+        /// A list of vertices that belong to the largest connected component of this network
         /// </summary>
-        /// <param name="v"></param>
-        /// <param name="w"></param>
-        /// <param name="label">The label of the edges in the connected component</param>
-        /// <returns>Whether v and w are in the same connected component, i.e. whether they are connected by a path of edges with the given label</returns>
-        public bool InSameComponent(Vertex v, Vertex w, int label)
+        public List<Vertex> LargestConnectedComponent
         {
-            _rwl.EnterReadLock();
-            Stack<Vertex> stack = new Stack<Vertex>();
-            List<Vertex> visited = new List<Vertex>();
-            stack.Push(v);
-            Vertex x;
-            while (stack.Count > 0)
+            get
             {
-                x = stack.Pop();
-                visited.Add(x);
-                foreach (Vertex s in x.Neigbors)
-                    if (!visited.Contains(s) && x.GetEdgeToSuccessor(s).Label==label)
-                        stack.Push(s);
+                _rwl.EnterReadLock();
+
+                // collect all unvisited vertices
+                List<Vertex> unvisited = new List<Vertex>(_vertices.Values.ToArray());
+
+                // collect all components of the network
+                Dictionary<Vertex, List<Vertex>> components = new Dictionary<Vertex, List<Vertex>>();
+
+                // the largest component and the vertex from where it was explored ... 
+                int componentsize = int.MinValue;
+                Vertex maxComponentHead = null;
+
+                // iterate through all components of the network
+                while (unvisited.Count > 0)
+                {
+                    // select a random unvisited vertex
+                    Vertex v = unvisited.ElementAt(NextRandom(unvisited.Count));
+                    unvisited.Remove(v);
+
+                    // visit all vertices starting from that node
+                    Stack<Guid> stack = new Stack<Guid>();
+                    List<Vertex> component = new List<Vertex>();
+
+                    stack.Push(v.ID);
+                    Vertex x;
+                    while (stack.Count > 0)
+                    {
+                        x = _vertices[stack.Pop()];
+                        component.Add(x);
+                        unvisited.Remove(x);
+                        foreach (Vertex s in x.Neigbors)
+                            if (!component.Contains(s) && !stack.Contains(s.ID))
+                                stack.Push(s.ID);
+                    }
+
+                    // store this component and check whether it is the largest
+                    components[v] = component;
+                    if (component.Count > componentsize)
+                    {
+                        maxComponentHead = v;
+                        componentsize = component.Count;
+                    }
+                }
+
+                _rwl.ExitReadLock();
+
+                return components[maxComponentHead];
             }
-            _rwl.ExitReadLock();
-            return visited.Contains(w);
+        }
+
+        /// <summary>
+        /// Removes all vertices and edges that do not belong to the largest connected component of this network
+        /// </summary>
+        public void ReduceToLargestConnectedComponent()
+        {
+            List<Vertex> lcc = LargestConnectedComponent;
+
+                // remove all vertices not belonging to the largest component
+                foreach (Vertex w in Vertices.ToArray())
+                    if (!lcc.Contains(w))
+                        RemoveVertex(w);
+                return;
         }
 
         /// <summary>
@@ -567,22 +644,6 @@ namespace NETGen.Core
                 RemoveEdge(edges[i]);
         }
 
-        /// <summary>
-        /// Removes all edges with a certain label. This operation is thread-safe. Its complexity is in O(m) with m being the number of edges.
-        /// </summary>
-        /// <param name="label">The label identifying edges that shall be removed</param>
-        public void RemoveEdgesWithLabel(int label)
-        {
-            _rwl.EnterReadLock();
-            List<Edge> toRemove = new List<Edge>();
-            foreach (Edge e in _edges.Values)
-                if (e.Label == label)
-                    toRemove.Add(e);
-            _rwl.ExitReadLock();
-
-            RemoveEdges(toRemove);
-        }
-
 
          /// <summary>
         /// Removes the directed edge between two vertices. This operation is thread-safe. Its complexity is in O(1). If an edge 
@@ -675,7 +736,7 @@ namespace NETGen.Core
             if (_vertices.ContainsKey(v.ID))
             {
                 _vertices.Remove(v.ID);
-                _vertexClasses[v.Class].Remove(v);
+                _vertexLabels.Remove(v.Label);
                 _verticesToRemove.Add(v);
             }
             List<Edge> _toRemove = new List<Edge>();
@@ -701,16 +762,6 @@ namespace NETGen.Core
         }
 
         /// <summary>
-        /// Removes all vertices of a certain vertex class
-        /// </summary>
-        /// <param name="cls"></param>
-        public void RemoveVerticesOfClass(int cls)
-        {
-            foreach (Vertex v in VerticesByClass(cls).ToArray<Vertex>())
-                RemoveVertex(v);
-        }
-
-        /// <summary>
         /// Removes all vertices and edges.  This operation is thread-safe. Its complexity is in O(1).
         /// </summary>
         public void Clear()
@@ -721,7 +772,7 @@ namespace NETGen.Core
             _rwl.EnterWriteLock();
 
             _vertices.Clear();
-            _vertexClasses.Clear();
+            _vertexLabels.Clear();
             _edges.Clear();
 
             _rwl.ExitWriteLock();
@@ -748,11 +799,12 @@ namespace NETGen.Core
         }
 
         /// <summary>
-        /// An enumeration of all vertices. Iterating through this is thread-safe, all asynchronous changes to the graph will be blocked until enumeration has finished. 
-        /// It is however not allowed to modify the graph while iterating through edges. If you explicitely need to do this, you can circumvent this behavior 
-        /// by iterating through vertices like this foreach(Vertex v in Graph.Vertices.ToArray()) ... This forces immediate evaluation 
+        /// An enumeration of all vertices. Iterating through this is thread-safe, all changes to the graph asynchronously made by other threads will be blocked until enumeration has finished. 
+        /// It is however not allowed for the thread that iterates through vertices to change the network, in which case a synchronization exception will be thrown. 
+        /// If you need to do change the network while iterating, you can circumvent this behavior 
+        /// by iterating through vertices like this foreach(Vertex v in Graph.Vertices.ToArray()). This forces immediate evaluation 
         /// of the iterator. However if used in this way just like storing the contents of the enumeration externally (e.g. in a list, etc.)
-        /// it may happen that a vertex does not exist anymore once the enumeration has been completed. Also, new vertices might have been added in the meantime.
+        /// it may happen that a vertex does not exist anymore once the enumeration has been completed. Also, new vertices might have been added by other threads in the meantime.
         /// </summary>
         public IEnumerable<Vertex> Vertices
         {
@@ -768,32 +820,33 @@ namespace NETGen.Core
         }
 
         /// <summary>
-        /// Returns an enumeration of all vertices of a certain class. This operation is thread-safe.
+        /// Returns the vertex with a particular label. This operation is thread-safe. Its complexity is in O(1).
         /// </summary>
         /// <param name="cls">The class identifier</param>
         /// <returns></returns>
-        public IEnumerable<Vertex> VerticesByClass(int cls)
+        public Vertex SearchVertex(string label)
         {
+            Vertex v = null;
             _rwl.EnterReadLock();
 
-            if (_vertexClasses.ContainsKey(cls))
-                foreach (Vertex v in _vertexClasses[cls])
-                    yield return v;
-
+            if (_vertexLabels.ContainsKey(label))
+                v = _vertexLabels[label];
+                
             _rwl.ExitReadLock();
+            return v;
         }
 
         /// <summary>
-        /// Returns an enumeration of vertex class. This operation is thread-safe
+        /// Returns an enumeration of vertex class. This operation is thread-safe.
         /// </summary>
-        public IEnumerable<int> VertexClasses
+        public IEnumerable<string> VertexLabels
         {
             get
             {
                 _rwl.EnterReadLock();
 
-                foreach (int i in _vertexClasses.Keys)
-                    yield return i;
+                foreach (string s in _vertexLabels.Keys)
+                    yield return s;
 
                 _rwl.ExitReadLock();
             }
@@ -811,6 +864,23 @@ namespace NETGen.Core
             _rwl.EnterReadLock();   
          
             res = _vertices.ContainsKey(id);
+
+            _rwl.ExitReadLock();
+            return res;
+        }
+
+        /// <summary>
+        /// Returns whether the graph contains a certain vertex
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool ContainsVertex(string label)
+        {
+            bool res = false;
+
+            _rwl.EnterReadLock();
+
+            res = _vertexLabels.ContainsKey(label);
 
             _rwl.ExitReadLock();
             return res;

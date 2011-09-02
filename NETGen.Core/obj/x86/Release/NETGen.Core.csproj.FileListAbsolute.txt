@@ -1,3 +1,0 @@
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Core\bin\Release\NETGen.Core.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Core\obj\x86\Release\ResolveAssemblyReference.cache
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Core\obj\x86\Release\NETGen.Core.dll

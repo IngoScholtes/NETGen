@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DEF5FADA-CECF-4AC5-A124-46791C6FF735}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DemoSimulation</RootNamespace>
     <AssemblyName>DemoSimulation</AssemblyName>
@@ -57,6 +57,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="MathNet.Iridium, Version=2008.8.16.470, Culture=neutral, PublicKeyToken=c061a3ec32cc0c6f">
+      <HintPath>..\ClusterSynchronization\MathNet.Iridium.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -91,6 +95,10 @@
       <Project>{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}</Project>
       <Name>NETGen.Layout.Random</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NetworkModels\ClusterNetwork\NETGen.NetworkModels.Cluster.csproj">
+      <Project>{05738475-4CEA-425D-8775-7DD94A3611FD}</Project>
+      <Name>NETGen.NetworkModels.Cluster</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NetworkModels\NETGen.NetworkModels.ErdoesRenyi\NETGen.NetworkModels.ErdoesRenyi.csproj">
       <Project>{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}</Project>
       <Name>NETGen.NetworkModels.ErdoesRenyi</Name>
@@ -106,6 +114,18 @@
     <ProjectReference Include="..\..\NetworkModels\PreferentialAttachment\NETGen.NetworkModels.BarabasiAlbert.csproj">
       <Project>{E9546ABC-586C-4BAE-BE40-2DB84AFA7CFF}</Project>
       <Name>NETGen.NetworkModels.BarabasiAlbert</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClusterSIR\ClusterSIR.csproj">
+      <Project>{2D1570D0-AE42-410A-89B9-C01F025D3E71}</Project>
+      <Name>ClusterSIR</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClusterSpreading\ClusterSpreading.csproj">
+      <Project>{E2FA15E4-3237-4225-B141-DEDE79A9D2FD}</Project>
+      <Name>ClusterSpreading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClusterSynchronization\ClusterSynchronization.csproj">
+      <Project>{D1C6BDD7-07D0-44A8-89CE-C4ACB9A2248C}</Project>
+      <Name>ClusterSynchronization</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -120,7 +120,7 @@ namespace NETGen.Visualization
             {
                 return _actualWidth;
             }
-            internal set
+            set
             {
                 _actualWidth = value;
                 Rescale();
@@ -136,7 +136,7 @@ namespace NETGen.Visualization
             {
                 return _actualHeight;
             }
-            internal set
+            set
             {
                 _actualHeight = value;
                 Rescale();
@@ -205,6 +205,12 @@ namespace NETGen.Visualization
                     return;
                 Rescale();
             }
+        }
+
+        public Vector3 ScreenToWorld(Point screencoord)
+        {
+            Vector3 worldcoord = new Vector3((screencoord.X / XScale) - XOffset, (screencoord.Y / YScale) - YOffset, 0d);
+            return worldcoord;
         }
 
         /// <summary>

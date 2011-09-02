@@ -31,7 +31,7 @@ namespace NETGen.Core
         System.Threading.ReaderWriterLock _rwl;
 
         /// <summary>
-        /// Can be used to store arbitrary information related to this cell
+        /// Can be used to store arbitrary information related to this vertex
         /// </summary>
         public object Tag { get; set; }
 
@@ -40,6 +40,11 @@ namespace NETGen.Core
         /// Can be used to classify vertices
         /// </summary>
         public int Class { get; private set; }
+
+        /// <summary>
+        /// The label/name of the vertex
+        /// </summary>
+        public string Label { get; set; }
 
         /// <summary>
         /// Creates a new vertex that can be added to a certain graph, but does not yet add it to the graph
@@ -57,7 +62,7 @@ namespace NETGen.Core
             _successorToEdgeMap = new Dictionary<Guid, Edge>();
             _predecessorToEdgeMap = new Dictionary<Guid, Edge>();
              _rwl = new System.Threading.ReaderWriterLock();
-             Class = 0;
+             Label = ID.ToString();
         }
 
         /// <summary>
@@ -65,7 +70,7 @@ namespace NETGen.Core
         /// </summary>
         /// <param name="graph">The graph to which this vertex can be added</param>
         /// <param name="cls">The classification id of this vertex</param>
-        public Vertex(Network graph, int cls)
+        public Vertex(Network graph, string label)
         {
             ID = Guid.NewGuid();
             Network = graph;
@@ -77,7 +82,7 @@ namespace NETGen.Core
             _successorToEdgeMap = new Dictionary<Guid, Edge>();
             _predecessorToEdgeMap = new Dictionary<Guid, Edge>();
             _rwl = new System.Threading.ReaderWriterLock();
-            Class = cls;
+            Label = label;
 
         }
 
@@ -98,7 +103,7 @@ namespace NETGen.Core
             _successorToEdgeMap = new Dictionary<Guid, Edge>();
             _predecessorToEdgeMap = new Dictionary<Guid, Edge>();
             _rwl = new System.Threading.ReaderWriterLock();
-            Class = 0;
+            Label = ID.ToString();
         }
 
         /// <summary>
@@ -107,7 +112,7 @@ namespace NETGen.Core
         /// <param name="graph"></param>
         /// <param name="id"></param>
         /// <param name="cls">The classification of this vertex</param>
-        public Vertex(Network graph, Guid id, int cls)
+        public Vertex(Network graph, Guid id, string label)
         {
             ID = id;
             Network = graph;
@@ -119,7 +124,7 @@ namespace NETGen.Core
             _successorToEdgeMap = new Dictionary<Guid, Edge>();
             _predecessorToEdgeMap = new Dictionary<Guid, Edge>();
             _rwl = new System.Threading.ReaderWriterLock();
-            Class = cls;
+            Label = label;
         }
 
         /// <summary>

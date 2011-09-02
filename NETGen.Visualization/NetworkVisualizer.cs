@@ -7,177 +7,171 @@ using NETGen.Core;
 using System.Runtime.CompilerServices;
 
 namespace NETGen.Visualization
-{
-    public sealed class CustomColorIndexer
+{    
+    public class NetworkVisualizer
     {
-        private Dictionary<Vertex, SolidBrush> _customVertexColors = new Dictionary<Vertex, SolidBrush>();
-        private Dictionary<Edge, Pen> _customEdgeColors = new Dictionary<Edge, Pen>();
-
-        internal CustomColorIndexer()
-        {
-            _customEdgeColors = new Dictionary<Edge, Pen>();
-            _customVertexColors = new Dictionary<Vertex, SolidBrush>();
-        }
-
-        internal SolidBrush GetVertexBrush(Vertex v)
-        {
-            if (_customVertexColors.ContainsKey(v))
-                return _customVertexColors[v];
-            else return (NetworkVisualizer.PresentationSettings.VertexBrush as SolidBrush);
-        }
-
-        internal Pen GetEdgePen(Edge e)
-        {
-            if (_customEdgeColors.ContainsKey(e))
-                return _customEdgeColors[e];
-            else return NetworkVisualizer.PresentationSettings.EdgePen;
-        }
-
-        public Color this[Vertex v]
-        {
-            get
-            {
-                if (_customVertexColors.ContainsKey(v))
-                    return _customVertexColors[v].Color;
-                else return (NetworkVisualizer.PresentationSettings.VertexBrush as SolidBrush).Color;
-            }
-            set
-            {
-                _customVertexColors[v] = new SolidBrush(value);
-            }
-        }
-
-        public Color this[Edge e]
-        {
-            get
-            {
-                if (_customEdgeColors.ContainsKey(e))
-                    return _customEdgeColors[e].Color;
-                else return NetworkVisualizer.PresentationSettings.EdgePen.Color;
-            }
-            set
-            {
-                _customEdgeColors[e] = new Pen(value);
-            }
-        }
-    }
-
-
-    public static class NetworkVisualizer
-    {
-        private static BufferedGraphicsContext _context;
-        private static BufferedGraphics _bufferedGraphics;
-        private static Graphics _graphics;
-        private static Dictionary<Edge, Point[]> _arrowDictionary = new Dictionary<Edge, Point[]>();        
-        private static Network _network = null;
-        public static CustomColorIndexer CustomColors { get; private set; }
-        private static PresentationSettings _presentationSettings = null;
+        private BufferedGraphicsContext _context;
+        private BufferedGraphics _bufferedGraphics;
+        private Graphics _graphics;    
+        private Network _network = null;
+        public CustomColorIndexer CustomColors { get; set; }
+        private PresentationSettings _presentationSettings = null;
+        private ILayoutProvider _layoutProvider = null;
+        private bool _laidout = false;
 
         /// <summary>
         /// The network that shall be visualized
         /// </summary>
-        public static Network Network { 
+        public Network Network { 
             get { return _network; } 
             set { 
                 _network = value;
-                _arrowDictionary = new Dictionary<Edge, Point[]>();
-                CustomColors = new CustomColorIndexer();
-                
+                CustomColors = new CustomColorIndexer();                
             }
         }
 
         /// <summary>
         /// The layouting algorithm that assigns nodes topology-dependent positions
         /// </summary>
-        public static ILayoutProvider LayoutProvider { get; set; }
+        public ILayoutProvider LayoutProvider { 
+            get { 
+                return _layoutProvider; 
+            } 
+            set { 
+                lock (typeof(NetworkVisualizer)) _layoutProvider = value; 
+            } 
+        }
 
         /// <summary>
         /// Initializes the visualizer with a graphics handle and a displayrectangle
         /// </summary>
         /// <param name="g"></param>
         /// <param name="displayRectangle"></param>
-        public static void Init(Graphics g, Rectangle displayRectangle)
+        public NetworkVisualizer(Network n, ILayoutProvider layout, PresentationSettings presentationSettings)
+        {
+            _network = n;
+            _presentationSettings = presentationSettings;
+            _layoutProvider = layout;
+            CustomColors = new CustomColorIndexer();
+        }
+
+        public void SetGraphics(Graphics g, Rectangle displayRectangle)
         {
             _graphics = g;
             _context = BufferedGraphicsManager.Current;
             _bufferedGraphics = _context.Allocate(g, displayRectangle);
+            _bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            PresentationSettings.DrawWidth = displayRectangle.Width;
+            PresentationSettings.DrawHeight = displayRectangle.Height;
         }
 
-        public static PresentationSettings PresentationSettings 
+        public PresentationSettings PresentationSettings 
         { 
             get 
             {
                 if (_presentationSettings == null)
-                    _presentationSettings = new PresentationSettings(100d, 100d, 0d);
+                    _presentationSettings = new PresentationSettings(1000d, 1000d, 0d);
                 return _presentationSettings;
             }
-            set
+            private set
             {
                 _presentationSettings = value;
             }
         }
-       
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void Draw(bool layout=false)
+
+        public void ForceRelayout()
         {
-            if (layout)
-                LayoutProvider.DoLayout(NetworkVisualizer.PresentationSettings.ActualWidth, NetworkVisualizer.PresentationSettings.ActualHeight, Network);
-
-            if (_bufferedGraphics == null || _bufferedGraphics.Graphics == null)
-                return;
-            _bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            _bufferedGraphics.Graphics.Clear(Color.White);            
-            if (PresentationSettings.DrawEdges)
-                foreach(Edge e in Network.Edges)
-                    DrawEdge(e);
-            if (PresentationSettings.DrawVertices)
-                foreach (Vertex v in Network.Vertices)
-                    DrawVertex(v);
-
-            _bufferedGraphics.Render(_graphics);
+            _laidout = false;
         }
-        
-
-        private static void DrawVertex(Vertex v)
+       
+        public void Draw(bool force_relayout=false)
         {
-            PresentationSettings s = PresentationSettings;
+            if (Network.VertexCount == 0 || _graphics == null)
+                return;
+            if (force_relayout)
+                LayoutProvider.DoLayout(PresentationSettings.ActualWidth, PresentationSettings.ActualHeight, Network);
+            else if (!_laidout)
+            {
+                LayoutProvider.DoLayout(PresentationSettings.ActualWidth, PresentationSettings.ActualHeight, Network);
+                _laidout = true;
+            }
+            lock (_context)
+            {
+                if (_bufferedGraphics == null || _bufferedGraphics.Graphics == null)
+                    return;
+                _bufferedGraphics.Graphics.Clear(Color.White);
+                lock (Network)
+                {
+                    if (PresentationSettings.DrawEdges)
+                        foreach (Edge e in Network.Edges)
+                            DrawEdge(e);
+                    if (PresentationSettings.DrawVertices)
+                        foreach (Vertex v in Network.Vertices)
+                            DrawVertex(v);
+                }
+
+                _bufferedGraphics.Render(_graphics);
+            }
+        }
+
+        public Vertex GetVertexAtPosition(Point screencoord)
+        {
+            Vertex v = null;
+            if(LayoutProvider==null)
+                return v;
+
+            Vector3 worldcoord = PresentationSettings.ScreenToWorld(screencoord);
+            
+
+            double minDist = double.MaxValue;
+
+                foreach(Vertex x in Network.Vertices)
+                {
+
+                    if (Vector3.Distance(worldcoord, LayoutProvider.GetPositionOfNode(x)) < minDist)
+                    {
+                        v = x;
+                        minDist = Vector3.Distance(worldcoord, LayoutProvider.GetPositionOfNode(x));
+                    }
+                }
+            return v;
+
+        }
+
+        private void DrawVertex(Vertex v)
+        {
             Vector3 p = LayoutProvider.GetPositionOfNode(v);
 
             if (!double.IsNaN(p.X) &&
                !double.IsNaN(p.Y) &&
                !double.IsNaN(p.Z))
-                _bufferedGraphics.Graphics.FillEllipse(CustomColors.GetVertexBrush(v),
-                  s.ScaleX(p.X) - s.VertexSize  / 2,
-                  s.ScaleY(p.Y) - s.VertexSize / 2,
-                  s.VertexSize,
-                  s.VertexSize);           
+                _bufferedGraphics.Graphics.FillEllipse(CustomColors.HasCustomColor(v)?CustomColors.GetVertexBrush(v):PresentationSettings.VertexBrush,
+                  PresentationSettings.ScaleX(p.X) - PresentationSettings.VertexSize / 2,
+                  PresentationSettings.ScaleY(p.Y) - PresentationSettings.VertexSize / 2,
+                  PresentationSettings.VertexSize,
+                  PresentationSettings.VertexSize);           
         }
 
-        private static void DrawEdge(Edge e)
+        private void DrawEdge(Edge e)
         {
-            PresentationSettings s = PresentationSettings;
             Vector3 p1 = LayoutProvider.GetPositionOfNode(e.Source);
             Vector3 p2 = LayoutProvider.GetPositionOfNode(e.Target);
 
-            _bufferedGraphics.Graphics.DrawLine(CustomColors.GetEdgePen(e),
+            _bufferedGraphics.Graphics.DrawLine(CustomColors.HasCustomColor(e)?CustomColors.GetEdgePen(e):PresentationSettings.EdgePen,
                     PresentationSettings.ScaleX(p1.X),
                     PresentationSettings.ScaleY(p1.Y),
                     PresentationSettings.ScaleX(p2.X),
                     PresentationSettings.ScaleY(p2.Y));
 
-            if (e.EdgeType != EdgeType.Undirected)
-            {
-                if (!_arrowDictionary.ContainsKey(e))
-                    _arrowDictionary[e] = getArrowPoints(p1, p2);
-                _bufferedGraphics.Graphics.FillPolygon(PresentationSettings.ArrowBrush, _arrowDictionary[e]);
-            }
+            if (e.EdgeType != EdgeType.Undirected)            
+                _bufferedGraphics.Graphics.FillPolygon(PresentationSettings.ArrowBrush, getArrowPoints(p1, p2));
         }
 
         /// <summary>
         /// Computes three polygon points for the arrow
         /// </summary>
         /// <returns>An array of three points</returns>
-        private static Point[] getArrowPoints(Vector3 posA, Vector3 posB)
+        private Point[] getArrowPoints(Vector3 posA, Vector3 posB)
         {
             Point[] p = new Point[3];
 
@@ -191,12 +185,11 @@ namespace NETGen.Visualization
             if (h < vertexSize || h == 0)
                 return p;
 
-            // compute which the edge forms with a circle around the target node
+            // compute which angle the edge forms with a circle around the target node
             // we need to take the opposite angle in a right-angled triangle, so we use 90 - angle
             double angle = DegToRad(90d) - Math.Asin(a / h);
 
             // interpret the resulting angle differently, depending on the quadrant the source vertex is in
-
             if (posB.Y < posA.Y && posB.X < posA.X)
                 // Source is below and right of Target
                 angle = DegToRad(90d) - angle;
@@ -226,8 +219,8 @@ namespace NETGen.Visualization
 
             // compute the arrow positions
             p[0] = new Point(s.ScaleX(posB.X), s.ScaleY(posB.Y));
-            p[1] = new Point(s.ScaleX(posB.X) + s.ScaleX((int)(Math.Cos(angle - DegToRad(15d)) * vertexSize)) * 2, s.ScaleY(posB.Y) + s.ScaleY((int)(Math.Sin(angle - DegToRad(15d)) * vertexSize)) * 2);
-            p[2] = new Point(s.ScaleX(posB.X) + s.ScaleX((int)(Math.Cos(angle + DegToRad(15d)) * vertexSize)) * 2, s.ScaleY(posB.Y) + s.ScaleY((int)(Math.Sin(angle + DegToRad(15d)) * vertexSize)) * 2);
+            p[1] = new Point(s.ScaleX(posB.X) + (int)(Math.Cos(angle - DegToRad(15d) * vertexSize) * 2), s.ScaleY(posB.Y) + (int)(Math.Sin(angle - DegToRad(15d)) * vertexSize) * 2);
+            p[2] = new Point(s.ScaleX(posB.X) + (int)(Math.Cos(angle + DegToRad(15d) * vertexSize) * 2), s.ScaleY(posB.Y) + (int)(Math.Sin(angle + DegToRad(15d)) * vertexSize) * 2);
 
             // done.
             return p;

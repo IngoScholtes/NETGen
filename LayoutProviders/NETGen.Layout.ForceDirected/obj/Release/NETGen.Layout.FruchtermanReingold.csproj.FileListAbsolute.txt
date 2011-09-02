@@ -1,6 +1,0 @@
-C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.ForceDirected\bin\Release\NETGen.Layout.FruchtermanReingold.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.ForceDirected\bin\Release\NETGen.Core.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.ForceDirected\bin\Release\NETGen.Visualization.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.ForceDirected\bin\Release\NETGen.Visualization.pdb
-C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.ForceDirected\obj\Release\ResolveAssemblyReference.cache
-C:\Users\Ingo\Dropbox\Documents\NETGen\LayoutProviders\NETGen.Layout.ForceDirected\obj\Release\NETGen.Layout.FruchtermanReingold.dll

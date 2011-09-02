@@ -60,6 +60,11 @@ namespace NETGen.Visualization
                 return false;
         }
 
+        public override string ToString()
+        {
+            return string.Format("({0:0.00}, {1:0.00}, {2:0.00})", X, Y, Z);
+        }
+
         /// <summary>
         /// Returns whether two vectors are identical
         /// </summary>

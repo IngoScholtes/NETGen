@@ -1,6 +1,0 @@
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Visualization\bin\Release\NETGen.Visualization.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Visualization\bin\Release\NETGen.Visualization.pdb
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Visualization\bin\Release\NETGen.Core.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Visualization\obj\Release\ResolveAssemblyReference.cache
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Visualization\obj\Release\NETGen.Visualization.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NETGen.Visualization\obj\Release\NETGen.Visualization.pdb

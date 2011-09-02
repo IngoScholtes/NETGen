@@ -8,6 +8,10 @@ using NETGen.Visualization;
 
 namespace NETGen.Layout.Radial
 {
+
+    /// <summary>
+    /// A radial layout, in which vertices are arranged on different circular levels depending on their degree. High degree vertices will be positioned in the center, low degree vertices will be positioned on the outer rim of the layout.
+    /// </summary>
     public class RadialLayout : Dictionary<Vertex, Vector3>, ILayoutProvider
     {
         Dictionary<int, double> startPosPerLevel = new Dictionary<int, double>();

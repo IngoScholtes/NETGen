@@ -5,7 +5,6 @@ using System.Text;
 
 namespace NETGen.Core
 {
-
     /// <summary>
     /// Enumeration that is used to distinguish between directed and undirected edges
     /// </summary>

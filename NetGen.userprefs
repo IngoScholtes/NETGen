@@ -1,24 +1,26 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ActiveRuntime="Mono 2.10.2" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.GUI/NetDisplay.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Disassembly">
     <Files>
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="39" Column="44" />
-      <File FileName="NETGen.Core/Network.cs" Line="101" Column="1" />
-      <File FileName="NetworkModels/NETGen.NetworkModels.WattsStrogatz/WSNetwork.cs" Line="14" Column="1" />
-      <File FileName="NETGen.GUI/NetDisplay.cs" Line="24" Column="44" />
+      <File FileName="Simulations/DemoSimulation/Program.cs" Line="47" Column="69" />
+      <File FileName="NETGen.GUI/NetworkDisplay.cs" Line="56" Column="17" />
+      <File FileName="NetworkModels/ClusterNetwork/ClusterNetwork.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Visualization/PresentationSettings.cs" Line="1" Column="1" />
+      <File FileName="LayoutProviders/NETGen.Layout.ForceDirected/FruchtermanReingoldLayout.cs" Line="1" Column="1" />
+      <File FileName="../../Downloads/mono-2.10/build/mono-2.10.5/mcs/class/System.Web/System.Web/HttpUtility.cs" Line="652" Column="22" />
+      <File FileName="Simulations/TwitterRealTime/app.config" Line="1" Column="1" />
+      <File FileName="Simulations/TwitterRealTime/Properties/Settings.settings" Line="1" Column="1" />
+      <File FileName="../../Downloads/mono-2.10/build/mono-2.10.5/mcs/class/corlib/System/Double.cs" Line="229" Column="1" />
+      <File FileName="Simulations/ClusterSIR/Program.cs" Line="16" Column="34" />
+      <File FileName="Simulations/ClusterSpreading/Program.cs" Line="17" Column="1" />
+      <File FileName="Disassembly" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True" selected="True">
-          <Node name="LayoutProviders" expanded="True" />
-          <Node name="NetworkModels" expanded="True">
-            <Node name="NETGen.NetworkModels.WattsStrogatz" expanded="True" />
-          </Node>
-          <Node name="Simulations" expanded="True">
-            <Node name="DemoSimulation" expanded="True" />
-          </Node>
-          <Node name="NETGen.GUI" expanded="True" />
-          <Node name="NETGen.Visualization" expanded="True" />
+        <State expanded="True">
+          <Node name="Simulations" expanded="True" />
+          <Node name="NETGen.Core" expanded="True" />
+          <Node name="NETGen.Visualization" selected="True" />
         </State>
       </Pad>
     </Pads>
