@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 using NETGen.Core;
 using NETGen.Visualization;
@@ -12,10 +14,9 @@ namespace NETGen.Layout.Radial
     /// <summary>
     /// A radial layout, in which vertices are arranged on different circular levels depending on their degree. High degree vertices will be positioned in the center, low degree vertices will be positioned on the outer rim of the layout.
     /// </summary>
-    public class RadialLayout : Dictionary<Vertex, Vector3>, ILayoutProvider
+    public class RadialLayout : ConcurrentDictionary<Vertex, Vector3>, ILayoutProvider
     {
-        Dictionary<int, double> startPosPerLevel = new Dictionary<int, double>();
-
+        
         public Vector3 GetPositionOfNode(Vertex v)
         {
             return this[v];
@@ -32,9 +33,9 @@ namespace NETGen.Layout.Radial
 
         public void DoLayout(double width, double height, Network net)
         {
-            Dictionary<int, int> nodesPerLevel = new Dictionary<int, int>();
-            Dictionary<int, int> countPerLevel = new Dictionary<int, int>();
-
+            ConcurrentDictionary<int, int> nodesPerLevel = new ConcurrentDictionary<int, int>(System.Environment.ProcessorCount, 100);
+            ConcurrentDictionary<int, int> countPerLevel = new ConcurrentDictionary<int, int>(System.Environment.ProcessorCount, 100);
+			ConcurrentDictionary<int, double> startPosPerLevel = new ConcurrentDictionary<int, double>(System.Environment.ProcessorCount, 0);
 
             double n = (double)net.VertexCount;
             int maxLevel = 0;
@@ -42,7 +43,7 @@ namespace NETGen.Layout.Radial
             double basis = 2d;
 
             //assign levels 
-            foreach (Vertex v in net.Vertices)
+            Parallel.ForEach(net.Vertices.ToArray(), v => 
             {
                 int level = (int)Math.Round(Math.Log(n / 2, basis) - Math.Log(Math.Max((double)v.Degree, 7d), basis));
                 if (level < 0)
@@ -56,10 +57,10 @@ namespace NETGen.Layout.Radial
                 }
                 else
                     nodesPerLevel[level]++;
-            }
+            });
 
             // assign positions 
-            foreach (Vertex v in net.Vertices)
+            Parallel.ForEach(net.Vertices.ToArray(), v => 
             {
                 int level = (int)Math.Round(Math.Log(n / 2, basis) - Math.Log(Math.Max((double)v.Degree, 7d), basis));
                 if (level < 0)
@@ -75,7 +76,7 @@ namespace NETGen.Layout.Radial
                this[v] = getPosition(width, height, angle, level, radius);
             
             //     v.VertexSize = Math.Max((int)(5 + (((double)v.Degree) / (double)(n / 2)) * 20d), 1);
-            }
+            });
         }
     }
 }

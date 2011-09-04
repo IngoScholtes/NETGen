@@ -126,7 +126,6 @@ namespace NETGen.Layout.FruchtermanReingold
         /// </summary>
         /// <param name="v">The node to return the position for</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.Synchronized)]
 		public Vector3 GetPositionOfNode(NETGen.Core.Vertex v)
 		{
             return _vertexPositions[v];

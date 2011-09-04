@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using NETGen.Layout.FruchtermanReingold;
 using NETGen.Layout.RandomLayout;
 using NETGen.Layout.Positioned;
+using NETGen.Layout.Radial;
 using System.Drawing;
 using NETGen.NetworkModels.Cluster;
 using MathNet.Numerics;
@@ -50,6 +51,7 @@ namespace DemoSimulation
             options["Fruchterman-Reingold (20)"] = new FruchtermanReingoldLayout(20);
             options["Fruchterman-Reingold (50)"] = new FruchtermanReingoldLayout(50);
             options["Random"] = new RandomLayout();
+			options["Radial"] = new RadialLayout();
 
             NetworkVisualizer visualizer = new NetworkVisualizer(network, new RandomLayout(), new PresentationSettings(2000d, 1000d, 0d));
 

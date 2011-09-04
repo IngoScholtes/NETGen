@@ -60,6 +60,12 @@ namespace NETGen.Visualization
                 return false;
         }
 
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents the current <see cref="NETGen.Visualization.Vector3"/>.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="System.String"/> that represents the current <see cref="NETGen.Visualization.Vector3"/>.
+		/// </returns>
         public override string ToString()
         {
             return string.Format("({0:0.00}, {1:0.00}, {2:0.00})", X, Y, Z);
@@ -109,16 +115,52 @@ namespace NETGen.Visualization
             return new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
 		
+		/// <summary>
+		/// Multiplies a vector a with a scalar value
+		/// </summary>
+		/// <param name='a'>
+		/// The vector that shall be multiplied with a scalar
+		/// </param>
+		/// <param name='scalar'>
+		/// The scalar value with which vector a shall be multiplied
+		/// </param>
+		/// <returns>
+		/// The vector resulting from the scalar multiplication
+		/// </returns>
 		public static Vector3 operator *(Vector3 a, double scalar)
 		{
 			return Multiply(a, scalar);
 		}
 		
+		/// <summary>
+		/// Multiplies a vector a with a scalar value
+		/// </summary>
+		/// <param name='a'>
+		/// The vector that shall be multiplied with a scalar
+		/// </param>
+		/// <param name='scalar'>
+		/// The scalar value with which vector a shall be multiplied
+		/// </param>
+		/// <returns>
+		/// The vector resulting from the scalar multiplication
+		/// </returns>
 		public static Vector3 operator *(double scalar, Vector3 a)
 		{
 			return Multiply(a, scalar);
 		}
 		
+		/// <summary>
+		/// Divides a vector a by a scalar value
+		/// </summary>
+		/// <param name='a'>
+		/// The vector that shall be divided by a scalar
+		/// </param>
+		/// <param name='scalar'>
+		/// The scalar value by which vector a shall be divided
+		/// </param>
+		/// <returns>
+		/// The vector resulting from the scalar division
+		/// </returns>
 		public static Vector3 operator /(Vector3 a, double scalar)
 		{
 			return Multiply(a, 1d/scalar);

@@ -88,7 +88,7 @@ namespace ClusterSpreading
 
             if (viz != null)
                 foreach (Vertex v in net.Vertices)
-                    viz.CustomColors[v] = Color.Green;
+                    viz.PresentationSettings.CustomColors[v] = Color.Green;
 
             Dictionary<Vertex, int> infectionTime = new Dictionary<Vertex, int>();
             foreach (Vertex v in net.Vertices)
@@ -125,7 +125,7 @@ namespace ClusterSpreading
                 }
                 if (viz != null)
                 {
-                    viz.CustomColors.Recompute(v =>
+                    viz.PresentationSettings.CustomColors.Recompute(v =>
                     {
                         if (infectionTime[v]!=int.MinValue)
                             return Color.Red;

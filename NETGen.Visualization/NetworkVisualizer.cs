@@ -8,13 +8,15 @@ using System.Runtime.CompilerServices;
 
 namespace NETGen.Visualization
 {    
+	/// <summary>
+	/// A class that manages the (double-buffered) drawing of a network to the screen
+	/// </summary>
     public class NetworkVisualizer
     {
         private BufferedGraphicsContext _context;
         private BufferedGraphics _bufferedGraphics;
         private Graphics _graphics;    
-        private Network _network = null;
-        public CustomColorIndexer CustomColors { get; set; }
+        private Network _network = null;        
         private PresentationSettings _presentationSettings = null;
         private ILayoutProvider _layoutProvider = null;
         private bool _laidout = false;
@@ -25,8 +27,7 @@ namespace NETGen.Visualization
         public Network Network { 
             get { return _network; } 
             set { 
-                _network = value;
-                CustomColors = new CustomColorIndexer();                
+                _network = value;             
             }
         }
 
@@ -52,19 +53,33 @@ namespace NETGen.Visualization
             _network = n;
             _presentationSettings = presentationSettings;
             _layoutProvider = layout;
-            CustomColors = new CustomColorIndexer();
         }
-
+		
+		/// <summary>
+		/// Sets the graphics objects that shall be used to draw the network
+		/// </summary>
+		/// <param name='g'>
+		/// The graphics object to draw to
+		/// </param>
+		/// <param name='displayRectangle'>
+		/// The display rectange
+		/// </param>
         public void SetGraphics(Graphics g, Rectangle displayRectangle)
         {
             _graphics = g;
             _context = BufferedGraphicsManager.Current;
             _bufferedGraphics = _context.Allocate(g, displayRectangle);
             _bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            PresentationSettings.DrawWidth = displayRectangle.Width;
-            PresentationSettings.DrawHeight = displayRectangle.Height;
+            PresentationSettings.ScreenWidth = displayRectangle.Width;
+            PresentationSettings.ScreenHeight = displayRectangle.Height;
         }
-
+		
+		/// <summary>
+		/// Gets the current presentation settings.
+		/// </summary>
+		/// <value>
+		/// The presentation settings.
+		/// </value>
         public PresentationSettings PresentationSettings 
         { 
             get 
@@ -78,28 +93,37 @@ namespace NETGen.Visualization
                 _presentationSettings = value;
             }
         }
-
+		
+		/// <summary>
+		/// Forces the layout to be recomputed upon the next drawing operation
+		/// </summary>
         public void ForceRelayout()
         {
             _laidout = false;
         }
        
+		/// <summary>
+		/// Draw the network
+		/// </summary>
+		/// <param name='force_relayout'>
+		/// Whether or not to recompute the network layout
+		/// </param>
         public void Draw(bool force_relayout=false)
         {
             if (Network.VertexCount == 0 || _graphics == null)
                 return;
             if (force_relayout)
-                LayoutProvider.DoLayout(PresentationSettings.ActualWidth, PresentationSettings.ActualHeight, Network);
+                LayoutProvider.DoLayout(PresentationSettings.WorldWidth, PresentationSettings.WorldHeight, Network);
             else if (!_laidout)
             {
-                LayoutProvider.DoLayout(PresentationSettings.ActualWidth, PresentationSettings.ActualHeight, Network);
+                LayoutProvider.DoLayout(PresentationSettings.WorldWidth, PresentationSettings.WorldHeight, Network);
                 _laidout = true;
             }
             lock (_context)
             {
                 if (_bufferedGraphics == null || _bufferedGraphics.Graphics == null)
                     return;
-                _bufferedGraphics.Graphics.Clear(Color.White);
+                _bufferedGraphics.Graphics.Clear(PresentationSettings.BackgroundColor);
                 lock (Network)
                 {
                     if (PresentationSettings.DrawEdges)
@@ -113,7 +137,16 @@ namespace NETGen.Visualization
                 _bufferedGraphics.Render(_graphics);
             }
         }
-
+		
+		/// <summary>
+		/// Returns which vertex is at a given screen coordinate
+		/// </summary>
+		/// <returns>
+		/// The vertex at the specified screen position
+		/// </returns>
+		/// <param name='screencoord'>
+		/// A screen coordinate (e.g. the position the user has clicked)
+		/// </param>
         public Vertex GetVertexAtPosition(Point screencoord)
         {
             Vertex v = null;
@@ -137,7 +170,13 @@ namespace NETGen.Visualization
             return v;
 
         }
-
+		
+		/// <summary>
+		/// Draws a single vertex
+		/// </summary>
+		/// <param name='v'>
+		/// The vertex to draw
+		/// </param>
         private void DrawVertex(Vertex v)
         {
             Vector3 p = LayoutProvider.GetPositionOfNode(v);
@@ -145,26 +184,34 @@ namespace NETGen.Visualization
             if (!double.IsNaN(p.X) &&
                !double.IsNaN(p.Y) &&
                !double.IsNaN(p.Z))
-                _bufferedGraphics.Graphics.FillEllipse(CustomColors.HasCustomColor(v)?CustomColors.GetVertexBrush(v):PresentationSettings.VertexBrush,
+                _bufferedGraphics.Graphics.FillEllipse(
+					PresentationSettings.CustomColors.HasCustomColor(v)?PresentationSettings.CustomColors.GetVertexBrush(v):PresentationSettings.DefaultVertexBrush,
                   PresentationSettings.ScaleX(p.X) - PresentationSettings.VertexSize / 2,
                   PresentationSettings.ScaleY(p.Y) - PresentationSettings.VertexSize / 2,
                   PresentationSettings.VertexSize,
                   PresentationSettings.VertexSize);           
         }
 
+		/// <summary>
+		/// Draws a single edge
+		/// </summary>
+		/// <param name='e'>
+		/// The edge to draw
+		/// </param>
         private void DrawEdge(Edge e)
         {
             Vector3 p1 = LayoutProvider.GetPositionOfNode(e.Source);
             Vector3 p2 = LayoutProvider.GetPositionOfNode(e.Target);
 
-            _bufferedGraphics.Graphics.DrawLine(CustomColors.HasCustomColor(e)?CustomColors.GetEdgePen(e):PresentationSettings.EdgePen,
+            _bufferedGraphics.Graphics.DrawLine(
+				PresentationSettings.CustomColors.HasCustomColor(e)?PresentationSettings.CustomColors.GetEdgePen(e):PresentationSettings.DefaultEdgePen,
                     PresentationSettings.ScaleX(p1.X),
                     PresentationSettings.ScaleY(p1.Y),
                     PresentationSettings.ScaleX(p2.X),
                     PresentationSettings.ScaleY(p2.Y));
 
             if (e.EdgeType != EdgeType.Undirected)            
-                _bufferedGraphics.Graphics.FillPolygon(PresentationSettings.ArrowBrush, getArrowPoints(p1, p2));
+                _bufferedGraphics.Graphics.FillPolygon(PresentationSettings.DefaultArrowBrush, getArrowPoints(p1, p2));
         }
 
         /// <summary>
@@ -174,7 +221,6 @@ namespace NETGen.Visualization
         private Point[] getArrowPoints(Vector3 posA, Vector3 posB)
         {
             Point[] p = new Point[3];
-
             
             // length of hypothenuse and opposite side
             double h = Vector3.Distance(posA, posB);
@@ -226,9 +272,18 @@ namespace NETGen.Visualization
             return p;
         }
 
-        private static double DegToRad(double p)
+		/// <summary>
+		/// Helper function that transforms degrees into radian angles
+		/// </summary>
+		/// <returns>
+		/// The angle in radians
+		/// </returns>
+		/// <param name='p'>
+		/// the angle in degrees
+		/// </param>
+        private static double DegToRad(double d)
         {
-            return (Math.PI / 180d) * p;
+            return (Math.PI / 180d) * d;
         }       
     }
 }
