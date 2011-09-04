@@ -3,6 +3,7 @@ using System.Linq;
 using NETGen.Core;
 using NETGen.Visualization;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
@@ -19,23 +20,20 @@ namespace NETGen.Layout.FruchtermanReingold
         /// </summary>
 		private int _iterations = 0;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private Dictionary<Vertex, Vector3> _vertexPositions;
+        private ConcurrentDictionary<Vertex, Vector3> _vertexPositions;
 		
         /// <summary>
-        /// Creates a Fruchterman/Reingold layout using a given number of iterations for the computation of forces and positions. A larger iterations value will enhance the layouting quality, but will cost more computational resources. 
+        /// Creates a Fruchterman/Reingold layout using a given number of iterations for the computation of forces and positions. A larger iterations value will enhance the layouting quality, but will require more computation
         /// </summary>
         /// <param name="iterations"></param>
 		public FruchtermanReingoldLayout (int iterations)
 		{
 			_iterations = iterations;
-            _vertexPositions = new Dictionary<Vertex, Vector3>();		                      
+            _vertexPositions = new ConcurrentDictionary<Vertex, Vector3>();		                      
 		}
 
         /// <summary>
-        /// Computes the layout of a network
+        /// Computes the position of all vertices of a network
         /// </summary>
         /// <param name="width">width of the frame</param>
         /// <param name="height">height of the frame</param>
@@ -45,36 +43,41 @@ namespace NETGen.Layout.FruchtermanReingold
 		{
             double _area = width * height;
             double _k = Math.Sqrt(_area / (double)n.Vertices.Count());
-            _k *= 0.75d;
-            Random rand = new Random();
+            _k *= 0.75d;						
+			
             // The displacement calculated for each vertex in each step
-            Dictionary<Vertex, Vector3> disp = new Dictionary<Vertex, Vector3>();
-
+            ConcurrentDictionary<Vertex, Vector3> disp = new ConcurrentDictionary<Vertex, Vector3>(System.Environment.ProcessorCount, (int) n.VertexCount);
+			
+			_vertexPositions = new ConcurrentDictionary<Vertex, Vector3>(System.Environment.ProcessorCount, (int) n.VertexCount);
             	
 			double t = width/10;
             double tempstep = t / (double) _iterations;
+			
+			Parallel.ForEach(n.Vertices.ToArray(), v=>
+            {
+                _vertexPositions[v] = new Vector3(n.NextRandomDouble() * width, n.NextRandomDouble() * height, 1d);
+				disp[v] = new Vector3(0d, 0d, 1d);
+			});
 
 			for (int i=0; i<_iterations; i++)
 			{
-                // Calculate repulsive forces for every pair of vertices		
-                foreach (Vertex v in n.Vertices)
+                // parallely Calculate repulsive forces for every pair of vertices		
+                Parallel.ForEach(n.Vertices.ToArray(), v =>
                 {
-                    if (!_vertexPositions.ContainsKey(v))
-                        _vertexPositions[v] = new Vector3(rand.NextDouble() * width, rand.NextDouble() * height, 1d);
                     disp[v] = new Vector3(0d, 0d, 1d);
 
-                    // Parallel computation of repulsive forces
-                    Parallel.ForEach(_vertexPositions.Keys.ToArray(), u =>
+                    // computation of repulsive forces
+                    foreach(Vertex u in n.Vertices.ToArray())
                     {
                         if (v != u)
                         {
                             Vector3 delta = _vertexPositions[v] - _vertexPositions[u];
                             disp[v] = disp[v] + (delta / Vector3.Length(delta)) * repulsion(Vector3.Length(delta), _k);
                         }
-                    });
-                }
+                    }
+                });				
 		        
-                // Calculate attractive forces for pair of connected nodes
+                // Parallely calculate attractive forces for all pairs of connected nodes
 				Parallel.ForEach(n.Edges.ToArray(), e => 				
 				{
 					Vertex v = e.Source;

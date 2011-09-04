@@ -32,7 +32,7 @@ namespace NETGen.Visualization
             Draw(XGraphics.FromPdfPage(page), n, presentationSettings, layout, customColors);
 
             // Save the s_document...
-            doc.Save(path);
+			doc.Save(path);
         }
 
         private static void Draw(XGraphics g, Network n, PresentationSettings presentationSettings, ILayoutProvider layout, CustomColorIndexer customColors)

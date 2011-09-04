@@ -54,7 +54,7 @@ namespace DemoSimulation
             NetworkVisualizer visualizer = new NetworkVisualizer(network, new RandomLayout(), new PresentationSettings(2000d, 1000d, 0d));
 
             // fire up the visualization frontend
-            NetworkDisplay display = new NetworkDisplay(visualizer, 10, options);
+            NetworkDisplay display = NetworkDisplay.CreateDisplay(visualizer, 25, options);
             // Console.WriteLine("Modularity = {0:0.00}, Nodes = {1}, Edges = {2}", network.NewmanModularity, network.VertexCount, network.EdgeCount);
 
             string text = "";

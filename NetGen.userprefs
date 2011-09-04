@@ -1,26 +1,29 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Disassembly">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|Mixed Platforms" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.GUI/NetworkDisplay.cs">
     <Files>
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="47" Column="69" />
-      <File FileName="NETGen.GUI/NetworkDisplay.cs" Line="56" Column="17" />
+      <File FileName="NETGen.GUI/NetworkDisplay.cs" Line="15" Column="6" />
       <File FileName="NetworkModels/ClusterNetwork/ClusterNetwork.cs" Line="1" Column="1" />
       <File FileName="NETGen.Visualization/PresentationSettings.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Visualization/PDFExporter.cs" Line="1" Column="1" />
+      <File FileName="Simulations/ClusterSynchronization/ClusterSynchronization.cs" Line="1" Column="1" />
       <File FileName="LayoutProviders/NETGen.Layout.ForceDirected/FruchtermanReingoldLayout.cs" Line="1" Column="1" />
-      <File FileName="../../Downloads/mono-2.10/build/mono-2.10.5/mcs/class/System.Web/System.Web/HttpUtility.cs" Line="652" Column="22" />
-      <File FileName="Simulations/TwitterRealTime/app.config" Line="1" Column="1" />
-      <File FileName="Simulations/TwitterRealTime/Properties/Settings.settings" Line="1" Column="1" />
-      <File FileName="../../Downloads/mono-2.10/build/mono-2.10.5/mcs/class/corlib/System/Double.cs" Line="229" Column="1" />
-      <File FileName="Simulations/ClusterSIR/Program.cs" Line="16" Column="34" />
-      <File FileName="Simulations/ClusterSpreading/Program.cs" Line="17" Column="1" />
-      <File FileName="Disassembly" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Simulations" expanded="True" />
+          <Node name="LayoutProviders" expanded="True">
+            <Node name="NETGen.Layout.FruchtermanReingold" expanded="True" />
+          </Node>
+          <Node name="Simulations" expanded="True">
+            <Node name="ClusterPaper" expanded="True" />
+            <Node name="DemoSimulation" expanded="True" />
+          </Node>
           <Node name="NETGen.Core" expanded="True" />
-          <Node name="NETGen.Visualization" selected="True" />
+          <Node name="NETGen.GUI" expanded="True">
+            <Node name="NetworkDisplay.cs" selected="True" />
+          </Node>
+          <Node name="NETGen.Visualization" expanded="True" />
         </State>
       </Pad>
     </Pads>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using NETGen.Core;
@@ -9,13 +10,13 @@ namespace NETGen.Visualization
 {
     public sealed class CustomColorIndexer
     {
-        private Dictionary<Vertex, SolidBrush> _customVertexColors = new Dictionary<Vertex, SolidBrush>();
-        private Dictionary<Edge, Pen> _customEdgeColors = new Dictionary<Edge, Pen>();
+        private ConcurrentDictionary<Vertex, SolidBrush> _customVertexColors;
+        private ConcurrentDictionary<Edge, Pen> _customEdgeColors;
 
         internal CustomColorIndexer()
         {
-            _customEdgeColors = new Dictionary<Edge, Pen>();
-            _customVertexColors = new Dictionary<Vertex, SolidBrush>();
+            _customEdgeColors = new ConcurrentDictionary<Edge, Pen>(System.Environment.ProcessorCount, 0);
+            _customVertexColors = new ConcurrentDictionary<Vertex, SolidBrush>(System.Environment.ProcessorCount, 0);
         }
 
         internal SolidBrush GetVertexBrush(Vertex v)
