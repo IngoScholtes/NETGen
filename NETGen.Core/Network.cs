@@ -11,7 +11,7 @@ namespace NETGen.Core
     /// This is NETGen's central class, representing a thread-safe network consisting of vertices and directed or undirected edges. This class is multi-thread-efficient and thread-safe,
     /// multiple concurrent read accesses are allowed, while concurrent read/write accesses are being synchronized. Please note, that an exception will be thrown when a write-access (like e.g.
     /// AddVertex, RemoveEdge, ... is nested inside a thread-safe iteration (like e.g. the Vertices and Edges iterators). If you need to do such an operation, 
-    /// obtain a copy of the thread-safe iterator first. Please refer to the iterators for more information.
+    /// obtain a copy of the thread-safe iterator first. Please refer to the iterators for more information. The network is internally stored as a adjacency list
     /// </summary>
     public class Network
     {
@@ -77,7 +77,10 @@ namespace NETGen.Core
         /// This is a non-thread-safe dictinary that contains all edges
         /// </summary>
         protected Dictionary<Guid, Edge> _edges;
-
+		
+		/// <summary>
+		/// A random generator that is required to provide thread safe creation of random numbers
+		/// </summary>
         private Random _random;
 
         /// <summary>
@@ -134,7 +137,16 @@ namespace NETGen.Core
         {
             lock (_random) return _random.NextDouble();
         }
-
+		
+		/// <summary>
+		/// Loads a network from a GraphML file.
+		/// </summary>
+		/// <returns>
+		/// A network
+		/// </returns>
+		/// <param name='path'>
+		/// The path of the graphml file
+		/// </param>
         public static Network LoadFromGraphML(string path)
         {
             if (path == null)
@@ -172,12 +184,20 @@ namespace NETGen.Core
         /// <summary>
         /// Loads a network from a textfile in which each edge is given by a line of whitespace- or comma-seperated strings representing two nodes
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="path">
+        /// The path of the textfile
+        /// </param>
+        /// <returns>
+        /// The network
+        /// </returns>
         public static Network LoadFromEdgeFile(string path)
         {
+			// First read all lines
             string[] lines = System.IO.File.ReadAllLines(path);
-            Network net = new Network();
+						
+            Network net = new Network();			
+			
+			// Then process them in parallel
             System.Threading.Tasks.Parallel.ForEach(lines, s =>
             {
                 string[] vertices = s.Split(' ', '\t', ',');
@@ -185,16 +205,27 @@ namespace NETGen.Core
                 {
                     Vertex v1 = net.SearchVertex(vertices[0]);
                     Vertex v2 = net.SearchVertex(vertices[1]);
-                    if(v1 == null)
-                        v1 = net.CreateVertex(vertices[0]);
-                    if (v2 == null)
-                        v2 = net.CreateVertex(vertices[1]);
+					
+					// this needs to be atomic 
+					lock(net)
+					{
+	                    if(v1 == null)
+	                        v1 = net.CreateVertex(vertices[0]);
+	                    if (v2 == null)
+	                        v2 = net.CreateVertex(vertices[1]);
+					}
                     net.CreateEdge(v1, v2, EdgeType.Undirected);
                 }
             });
             return net;
         }       
 
+		/// <summary>
+		/// Gets the number of vertices in the network
+		/// </summary>
+		/// <value>
+		/// The number of vertices
+		/// </value>
         public long VertexCount
         {
             get
@@ -203,6 +234,12 @@ namespace NETGen.Core
             }
         }
 
+		/// <summary>
+		/// Gets the number of (directed and undirected) edges in the network
+		/// </summary>
+		/// <value>
+		/// The number of edges
+		/// </value>
         public long EdgeCount
         {
             get
@@ -211,6 +248,15 @@ namespace NETGen.Core
             }
         }
 
+		/// <summary>
+		/// Saves a network to a graphML file
+		/// </summary>
+		/// <param name='path'>
+		/// The path of the file
+		/// </param>
+		/// <param name='n'>
+		/// The network to save
+		/// </param>
         public static void SaveToGraphML(string path, Network n)
         {
             if (path == null || n == null)
@@ -219,7 +265,6 @@ namespace NETGen.Core
             Dictionary<Guid, long> _GuidMapping = new Dictionary<Guid, long>();
 
             XmlTextWriter writer = new XmlTextWriter(path, Encoding.UTF8);
-
 
             writer.WriteStartDocument();
 
@@ -377,7 +422,6 @@ namespace NETGen.Core
                 if (!_vertexLabels.ContainsKey(v.Label))
                     _vertexLabels[v.Label] = v;
             }
-
 
             if (OnVertexAdded != null)
                 System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(delegate

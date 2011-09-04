@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterSynchronization", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterRealTime", "Simulations\TwitterRealTime\TwitterRealTime.csproj", "{BB83D793-82E4-4D71-8BFF-6516B04A90D4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LayoutProviders", "LayoutProviders", "{B29B7521-7D83-4C33-BEE7-7F7FA65D260A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layouts", "Layouts", "{B29B7521-7D83-4C33-BEE7-7F7FA65D260A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.Layout.FruchtermanReingold", "LayoutProviders\NETGen.Layout.ForceDirected\NETGen.Layout.FruchtermanReingold.csproj", "{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}"
 EndProject
