@@ -8,7 +8,7 @@
       <File FileName="NETGen.Visualization/Vector3.cs" Line="1" Column="1" />
       <File FileName="NETGen.Visualization/PresentationSettings.cs" Line="1" Column="1" />
       <File FileName="NETGen.Visualization/PDFExporter.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="14" Column="16" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="16" Column="50" />
       <File FileName="NETGen.Visualization/CustomColorIndexer.cs" Line="1" Column="1" />
       <File FileName="Simulations/ClusterSIR/Program.cs" Line="1" Column="1" />
       <File FileName="Simulations/ClusterSpreading/Program.cs" Line="1" Column="1" />
