@@ -187,9 +187,7 @@ namespace NETGen.GUI
 		/// </param>
         private void i_Click(object sender, EventArgs e)
         {
-            lock(this)
-                NetworkVisualizer.LayoutProvider = LayoutOptions[(sender as ToolStripItem).Text];
-            NetworkVisualizer.ForceRelayout();
+            NetworkVisualizer.LayoutProvider = LayoutOptions[(sender as ToolStripItem).Text];
         }
 		
 		/// <summary>
@@ -271,7 +269,7 @@ namespace NETGen.GUI
 		/// </param>
         private void drawPanel_MouseUp(object sender, MouseEventArgs e)
         {
-			if (e.Button == MouseButtons.Right)
+			if (e.Button == MouseButtons.Left)
 			{
 	            _pan = false;
 	            _panned = false;

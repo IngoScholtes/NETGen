@@ -127,6 +127,10 @@
       <Project>{D1C6BDD7-07D0-44A8-89CE-C4ACB9A2248C}</Project>
       <Name>ClusterSynchronization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.MongoDB\NETGen.MongoDB.csproj">
+      <Project>{60F127BF-35EA-4E16-8B17-5BDC5CD9203A}</Project>
+      <Name>NETGen.MongoDB</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

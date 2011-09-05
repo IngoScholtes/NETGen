@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
 namespace NETGen.Layout.FruchtermanReingold
-{
-
+{	
+	
     /// <summary>
     ///  A spring-based model according to (T. Fruchterman and E. Reingold 1991). Edges are thought to be elastic springs that lead to an attractive force between connected vertices. Furthermore, there is an antagonistic, repulsive force between every pair of vertices. Computation is being done in parallel on as many processing cores as available. 
     /// </summary>
 	public class FruchtermanReingoldLayout : ILayoutProvider
 	{
+		private bool _laidout = false;
+		
         /// <summary>
         ///  The number of iterations to be used in the computation of vertex positions
         /// </summary>
@@ -97,6 +99,8 @@ namespace NETGen.Layout.FruchtermanReingold
 				});
 				t-= tempstep;
 			}
+			
+			_laidout = true;
 		}
 
         /// <summary>
@@ -129,6 +133,11 @@ namespace NETGen.Layout.FruchtermanReingold
 		public Vector3 GetPositionOfNode(NETGen.Core.Vertex v)
 		{
             return _vertexPositions[v];
+		}
+		
+		public bool IsLaidout()
+		{
+			return _laidout;
 		}
 	}
 }

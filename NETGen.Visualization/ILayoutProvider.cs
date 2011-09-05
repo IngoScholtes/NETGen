@@ -34,5 +34,13 @@ namespace NETGen.Visualization
 		/// N.
 		/// </param>
         void DoLayout(double width, double height, NETGen.Core.Network n);
+		
+		/// <summary>
+		/// Returns whether the layout has yet been computed or not
+		/// </summary>
+		/// <returns>
+		/// <c>true</c> if the network is laidout; otherwise, <c>false</c>.
+		/// </returns>
+		bool IsLaidout();
     }
 }

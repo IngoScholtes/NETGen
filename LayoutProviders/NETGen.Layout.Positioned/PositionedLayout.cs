@@ -12,8 +12,8 @@ namespace NETGen.Layout.Positioned
     /// A simple layouting mechanism that can be used to provide application-dependent vertex positions in a plane, e.g. for networks embedded into a eucledian space. Positions can simply be set and changed by indexing the object instance with the vertex. 
     /// </summary>
     public class PositionedLayout : Dictionary<Vertex, Vector3>, ILayoutProvider 
-    {
-
+    {		
+		
         /// <summary>
         /// Since vertex positions for the layout are being provided by the user, there's nothing to do here really :-)
         /// </summary>
@@ -37,5 +37,10 @@ namespace NETGen.Layout.Positioned
             else
                 return this[v];
         }
+		
+		public bool IsLaidout()
+		{
+			return true;
+		}
     }
 }

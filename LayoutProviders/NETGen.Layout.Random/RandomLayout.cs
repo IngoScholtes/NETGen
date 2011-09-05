@@ -13,6 +13,8 @@ namespace NETGen.Layout.RandomLayout
     {
 
         Dictionary<Vertex, Vector3> _vertexPositions;
+		
+		private bool _laidout = false;
 
         /// <summary>
         /// Initializes a simple random layout that assigns random positions to vertices
@@ -35,6 +37,7 @@ namespace NETGen.Layout.RandomLayout
                 if (!_vertexPositions.ContainsKey(v))
                     _vertexPositions[v] = new Vector3(v.Network.NextRandomDouble() * width, v.Network.NextRandomDouble() * height, 0);
             }
+			_laidout = true;
         }
 		
         /// <summary>
@@ -46,6 +49,11 @@ namespace NETGen.Layout.RandomLayout
         {
             return _vertexPositions[v];
         }
+		
+		public bool IsLaidout()
+		{
+			return _laidout;
+		}
     }
 }
 

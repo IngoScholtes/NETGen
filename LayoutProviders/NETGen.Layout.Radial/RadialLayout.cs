@@ -15,8 +15,9 @@ namespace NETGen.Layout.Radial
     /// A radial layout, in which vertices are arranged on different circular levels depending on their degree. High degree vertices will be positioned in the center, low degree vertices will be positioned on the outer rim of the layout.
     /// </summary>
     public class RadialLayout : ConcurrentDictionary<Vertex, Vector3>, ILayoutProvider
-    {
-        
+    {        
+		private bool _laidout = false;
+		
         public Vector3 GetPositionOfNode(Vertex v)
         {
             return this[v];
@@ -77,6 +78,12 @@ namespace NETGen.Layout.Radial
             
             //     v.VertexSize = Math.Max((int)(5 + (((double)v.Degree) / (double)(n / 2)) * 20d), 1);
             });
+			_laidout = true;
         }
+		
+		public bool IsLaidout()
+		{
+			return _laidout;
+		}
     }
 }

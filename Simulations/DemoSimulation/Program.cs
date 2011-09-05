@@ -16,6 +16,20 @@ using MathNet.Numerics;
 
 namespace DemoSimulation
 {
+	class MyVertexTest : NETGen.MongoDB.Vertices
+	{
+		public MyVertexTest(Vertex v) : base(v) {}
+		
+		public int Degree { get; set ; }
+	}
+	
+	class MyEdgeTest : NETGen.MongoDB.Edges
+	{
+		public MyEdgeTest(Edge e) : base(e) {}
+		
+		public double Strength { get; set ; }
+	}
+	
     class Program
     {
         static void Main(string[] args)
@@ -42,7 +56,19 @@ namespace DemoSimulation
                 
                 network = new NETGen.NetworkModels.Cluster.ClusterNetwork(c, Nc, pi, p_e);
                 network.ReduceToLargestConnectedComponent();
-            } while (!network.Connected);            
+            } while (!network.Connected);   
+			
+			NETGen.MongoDB.MongoDBConnector.SaveToMongoDB<MyVertexTest,MyEdgeTest>("mongodb://localhost/NetGen2", network,
+			v => {
+				MyVertexTest v2 = new MyVertexTest(v);
+				v2.Degree = v.Degree;
+				return v2;
+			},
+			e => {
+				MyEdgeTest e2 = new MyEdgeTest(e);
+				e2.Strength = 42d;
+				return e2;
+			});
             
             // create some layouting options that should be added to the visualization frontend
             LayoutOptions options = new LayoutOptions();

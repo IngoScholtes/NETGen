@@ -215,6 +215,6 @@ namespace NETGen.Core
                 return ((obj as Edge) == this);
             else
                 return false;
-        }        
+        }  	
     }
 }

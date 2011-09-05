@@ -19,12 +19,11 @@ namespace NETGen.Visualization
         private Network _network = null;        
         private PresentationSettings _presentationSettings = null;
         private ILayoutProvider _layoutProvider = null;
-        private bool _laidout = false;
 
         /// <summary>
         /// The network that shall be visualized
         /// </summary>
-        public Network Network { 
+        public Network Network {
             get { return _network; } 
             set { 
                 _network = value;             
@@ -39,7 +38,8 @@ namespace NETGen.Visualization
                 return _layoutProvider; 
             } 
             set { 
-                lock (typeof(NetworkVisualizer)) _layoutProvider = value; 
+					value.DoLayout(PresentationSettings.WorldWidth, PresentationSettings.WorldHeight, Network);
+                	_layoutProvider = value; 
             } 
         }
 
@@ -92,15 +92,7 @@ namespace NETGen.Visualization
             {
                 _presentationSettings = value;
             }
-        }
-		
-		/// <summary>
-		/// Forces the layout to be recomputed upon the next drawing operation
-		/// </summary>
-        public void ForceRelayout()
-        {
-            _laidout = false;
-        }
+        }	
        
 		/// <summary>
 		/// Draw the network
@@ -108,17 +100,14 @@ namespace NETGen.Visualization
 		/// <param name='force_relayout'>
 		/// Whether or not to recompute the network layout
 		/// </param>
+		[MethodImplAttribute(MethodImplOptions.Synchronized)]
         public void Draw(bool force_relayout=false)
         {
             if (Network.VertexCount == 0 || _graphics == null)
                 return;
-            if (force_relayout)
+            if (!LayoutProvider.IsLaidout() || force_relayout)
                 LayoutProvider.DoLayout(PresentationSettings.WorldWidth, PresentationSettings.WorldHeight, Network);
-            else if (!_laidout)
-            {
-                LayoutProvider.DoLayout(PresentationSettings.WorldWidth, PresentationSettings.WorldHeight, Network);
-                _laidout = true;
-            }
+
             lock (_context)
             {
                 if (_bufferedGraphics == null || _bufferedGraphics.Graphics == null)

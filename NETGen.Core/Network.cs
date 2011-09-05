@@ -366,7 +366,7 @@ namespace NETGen.Core
             writer.WriteEndElement();
             writer.WriteEndDocument();
             writer.Close();
-        }
+        }		
 
         /// <summary>
         /// Adds a new vertex to the graph. This operation is thread-safe and asynchronously fires a OnVertexAdded event. Its complexity is in O(1).

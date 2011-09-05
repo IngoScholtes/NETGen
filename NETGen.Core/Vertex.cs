@@ -772,6 +772,6 @@ namespace NETGen.Core
                 return ((obj as Vertex) == this);
             else
                 return false;
-        }
+        }	
     }
 }
