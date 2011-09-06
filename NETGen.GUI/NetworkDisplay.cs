@@ -93,6 +93,8 @@ namespace NETGen.GUI
         {
 			if(options !=null)
             	LayoutOptions = options;
+			else
+				LayoutOptions = new LayoutOptions();
 			
             NetworkVisualizer = visualizer;
 			
@@ -115,7 +117,7 @@ namespace NETGen.GUI
 				
 				// Add the layout options to the menu
                 LayoutOptions.ItemAdded += new GUI.LayoutOptions.ItemAddedDelegate(LayoutOptions_ItemAdded);
-                foreach (string name in options.LayoutNames)
+                foreach (string name in LayoutOptions.LayoutNames)
                 {
                     ToolStripItem i = layoutToolStripMenuItem.DropDownItems.Add(name);
                     i.Click += new EventHandler(i_Click);

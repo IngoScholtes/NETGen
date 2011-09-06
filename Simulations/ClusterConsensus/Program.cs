@@ -88,7 +88,7 @@ namespace ClusterConsensus
             Dictionary<Vertex, double> _attributes = new Dictionary<Vertex, double>();
             Dictionary<Vertex, double> _aggregates = new Dictionary<Vertex, double>();
 
-            MathNet.Numerics.Distributions.NormalDistribution normal = new MathNet.Numerics.Distributions.NormalDistribution(0d, 5d);
+            MathNet.Numerics.Distributions.Normal normal = new MathNet.Numerics.Distributions.Normal(0d, 5d);
 
             AggregationResult result = new AggregationResult();
 
@@ -98,7 +98,7 @@ namespace ClusterConsensus
 
             foreach (Vertex v in net.Vertices)
             {
-                _attributes[v] = normal.NextDouble();
+                _attributes[v] = normal.Sample();
                 _aggregates[v] = _attributes[v];
                 average += _attributes[v];
             }

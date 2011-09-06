@@ -38,15 +38,15 @@
     <Compile Include="Edges.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Norm, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Norm.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\NETGen.Core\NETGen.Core.csproj">
       <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
       <Name>NETGen.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Norm, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Norm.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

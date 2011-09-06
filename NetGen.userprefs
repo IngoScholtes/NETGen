@@ -1,29 +1,32 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.MongoDB/MongoDBConnector.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/MonoParser/Main.cs">
     <Files>
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="47" Column="69" />
+      <File FileName="Simulations/DemoSimulation/Program.cs" Line="56" Column="85" />
       <File FileName="NETGen.Visualization/CustomColorIndexer.cs" Line="1" Column="1" />
       <File FileName="LayoutProviders/NETGen.Layout.ForceDirected/FruchtermanReingoldLayout.cs" Line="1" Column="1" />
       <File FileName="NETGen.GUI/LayoutOptions.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/Network.cs" Line="369" Column="10" />
-      <File FileName="NETGen.Core/Vertex.cs" Line="775" Column="10" />
-      <File FileName="NETGen.Core/MongoDBVertex.cs" Line="7" Column="32" />
+      <File FileName="NETGen.Core/Network.cs" Line="161" Column="18" />
+      <File FileName="NETGen.Core/Vertex.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Core/MongoDBVertex.cs" Line="10" Column="5" />
       <File FileName="NETGen.Core/MongoDBEdge.cs" Line="7" Column="30" />
-      <File FileName="NETGen.Core/Edge.cs" Line="218" Column="12" />
-      <File FileName="NETGen.MongoDB/MongoDBConnector.cs" Line="21" Column="49" />
-      <File FileName="NETGen.MongoDB/MongoDBEdge.cs" Line="3" Column="25" />
-      <File FileName="NETGen.MongoDB/MongoDBVertex.cs" Line="13" Column="19" />
+      <File FileName="NETGen.Core/Edge.cs" Line="1" Column="1" />
+      <File FileName="NETGen.MongoDB/MongoDBConnector.cs" Line="1" Column="1" />
+      <File FileName="NETGen.MongoDB/Edges.cs" Line="1" Column="1" />
+      <File FileName="NETGen.MongoDB/Vertices.cs" Line="1" Column="1" />
+      <File FileName="Simulations/MonoParser/Main.cs" Line="16" Column="30" />
+      <File FileName="NETGen.GUI/NetworkDisplay.cs" Line="102" Column="4" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="51" Column="52" />
+      <File FileName="NETGen.Visualization/Vector3.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Layouts" expanded="True" />
           <Node name="Simulations" expanded="True">
-            <Node name="DemoSimulation" expanded="True" />
+            <Node name="MonoParser" expanded="True" selected="True" />
           </Node>
           <Node name="NETGen.Core" expanded="True" />
-          <Node name="NETGen.MongoDB" expanded="True" selected="True" />
+          <Node name="NETGen.GUI" expanded="True" />
           <Node name="NETGen.Visualization" expanded="True" />
         </State>
       </Pad>
