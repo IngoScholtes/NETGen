@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+
 using NETGen.Core;
+using NETGen.Visualization;
 using NETGen.Layout.FruchtermanReingold;
 using NETGen.Layout.Radial;
-using NETGen.GUI;
-using NETGen.Visualization;
 
 namespace MonoParser
 {
@@ -84,15 +84,10 @@ namespace MonoParser
 			
 			n.ReduceToLargestConnectedComponent();
 			
-			Network.SaveToGraphML(args[1], n);
+			Network.SaveToGraphML(args[1], n);				
 			
-			NetworkVisualizer vis = new NetworkVisualizer(n, new RadialLayout(), new PresentationSettings(2000d, 1000d, 0d));
-			vis.PresentationSettings.Proportional = true;
-			NetworkDisplay disp = NetworkDisplay.CreateDisplay(vis);
+			NetworkVisualizer.Start(n, new RadialLayout());
 			
-			disp.LayoutOptions["FR (10)"] = new FruchtermanReingoldLayout(10);
-			disp.LayoutOptions["FR (20)"] = new FruchtermanReingoldLayout(20);
-			disp.LayoutOptions["Radial"] = new RadialLayout();
 		}
 		
 		public static void TryAddTypeRelation(Network n, Type v, Type w)

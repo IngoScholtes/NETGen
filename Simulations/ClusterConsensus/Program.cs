@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
+using System.Globalization;
+
+using MathNet.Numerics;
+
 using NETGen.Core;
 using NETGen.Layout.FruchtermanReingold;
-using NETGen.GUI;
 using NETGen.Visualization;
-using System.Windows.Forms;
-using System.Drawing;
 using NETGen.NetworkModels.Cluster;
-using System.Globalization;
-using MathNet.Numerics;
+
 
 namespace ClusterConsensus
 {
@@ -73,9 +74,9 @@ namespace ClusterConsensus
                         results.Add(res.FinalVariance);
                         modularity.Add(res.Modularity);
                     });
-                    line = string.Format(new CultureInfo("en-US").NumberFormat, "{0} {1:0.000} {2:0.000} {3:0.000} \t", ResultSet.ComputeMean(modularity.ToArray()), bias, ResultSet.ComputeMean(results.ToArray()), ResultSet.ComputeStandardVariation(results.ToArray()));
+                    line = string.Format(new CultureInfo("en-US").NumberFormat, "{0} {1:0.000} {2:0.000} {3:0.000} \t", MathNet.Numerics.Statistics.Statistics.Mean(modularity.ToArray()), bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()), MathNet.Numerics.Statistics.Statistics.StandardDeviation(results.ToArray()));
                     System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, line + "\n");
-                    Console.WriteLine("Finished runs for p_in = {0:0.00}, bias = {1:0.00}, Average var = {2:0.000000}", p_in, bias, ResultSet.ComputeMean(results.ToArray()));
+                    Console.WriteLine("Finished runs for p_in = {0:0.00}, bias = {1:0.00}, Average var = {2:0.000000}", p_in, bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()));
                 }
                 System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, "\n");
             }

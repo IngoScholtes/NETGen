@@ -29,10 +29,7 @@ namespace NETGen.MongoDB
 		
 		public static Network LoadFromMongoDB(string connectionstring)
 		{
-			var db = Norm.Mongo.Create(connectionstring);
-			var VertexColl = db.GetCollection<Vertices>();
-			var EdgeColl = db.GetCollection<Edges>();
-			return new NETGen.Core.Network();
+			throw new NotImplementedException();
 		}	
 	}
 }

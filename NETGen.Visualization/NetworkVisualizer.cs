@@ -1,278 +1,244 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using System.Drawing;
+using System.Threading;
+using System.Collections.Generic;
+
+using OpenTK;
+using OpenTK.Input;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
+
 using NETGen.Core;
-using System.Runtime.CompilerServices;
 
 namespace NETGen.Visualization
-{    
+{
+	internal static class Fps
+	{
+		static double _time = 0.0, _frames = 0.0;
+		static int _fps = 0;
+ 
+		public static int GetFps(double time) {
+			_time += time;
+			if (_time < 1.0) {
+				_frames++;
+				return _fps;
+			}
+			else {
+				_fps = (int)_frames;
+				_time = 0.0;
+				_frames = 0.0;
+				return _fps;
+			}
+		}
+	}
+	
 	/// <summary>
-	/// A class that manages the (double-buffered) drawing of a network to the screen
+	/// Network visualizer.
 	/// </summary>
-    public class NetworkVisualizer
-    {
-        private BufferedGraphicsContext _context;
-        private BufferedGraphics _bufferedGraphics;
-        private Graphics _graphics;    
-        private Network _network = null;        
-        private PresentationSettings _presentationSettings = null;
-        private ILayoutProvider _layoutProvider = null;
+	public class NetworkVisualizer : GameWindow
+	{	
+		private static Thread _mainThread;
+		
+		private Network _network;		
+		private NetworkColorizer _colorizer;		
+		private ILayoutProvider _layout;
+		
+		private System.Drawing.Point _panStart;			
+		private bool _panning = false;		
+		private double _panX = 0d;
+		private double _panY = 0d;
+		private double _deltaX = 0d;
+		private double _deltaY = 0d;		
+		private double _zoom = 1d;
+	
+ 
+		internal NetworkVisualizer(Network network, ILayoutProvider layout, NetworkColorizer colorizer, int width, int height) : base(width, height, GraphicsMode.Default, "NETGen Display")
+		{
+			Keyboard.KeyDown += new EventHandler<KeyboardKeyEventArgs>(Keyboard_KeyDown);
+			Mouse.ButtonDown += new EventHandler<MouseButtonEventArgs>(Mouse_ButtonDown);
+			Mouse.ButtonUp += new EventHandler<MouseButtonEventArgs>(Mouse_ButtonUp);
+			Mouse.Move += new EventHandler<MouseMoveEventArgs>(Mouse_Move);		
+			Mouse.WheelChanged += new EventHandler<MouseWheelEventArgs>(Mouse_WheelChanged);			
 
-        /// <summary>
-        /// The network that shall be visualized
-        /// </summary>
-        public Network Network {
-            get { return _network; } 
-            set { 
-                _network = value;             
-            }
-        }
+			
+			if (colorizer == null)
+				_colorizer = new NetworkColorizer();
+			else
+				_colorizer = colorizer;
+			
+			_network = network;
+			_layout = layout;		
 
-        /// <summary>
-        /// The layouting algorithm that assigns nodes topology-dependent positions
-        /// </summary>
-        public ILayoutProvider LayoutProvider { 
-            get { 
-                return _layoutProvider; 
-            } 
-            set { 
-					value.DoLayout(PresentationSettings.WorldWidth, PresentationSettings.WorldHeight, Network);
-                	_layoutProvider = value; 
-            } 
-        }
+		}
+ 
+		void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+		{
+			if (e.Key == Key.Escape)
+				Exit();
+		}
+		
+		void Mouse_ButtonDown(object sender, MouseEventArgs e)
+		{
+			_panning = true;
+			_panStart = new Point((int) e.Position.X, (int) e.Position.Y);
+		}
+		
+		void Mouse_ButtonUp(object sender, MouseEventArgs e)
+		{
+			_panning = false;
+			_panX += _deltaX;
+			_panY += _deltaY;
+			_deltaX = 0d;
+			_deltaY = 0d;
+		}
+		
+		void Mouse_WheelChanged(object sender, MouseWheelEventArgs e)
+		{
+			_zoom += e.DeltaPrecise/4f;
+		}
+		
+		void Mouse_Move(object sender, MouseEventArgs e)
+		{
+			if(_panning)
+			{
+				_deltaX = e.X - _panStart.X;
+				_deltaY = e.Y - _panStart.Y;				
+			}
+		}
+		
+		protected override void OnResize(EventArgs e)
+		{
+			base.OnResize(e);
+			
+			GL.MatrixMode(MatrixMode.Projection);
+			GL.LoadIdentity();
+			GL.Ortho(0, Width, Height, 0, -1, 1);
+			GL.Viewport(0, 0, Width, Height);
+		}
+ 
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			
+            GL.MatrixMode(MatrixMode.Projection);
+			GL.LoadIdentity();
+			GL.Ortho(0, Width, Height, 0, -1, 1);
+			GL.Viewport(0, 0, Width, Height);
+			
+		 	GL.ClearColor(_colorizer.DefaultBackgroundColor);
+		}
+ 
+		protected override void OnUpdateFrame(FrameEventArgs e)
+		{
+			base.OnUpdateFrame(e); 					
+ 
+			Title = "Rendering at "+ Fps.GetFps(e.Time).ToString() + " fps";
+		}
 
-        /// <summary>
-        /// Initializes the visualizer with a graphics handle and a displayrectangle
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="displayRectangle"></param>
-        public NetworkVisualizer(Network n, ILayoutProvider layout, PresentationSettings presentationSettings)
-        {
-            _network = n;
-            _presentationSettings = presentationSettings;
-            _layoutProvider = layout;
-        }
+ 
+		protected override void OnRenderFrame(FrameEventArgs e)
+		{			
+			base.OnRenderFrame(e);
+ 
+			// Create an identity matrix, apply orthogonal projection and viewport
+			GL.LoadIdentity();
+			GL.Ortho(0, Width, Height, 0, -1, 1);
+			GL.Viewport(0, 0, Width, Height);
+			
+			// Apply panning and zooming state			
+			GL.Scale(_zoom, _zoom, _zoom);
+			GL.Translate(_panX+_deltaX, _panY+_deltaY, 0);
+			
+			// Clear the buffer
+			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			
+			// Apply the layout if necessary
+			if(!_layout.IsLaidout())
+				_layout.DoLayout(Width, Height, _network);
+			
+			// Draw the edges
+			foreach(Edge edge in _network.Edges)
+				DrawEdge(edge, _colorizer[edge]);
+			
+			// Draw the vertices
+			foreach(Vertex v in _network.Vertices)
+				DrawVertex(v, _colorizer[v], 10);
+			
+ 
+			// Swap screen and backbuffer
+			SwapBuffers();
+		}
 		
 		/// <summary>
-		/// Sets the graphics objects that shall be used to draw the network
+		/// Draws an edge as a simple line between two node positions
 		/// </summary>
-		/// <param name='g'>
-		/// The graphics object to draw to
+		/// <param name='e'>
+		/// The edge to paint
 		/// </param>
-		/// <param name='displayRectangle'>
-		/// The display rectange
+		/// <param name='c'>
+		/// The color to use for the edge
 		/// </param>
-        public void SetGraphics(Graphics g, Rectangle displayRectangle)
-        {
-            _graphics = g;
-            _context = BufferedGraphicsManager.Current;
-            _bufferedGraphics = _context.Allocate(g, displayRectangle);
-            _bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            PresentationSettings.ScreenWidth = displayRectangle.Width;
-            PresentationSettings.ScreenHeight = displayRectangle.Height;
-        }
+		void DrawEdge(Edge e, Color c)
+		{
+			GL.Color3(c);
+			GL.Begin(BeginMode.Lines);			
+			
+			GL.Vertex2(_layout.GetPositionOfNode(e.Source).X, _layout.GetPositionOfNode(e.Source).Y);
+			GL.Vertex2(_layout.GetPositionOfNode(e.Target).X, _layout.GetPositionOfNode(e.Target).Y);
+			
+			GL.End();
+		}
 		
 		/// <summary>
-		/// Gets the current presentation settings.
-		/// </summary>
-		/// <value>
-		/// The presentation settings.
-		/// </value>
-        public PresentationSettings PresentationSettings 
-        { 
-            get 
-            {
-                if (_presentationSettings == null)
-                    _presentationSettings = new PresentationSettings(1000d, 1000d, 0d);
-                return _presentationSettings;
-            }
-            private set
-            {
-                _presentationSettings = value;
-            }
-        }	
-       
-		/// <summary>
-		/// Draw the network
-		/// </summary>
-		/// <param name='force_relayout'>
-		/// Whether or not to recompute the network layout
-		/// </param>
-		[MethodImplAttribute(MethodImplOptions.Synchronized)]
-        public void Draw(bool force_relayout=false)
-        {
-            if (Network.VertexCount == 0 || _graphics == null)
-                return;
-            if (!LayoutProvider.IsLaidout() || force_relayout)
-                LayoutProvider.DoLayout(PresentationSettings.WorldWidth, PresentationSettings.WorldHeight, Network);
-
-            lock (_context)
-            {
-                if (_bufferedGraphics == null || _bufferedGraphics.Graphics == null)
-                    return;
-                _bufferedGraphics.Graphics.Clear(PresentationSettings.BackgroundColor);
-                lock (Network)
-                {
-                    if (PresentationSettings.DrawEdges)
-                        foreach (Edge e in Network.Edges)
-                            DrawEdge(e);
-                    if (PresentationSettings.DrawVertices)
-                        foreach (Vertex v in Network.Vertices)
-                            DrawVertex(v);
-                }
-
-                _bufferedGraphics.Render(_graphics);
-            }
-        }
-		
-		/// <summary>
-		/// Returns which vertex is at a given screen coordinate
-		/// </summary>
-		/// <returns>
-		/// The vertex at the specified screen position
-		/// </returns>
-		/// <param name='screencoord'>
-		/// A screen coordinate (e.g. the position the user has clicked)
-		/// </param>
-        public Vertex GetVertexAtPosition(Point screencoord)
-        {
-            Vertex v = null;
-            if(LayoutProvider==null)
-                return v;
-
-            Vector3 worldcoord = PresentationSettings.ScreenToWorld(screencoord);
-            
-
-            double minDist = double.MaxValue;
-
-                foreach(Vertex x in Network.Vertices)
-                {
-
-                    if (Vector3.Distance(worldcoord, LayoutProvider.GetPositionOfNode(x)) < minDist)
-                    {
-                        v = x;
-                        minDist = Vector3.Distance(worldcoord, LayoutProvider.GetPositionOfNode(x));
-                    }
-                }
-            return v;
-
-        }
-		
-		/// <summary>
-		/// Draws a single vertex
+		/// Draws a vertex as a simple circle made up from a configurable number of triangle segments
 		/// </summary>
 		/// <param name='v'>
 		/// The vertex to draw
 		/// </param>
-        private void DrawVertex(Vertex v)
-        {
-            Vector3 p = LayoutProvider.GetPositionOfNode(v);
-
-            if (!double.IsNaN(p.X) &&
-               !double.IsNaN(p.Y) &&
-               !double.IsNaN(p.Z))
-                _bufferedGraphics.Graphics.FillEllipse(
-					PresentationSettings.CustomColors.HasCustomColor(v)?PresentationSettings.CustomColors.GetVertexBrush(v):PresentationSettings.DefaultVertexBrush,
-                  PresentationSettings.ScaleX(p.X) - PresentationSettings.VertexSize / 2,
-                  PresentationSettings.ScaleY(p.Y) - PresentationSettings.VertexSize / 2,
-                  PresentationSettings.VertexSize,
-                  PresentationSettings.VertexSize);           
-        }
-
-		/// <summary>
-		/// Draws a single edge
-		/// </summary>
-		/// <param name='e'>
-		/// The edge to draw
+		/// <param name='c'>
+		/// The Color to use for the vertex
 		/// </param>
-        private void DrawEdge(Edge e)
-        {
-            Vector3 p1 = LayoutProvider.GetPositionOfNode(e.Source);
-            Vector3 p2 = LayoutProvider.GetPositionOfNode(e.Target);
-
-            _bufferedGraphics.Graphics.DrawLine(
-				PresentationSettings.CustomColors.HasCustomColor(e)?PresentationSettings.CustomColors.GetEdgePen(e):PresentationSettings.DefaultEdgePen,
-                    PresentationSettings.ScaleX(p1.X),
-                    PresentationSettings.ScaleY(p1.Y),
-                    PresentationSettings.ScaleX(p2.X),
-                    PresentationSettings.ScaleY(p2.Y));
-
-            if (e.EdgeType != EdgeType.Undirected)            
-                _bufferedGraphics.Graphics.FillPolygon(PresentationSettings.DefaultArrowBrush, getArrowPoints(p1, p2));
-        }
-
-        /// <summary>
-        /// Computes three polygon points for the arrow
-        /// </summary>
-        /// <returns>An array of three points</returns>
-        private Point[] getArrowPoints(Vector3 posA, Vector3 posB)
-        {
-            Point[] p = new Point[3];
-            
-            // length of hypothenuse and opposite side
-            double h = Vector3.Distance(posA, posB);
-            double a = Math.Abs(posB.Y - posA.Y);
-
-            int vertexSize = PresentationSettings.VertexSize;
-
-            if (h < vertexSize || h == 0)
-                return p;
-
-            // compute which angle the edge forms with a circle around the target node
-            // we need to take the opposite angle in a right-angled triangle, so we use 90 - angle
-            double angle = DegToRad(90d) - Math.Asin(a / h);
-
-            // interpret the resulting angle differently, depending on the quadrant the source vertex is in
-            if (posB.Y < posA.Y && posB.X < posA.X)
-                // Source is below and right of Target
-                angle = DegToRad(90d) - angle;
-            else if (posB.Y < posA.Y && posB.X > posA.X)
-                // Source is below and left of Target
-                angle = DegToRad(90d) + angle;
-            else if (posB.Y > posA.Y && posB.X < posA.X)
-                // Source is above and right of target
-                angle = DegToRad(270d) + angle;
-            else if (posB.Y > posA.Y && posB.X > posA.X)
-                // Source is above and left of target
-                angle = DegToRad(270d) - angle;
-            else if (posB.Y == posA.Y && posB.X > posA.X)
-                // Source is left from Target
-                angle = DegToRad(180d);
-            else if (posB.Y == posA.Y && posB.X < posA.X)
-                //Source is right from target
-                angle = 0d;
-            else if (posB.X == posA.X && posB.Y > posA.Y)
-                // Source is above Target
-                angle = DegToRad(270d);
-            else if (posB.X == posA.X && posB.Y < posA.Y)
-                //Source is below target
-                angle = DegToRad(90d);
-
-            PresentationSettings s = PresentationSettings;
-
-            // compute the arrow positions
-            p[0] = new Point(s.ScaleX(posB.X), s.ScaleY(posB.Y));
-            p[1] = new Point(s.ScaleX(posB.X) + (int)(Math.Cos(angle - DegToRad(15d) * vertexSize) * 2), s.ScaleY(posB.Y) + (int)(Math.Sin(angle - DegToRad(15d)) * vertexSize) * 2);
-            p[2] = new Point(s.ScaleX(posB.X) + (int)(Math.Cos(angle + DegToRad(15d) * vertexSize) * 2), s.ScaleY(posB.Y) + (int)(Math.Sin(angle + DegToRad(15d)) * vertexSize) * 2);
-
-            // done.
-            return p;
-        }
-
-		/// <summary>
-		/// Helper function that transforms degrees into radian angles
-		/// </summary>
-		/// <returns>
-		/// The angle in radians
-		/// </returns>
-		/// <param name='p'>
-		/// the angle in degrees
+		/// <param name='segments'>
+		/// The number of triangle segments to use. A higher number will look more prety but will take more time to render
 		/// </param>
-        private static double DegToRad(double d)
+		void DrawVertex(Vertex v, Color c, int segments)
         {
-            return (Math.PI / 180d) * d;
-        }       
-    }
+            GL.Color3(c);
+            GL.Begin(BeginMode.TriangleFan);
+
+            for (int i = 0; i < 360; i+=360/segments)
+            {
+                double degInRad = i * 3.1416/180;
+                GL.Vertex2(_layout.GetPositionOfNode(v).X + Math.Cos(degInRad) * 3, _layout.GetPositionOfNode(v).Y+Math.Sin(degInRad) * 3);
+            }
+			GL.End();
+		}
+ 
+		/// <summary>
+		/// Creates a new instance of a Networkvisualizer which renders the specified network in real-time
+		/// </summary>
+		/// <param name='n'>
+		/// N.
+		/// </param>
+		/// <param name='layout'>
+		/// Layout.
+		/// </param>
+		public static void Start(Network network, ILayoutProvider layout, NetworkColorizer colorizer = null, int width=800, int height=600)
+		{			
+			// The actual rendering needs to be done in a separate thread placed in the single thread appartment state
+			_mainThread = new Thread(new ThreadStart(new Action(delegate() {				
+					NetworkVisualizer p =  new NetworkVisualizer(network, layout, colorizer, width, height);
+					p.Run(80f);
+            })));
+						
+            _mainThread.SetApartmentState(ApartmentState.STA);
+            _mainThread.Name = "STA Thread for NETGen Visualizer";
+			
+			// Fire up the thread
+            _mainThread.Start();
+			
+		}
+	}
+
 }
+

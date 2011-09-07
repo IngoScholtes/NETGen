@@ -123,17 +123,9 @@ namespace NETGen.GUI
                     i.Click += new EventHandler(i_Click);
                 }
 				
-				// Start a new thread that renders with the specified framerate
-                System.Threading.ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object o)
-                {
-                    while (!this.IsDisposed)
-                    {
-                        NetworkVisualizer.Draw();
-                        System.Threading.Thread.Sleep(1000 / fps);
-                    }
-                }));
-
-                Application.Run(this);
+				System.Threading.Timer t = new System.Threading.Timer(timerCallbackFunction, null, 50, 1000 / fps);
+				
+                Application.Run(this);											
             })));
 			
 			// Set the main thread to Single Thread Apartment
@@ -143,6 +135,12 @@ namespace NETGen.GUI
 			// Startup the thread ... 
             _mainThread.Start();
         }
+			
+		private void timerCallbackFunction(object state)
+		{ 
+		  	drawPanel.Invalidate();
+		}
+
 		
 		/// <summary>
 		/// Executed whenever a new layouting option is added

@@ -57,7 +57,7 @@ namespace NETGen.Core
         /// <summary>
         /// Can be used to classify edges
         /// </summary>
-        public int Label { get; set; }
+        public int Label { get; set; }		
 
         /// <summary>
         /// Creates a new edge between source and target. The edge is not registered with the source and 
@@ -152,16 +152,11 @@ namespace NETGen.Core
         public Vertex Source
         {
             get
-            {
-                lock (this)
-                {
-                    if (EdgeType == EdgeType.DirectedAB)
-                        return A;
-                    else if (EdgeType == EdgeType.DirectedBA)
-                        return B;
-                    else
-                        return A;
-                }
+            {             
+                if (EdgeType == EdgeType.DirectedBA)
+                    return B;
+                else
+                    return A;
             }
         }
 
@@ -172,15 +167,10 @@ namespace NETGen.Core
         {
             get
             {
-                lock (this)
-                {
-                    if (EdgeType == EdgeType.DirectedAB)
-                        return B;
-                    else if (EdgeType == EdgeType.DirectedBA)
-                        return A;
-                    else
-                        return B;
-                }
+                if (EdgeType == EdgeType.DirectedBA)
+                    return A;
+                else
+                    return B;             
             }
         }
 

@@ -1,39 +1,49 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/MonoParser/Main.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/DemoSimulation/Program.cs">
     <Files>
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="56" Column="85" />
-      <File FileName="NETGen.Visualization/CustomColorIndexer.cs" Line="1" Column="1" />
-      <File FileName="LayoutProviders/NETGen.Layout.ForceDirected/FruchtermanReingoldLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.GUI/LayoutOptions.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/Network.cs" Line="161" Column="18" />
-      <File FileName="NETGen.Core/Vertex.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/MongoDBVertex.cs" Line="10" Column="5" />
-      <File FileName="NETGen.Core/MongoDBEdge.cs" Line="7" Column="30" />
-      <File FileName="NETGen.Core/Edge.cs" Line="1" Column="1" />
-      <File FileName="NETGen.MongoDB/MongoDBConnector.cs" Line="1" Column="1" />
-      <File FileName="NETGen.MongoDB/Edges.cs" Line="1" Column="1" />
-      <File FileName="NETGen.MongoDB/Vertices.cs" Line="1" Column="1" />
-      <File FileName="Simulations/MonoParser/Main.cs" Line="16" Column="30" />
-      <File FileName="NETGen.GUI/NetworkDisplay.cs" Line="102" Column="4" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="51" Column="52" />
-      <File FileName="NETGen.Visualization/Vector3.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Visualization/NetworkColorizer.cs" Line="51" Column="65" />
+      <File FileName="Simulations/DemoSimulation/Program.cs" Line="79" Column="38" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Core/NetGenAnalyzer.cs" Line="19" Column="10" />
+      <File FileName="NETGen.Core/NetGenSimulator.cs" Line="21" Column="26" />
+      <File FileName="Simulations/ClusterConsensus/Program.cs" Line="80" Column="18" />
+      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="34" Column="9" />
+      <File FileName="NETGen.Core/Network.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.EpidemicSychronization/EpidemicSynchronization.cs" Line="166" Column="40" />
+      <File FileName="Simulations/ClusterSynchronization/ClusterSynchronization.cs" Line="47" Column="59" />
+      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="69" Column="10" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
+          <Node name="NETGen.Dynamics" expanded="True">
+            <Node name="NETGen.Dynamics.EpidemicSynchronization" expanded="True" />
+          </Node>
           <Node name="Simulations" expanded="True">
-            <Node name="MonoParser" expanded="True" selected="True" />
+            <Node name="DemoSimulation" expanded="True">
+              <Node name="Program.cs" selected="True" />
+            </Node>
           </Node>
           <Node name="NETGen.Core" expanded="True" />
-          <Node name="NETGen.GUI" expanded="True" />
-          <Node name="NETGen.Visualization" expanded="True" />
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>response.InnerException</Value>
+          <Value>o</Value>
+          <Value>ex</Value>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/ischoltes/Code/NETGen/Simulations/ClusterSynchronization/ClusterSynchronization.cs" line="67" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <AuthorInfo Name="Ingo Scholtes" Email="ischoltes@ethz.ch" Copyright="" Company="ETH Zuerich" Trademark="" />

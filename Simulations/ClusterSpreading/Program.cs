@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using System.Drawing;
+using System.Globalization;
+
+using MathNet.Numerics;
+
 using NETGen.Core;
 using NETGen.NetworkModels.Cluster;
 using NETGen.NetworkModels.ErdoesRenyi;
@@ -10,10 +14,6 @@ using NETGen.Visualization;
 using NETGen.Layout.FruchtermanReingold;
 using NETGen.Layout.Positioned;
 using NETGen.Layout.RandomLayout;
-using NETGen.GUI;
-using System.Drawing;
-using System.Globalization;
-using MathNet.Numerics;
 
 namespace ClusterSpreading
 {
@@ -74,21 +74,17 @@ namespace ClusterSpreading
                             results.Add(res.Iterations);
                             modularity.Add(res.Modularity);
                         });
-                        line = string.Format(new CultureInfo("en-US").NumberFormat, "{0:0.000} {1:0.000} {2:0.000} {3:0.000} \t", ResultSet.ComputeMean(modularity.ToArray()), bias, ResultSet.ComputeMean(results.ToArray()), ResultSet.ComputeStandardVariation(results.ToArray()));
+                        line = string.Format(new CultureInfo("en-US").NumberFormat, "{0:0.000} {1:0.000} {2:0.000} {3:0.000} \t", MathNet.Numerics.Statistics.Statistics.Mean(modularity.ToArray()), bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()), MathNet.Numerics.Statistics.Statistics.StandardDeviation(results.ToArray()));
                         System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, line + "\n");
-                        Console.WriteLine("Finished spreading on cluster network for p_in = {0:0.00}, bias = {1:0.00}, Average = {2:0.00}", p_in, bias, ResultSet.ComputeMean(results.ToArray()));
+                        Console.WriteLine("Finished spreading on cluster network for p_in = {0:0.00}, bias = {1:0.00}, Average = {2:0.00}", p_in, bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()));
                     }
                     System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, "\n");
             }
         }
 
-        public static SpreadingResult RunSpreading(ClusterNetwork net, double bias, NetworkVisualizer viz = null, int delay=0)
+        public static SpreadingResult RunSpreading(ClusterNetwork net, double bias, int delay=0)
         {
             SpreadingResult res = new SpreadingResult();
-
-            if (viz != null)
-                foreach (Vertex v in net.Vertices)
-                    viz.PresentationSettings.CustomColors[v] = Color.Green;
 
             Dictionary<Vertex, int> infectionTime = new Dictionary<Vertex, int>();
             foreach (Vertex v in net.Vertices)
@@ -122,18 +118,7 @@ namespace ClusterSpreading
                         infectionTime[neighbor] = i;
                         infected.Add(neighbor);
                     }
-                }
-                if (viz != null)
-                {
-                    viz.PresentationSettings.CustomColors.Recompute(v =>
-                    {
-                        if (infectionTime[v]!=int.MinValue)
-                            return Color.Red;
-                        else
-                            return Color.Green;
-                    });
-                    viz.Draw();
-                }
+                }                
                 if (delay > 0)
                     System.Threading.Thread.Sleep(delay);
                 i++;

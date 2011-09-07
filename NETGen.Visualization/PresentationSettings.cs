@@ -22,7 +22,7 @@ namespace NETGen.Visualization
 
         private bool _proportional = false;
 		
-		 /// <summary>
+		/// <summary>
         /// Whether or not to draw the edges of this graph
         /// </summary>
         public bool DrawEdges { get; set; }
@@ -68,13 +68,13 @@ namespace NETGen.Visualization
 		/// Initializes a new instance of the <see cref="NETGen.Visualization.PresentationSettings"/> class.
 		/// </summary>
 		/// <param name='width'>
-		/// The width of the region to draw to in pixels
+		/// The width of the space the network lives in
 		/// </param>
 		/// <param name='height'>
-		/// The height of the region to draw to in pixels
+		/// The height of the space the network lives in
 		/// </param>
 		/// <param name='depth'>
-		/// The depth of the region to draw to in pixels
+		/// The depth of the space the network lives in
 		/// </param>
         public PresentationSettings(double width, double height, double depth=0d)
         {

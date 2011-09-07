@@ -34,7 +34,7 @@ namespace NETGen.Core
         public delegate void GraphUpdateHandler(Network g);
 
         /// <summary>
-        /// A reader/writer lock that can be used b inheriting classes to synchronize multi-thread efficient access to _edges and _vertices
+        /// A reader/writer lock used to synchronize multi-thread efficient access to _edges and _vertices
         /// </summary>
         protected System.Threading.ReaderWriterLockSlim _rwl;
 

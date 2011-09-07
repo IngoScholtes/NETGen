@@ -38,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
+    <Commandlineparameters>0</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
@@ -46,6 +47,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Commandlineparameters>0</Commandlineparameters>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -67,69 +69,53 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\LayoutProviders\NETGen.Layout.Radial\NETGen.Layout.Radial.csproj">
-      <Project>{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9}</Project>
-      <Name>NETGen.Layout.Radial</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">
       <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
       <Name>NETGen.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NETGen.GUI\NETGen.GUI.csproj">
-      <Project>{A27CA90C-C62D-45E0-BEBB-BC96E393977B}</Project>
-      <Name>NETGen.GUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\NETGen.Visualization\NETGen.Visualization.csproj">
       <Project>{FB24B173-DEFF-49D9-B232-561887EC652C}</Project>
       <Name>NETGen.Visualization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\LayoutProviders\NETGen.Layout.ForceDirected\NETGen.Layout.FruchtermanReingold.csproj">
-      <Project>{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}</Project>
-      <Name>NETGen.Layout.FruchtermanReingold</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\LayoutProviders\NETGen.Layout.Positioned\NETGen.Layout.Positioned.csproj">
-      <Project>{BC0350FF-A9F3-4801-843B-E7EDFB298F4F}</Project>
-      <Name>NETGen.Layout.Positioned</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\LayoutProviders\NETGen.Layout.Random\NETGen.Layout.Random.csproj">
-      <Project>{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}</Project>
-      <Name>NETGen.Layout.Random</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NetworkModels\ClusterNetwork\NETGen.NetworkModels.Cluster.csproj">
-      <Project>{05738475-4CEA-425D-8775-7DD94A3611FD}</Project>
-      <Name>NETGen.NetworkModels.Cluster</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NetworkModels\NETGen.NetworkModels.ErdoesRenyi\NETGen.NetworkModels.ErdoesRenyi.csproj">
-      <Project>{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}</Project>
-      <Name>NETGen.NetworkModels.ErdoesRenyi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NetworkModels\NETGen.NetworkModels.Tree\NETGen.NetworkModels.Tree.csproj">
-      <Project>{73A4A13B-B39A-4635-8AAF-F093BD699437}</Project>
-      <Name>NETGen.NetworkModels.Tree</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NetworkModels\NETGen.NetworkModels.WattsStrogatz\NETGen.NetworkModels.WattsStrogatz.csproj">
-      <Project>{64531B8E-C8B0-41A1-ACC2-330662B77269}</Project>
-      <Name>NETGen.NetworkModels.WattsStrogatz</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NetworkModels\PreferentialAttachment\NETGen.NetworkModels.BarabasiAlbert.csproj">
-      <Project>{E9546ABC-586C-4BAE-BE40-2DB84AFA7CFF}</Project>
-      <Name>NETGen.NetworkModels.BarabasiAlbert</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ClusterSIR\ClusterSIR.csproj">
-      <Project>{2D1570D0-AE42-410A-89B9-C01F025D3E71}</Project>
-      <Name>ClusterSIR</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ClusterSpreading\ClusterSpreading.csproj">
-      <Project>{E2FA15E4-3237-4225-B141-DEDE79A9D2FD}</Project>
-      <Name>ClusterSpreading</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ClusterSynchronization\ClusterSynchronization.csproj">
-      <Project>{D1C6BDD7-07D0-44A8-89CE-C4ACB9A2248C}</Project>
-      <Name>ClusterSynchronization</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\NETGen.MongoDB\NETGen.MongoDB.csproj">
       <Project>{60F127BF-35EA-4E16-8B17-5BDC5CD9203A}</Project>
       <Name>NETGen.MongoDB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.NetworkModels\NETGen.NetworkModels.ErdoesRenyi\NETGen.NetworkModels.ErdoesRenyi.csproj">
+      <Project>{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}</Project>
+      <Name>NETGen.NetworkModels.ErdoesRenyi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.NetworkModels\NETGen.NetworkModels.Tree\NETGen.NetworkModels.Tree.csproj">
+      <Project>{73A4A13B-B39A-4635-8AAF-F093BD699437}</Project>
+      <Name>NETGen.NetworkModels.Tree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.NetworkModels\NETGen.NetworkModels.WattsStrogatz\NETGen.NetworkModels.WattsStrogatz.csproj">
+      <Project>{64531B8E-C8B0-41A1-ACC2-330662B77269}</Project>
+      <Name>NETGen.NetworkModels.WattsStrogatz</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Dynamics\NETGen.Dynamics.EpidemicSychronization\NETGen.Dynamics.EpidemicSynchronization.csproj">
+      <Project>{83540F86-4BD1-4FC3-9065-A5A838C66D50}</Project>
+      <Name>NETGen.Dynamics.EpidemicSynchronization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.FruchtermanReingold\NETGen.Layouts.FruchtermanReingold.csproj">
+      <Project>{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}</Project>
+      <Name>NETGen.Layouts.FruchtermanReingold</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Radial\NETGen.Layouts.Radial.csproj">
+      <Project>{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9}</Project>
+      <Name>NETGen.Layouts.Radial</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Random\NETGen.Layouts.Random.csproj">
+      <Project>{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}</Project>
+      <Name>NETGen.Layouts.Random</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Positioned\NETGen.Layouts.Positioned.csproj">
+      <Project>{BC0350FF-A9F3-4801-843B-E7EDFB298F4F}</Project>
+      <Name>NETGen.Layouts.Positioned</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.NetworkModels\NETGen.NetworkModels.ClusterNetwork\NETGen.NetworkModels.Cluster.csproj">
+      <Project>{05738475-4CEA-425D-8775-7DD94A3611FD}</Project>
+      <Name>NETGen.NetworkModels.Cluster</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
