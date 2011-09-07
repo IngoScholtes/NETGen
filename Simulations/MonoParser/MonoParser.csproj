@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{68CC314F-47A1-4794-BFD7-76DB88844B7D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MonoParser</RootNamespace>
+    <AssemblyName>MonoParser</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+    <Commandlineparameters>/opt/mono-2.10/lib/mono/4.0/ network.graphml</Commandlineparameters>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+    <Commandlineparameters>/opt/mono-2.10/lib/mono/4.0/ network.graphml</Commandlineparameters>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="MonoParser.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">
+      <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
+      <Name>NETGen.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Visualization\NETGen.Visualization.csproj">
+      <Project>{FB24B173-DEFF-49D9-B232-561887EC652C}</Project>
+      <Name>NETGen.Visualization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.FruchtermanReingold\NETGen.Layouts.FruchtermanReingold.csproj">
+      <Project>{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}</Project>
+      <Name>NETGen.Layouts.FruchtermanReingold</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Radial\NETGen.Layouts.Radial.csproj">
+      <Project>{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9}</Project>
+      <Name>NETGen.Layouts.Radial</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

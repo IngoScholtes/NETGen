@@ -1,18 +1,12 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/DemoSimulation/Program.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/gitHubParser/Main.cs">
     <Files>
-      <File FileName="NETGen.Visualization/NetworkColorizer.cs" Line="51" Column="65" />
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="79" Column="38" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/NetGenAnalyzer.cs" Line="19" Column="10" />
-      <File FileName="NETGen.Core/NetGenSimulator.cs" Line="21" Column="26" />
-      <File FileName="Simulations/ClusterConsensus/Program.cs" Line="80" Column="18" />
-      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="34" Column="9" />
-      <File FileName="NETGen.Core/Network.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.EpidemicSychronization/EpidemicSynchronization.cs" Line="166" Column="40" />
-      <File FileName="Simulations/ClusterSynchronization/ClusterSynchronization.cs" Line="47" Column="59" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="69" Column="10" />
+      <File FileName="NETGen.Core/Network.cs" Line="21" Column="37" />
+      <File FileName="Simulations/DemoSimulation/Program.cs" Line="88" Column="2" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.EpidemicSychronization/EpidemicSynchronization.cs" Line="161" Column="70" />
+      <File FileName="Simulations/gitHubParser/gitHubClient.cs" Line="1" Column="1" />
+      <File FileName="Simulations/gitHubParser/Main.cs" Line="9" Column="57" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -21,11 +15,14 @@
             <Node name="NETGen.Dynamics.EpidemicSynchronization" expanded="True" />
           </Node>
           <Node name="Simulations" expanded="True">
-            <Node name="DemoSimulation" expanded="True">
-              <Node name="Program.cs" selected="True" />
+            <Node name="ClusterPaper" expanded="True">
+              <Node name="ClusterConsensus" expanded="True">
+                <Node name="app.config" selected="True" />
+              </Node>
             </Node>
+            <Node name="DemoSimulation" expanded="True" />
+            <Node name="gitHubParser" expanded="True" />
           </Node>
-          <Node name="NETGen.Core" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
