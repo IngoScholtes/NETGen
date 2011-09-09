@@ -1,27 +1,19 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/gitHubParser/Main.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/MonoParser/MonoParser.cs">
     <Files>
       <File FileName="NETGen.Core/Network.cs" Line="21" Column="37" />
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="88" Column="2" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.EpidemicSychronization/EpidemicSynchronization.cs" Line="161" Column="70" />
+      <File FileName="Simulations/DemoSimulation/Program.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.EpidemicSychronization/EpidemicSynchronization.cs" Line="1" Column="1" />
       <File FileName="Simulations/gitHubParser/gitHubClient.cs" Line="1" Column="1" />
-      <File FileName="Simulations/gitHubParser/Main.cs" Line="9" Column="57" />
+      <File FileName="Simulations/gitHubParser/Main.cs" Line="1" Column="1" />
+      <File FileName="Simulations/MonoParser/MonoParser.cs" Line="59" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="NETGen.Dynamics" expanded="True">
-            <Node name="NETGen.Dynamics.EpidemicSynchronization" expanded="True" />
-          </Node>
           <Node name="Simulations" expanded="True">
-            <Node name="ClusterPaper" expanded="True">
-              <Node name="ClusterConsensus" expanded="True">
-                <Node name="app.config" selected="True" />
-              </Node>
-            </Node>
-            <Node name="DemoSimulation" expanded="True" />
-            <Node name="gitHubParser" expanded="True" />
+            <Node name="MonoParser" expanded="True" selected="True" />
           </Node>
         </State>
       </Pad>

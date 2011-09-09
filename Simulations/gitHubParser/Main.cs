@@ -6,8 +6,7 @@ namespace gitHubParser
 	{
 		public static void Main (string[] args)
 		{
-			gitHubClient client = new gitHubClient("XXX", "YYY");
-			string[] repos = client.GetRepositories("IngoScholtes");
+			gitHubClient client = new gitHubClient("XXX", "YYY");			string[] repos = client.GetRepositories("IngoScholtes");
 			
 			Console.WriteLine("Repositories of User IngoScholtes...");
 			foreach(string s in repos)

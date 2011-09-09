@@ -14,6 +14,9 @@ namespace NETGen.Core
 		public abstract void Step();				
 		public abstract ResultType Collect();
 		
+		public delegate void StepHandler(long step);
+		public event StepHandler OnStep;
+		
 		public virtual void Finish() {}
 		
 		/// <summary>
@@ -33,6 +36,8 @@ namespace NETGen.Core
 			{
 				try{
 					Step();
+					if(OnStep!=null)
+						OnStep(SimulationStep);
 					SimulationStep++;
 				}
 				catch(Exception)

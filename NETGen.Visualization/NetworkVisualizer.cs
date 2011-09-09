@@ -143,7 +143,7 @@ namespace NETGen.Visualization
 			// Create an identity matrix, apply orthogonal projection and viewport
 			GL.LoadIdentity();
 			GL.Ortho(0, Width, Height, 0, -1, 1);
-			GL.Viewport(0, 0, Width, Height);
+			GL.Viewport(0, 0, Width, Height);		
 			
 			// Apply panning and zooming state			
 			GL.Scale(_zoom, _zoom, _zoom);
