@@ -76,7 +76,7 @@ namespace NETGen.Dynamics.EpidemicSynchronization
 			_orderThreshold = orderThreshold;
 		}
 		
-		public override void Init()
+		protected override void Init()
 		{
 			// Initialize all necessary values and dictionaries ... 
             avgDeg = 0d;
@@ -124,7 +124,7 @@ namespace NETGen.Dynamics.EpidemicSynchronization
             }
 		}
 	
-		public override void Step()
+		protected override void Step()
 		{
 			
 			// Simply reset all edge colors to the default
@@ -198,7 +198,7 @@ namespace NETGen.Dynamics.EpidemicSynchronization
 			return Math.Sqrt(avgSine * avgSine + avgCosine * avgCosine);
 		}
 		
-		public override void Finish()
+		protected override void Finish()
 		{
 			double min = MathNet.Numerics.Statistics.Statistics.Minimum(_relativeCouplingFrequency.Values);
 			double max = MathNet.Numerics.Statistics.Statistics.Maximum(_relativeCouplingFrequency.Values);

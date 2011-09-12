@@ -120,8 +120,6 @@ namespace DemoSimulation
 		{
 			Dictionary<int, double> clusterOrder = new Dictionary<int, double>();
 			
-			bool switchCoupling = true; 
-			
 			System.IO.File.AppendAllText(resultfile, time.ToString());
 			
 			double globalOrder = sync.ComputeOrder(network.Vertices.ToArray());
@@ -133,23 +131,9 @@ namespace DemoSimulation
 					clusterOrder[g] = sync.ComputeOrder(network.GetNodesInCluster(g));
 					System.IO.File.AppendAllText(resultfile, string.Format("\t{0:0.00}", clusterOrder[g]));
 					Console.Write("{0:0.00} ", clusterOrder[g]);
-					if(clusterOrder[g]<0.95d)
-						switchCoupling = false;
 			}
 			Console.Write("\n");
-			System.IO.File.AppendAllText(resultfile, "\n");
-			
-			if(switchCoupling)
-			{
-				currentBias = bias2;
-				foreach(KeyValuePair<Vertex,Vertex> vertexPair in sync._CouplingStrengths.Keys)
-				{
-					if(network.HasInterClusterConnection(vertexPair.Key) && !network.HasInterClusterConnection(vertexPair.Value))
-						sync._CouplingStrengths[vertexPair] = 0d;
-					else if(!network.HasInterClusterConnection(vertexPair.Key) && network.HasInterClusterConnection(vertexPair.Value))
-						sync._CouplingStrengths[vertexPair] = 2.5d;
-				}
-			}
+			System.IO.File.AppendAllText(resultfile, "\n");						
 		}
 		
 		private static void ClassifyNeighbors(Network net, Vertex v, List<Vertex> intraNeighbors, List<Vertex> interNeighbors)

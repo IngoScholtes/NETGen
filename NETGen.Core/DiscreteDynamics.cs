@@ -3,21 +3,24 @@ using System;
 namespace NETGen.Core
 {
 	public enum RunState { Idle = 0, Running = 2, Stopped = 3, Error = 4 };
-	
+
+	/// <summary>
+	/// Represents a dynamical process that runs in discrete steps. Implementors of this class can be run synchronously and asynchronously
+	/// </summary>
 	public abstract class DiscreteDynamics<ResultType>
 	{			
 		public RunState State = RunState.Idle;
 		
-		public long SimulationStep = 0;
+		public long SimulationStep { get; private set; }
 		
-		public abstract void Init();
-		public abstract void Step();				
+		protected virtual void Init() {}
+		protected abstract void Step();	
+		protected virtual void Finish() {}
+		
 		public abstract ResultType Collect();
 		
 		public delegate void StepHandler(long step);
-		public event StepHandler OnStep;
-		
-		public virtual void Finish() {}
+		public event StepHandler OnStep;				
 		
 		/// <summary>
 		/// Stops a simulation
@@ -30,6 +33,7 @@ namespace NETGen.Core
 		/// Synchronously runs the discrete simulation and blocks until it finishes
 		/// </summary>
 		public void Run() {
+			SimulationStep = 0;
 			Init();
 			State = RunState.Running;
 			while(State == RunState.Running)

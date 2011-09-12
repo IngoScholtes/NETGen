@@ -1,35 +1,26 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Simulations/DemoSimulation/Program.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/FruchtermanReingoldLayout.cs">
     <Files>
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="49" Column="10" />
-      <File FileName="Simulations/gitHubParser/Main.cs" Line="1" Column="1" />
-      <File FileName="Simulations/MonoParser/MonoParser.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="1" Column="1" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="48" Column="49" />
-      <File FileName="Simulations/ClusterSpreading/Program.cs" Line="35" Column="129" />
-      <File FileName="Simulations/ClusterSpreading/Properties/Settings.settings" Line="18" Column="42" />
-      <File FileName="Simulations/ClusterSpreading/Properties/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterSpreading/app.config" Line="40" Column="28" />
-      <File FileName="Simulations/ClusterSpreading/Properties/Settings.Designer.cs" Line="38" Column="25" />
-      <File FileName="Simulations/ClusterSIR/Program.cs" Line="65" Column="68" />
-      <File FileName="Simulations/ClusterConsensus/Program.cs" Line="68" Column="1" />
-      <File FileName="Simulations/ClusterSynchronization/ClusterSynchronization.cs" Line="65" Column="28" />
-      <File FileName="NETGen.Core/Network.cs" Line="104" Column="1" />
+      <File FileName="Simulations/DemoSimulation/Program.cs" Line="51" Column="89" />
+      <File FileName="Simulations/ClusterSynchronization/ClusterSynchronization.cs" Line="78" Column="1" />
+      <File FileName="Simulations/ClusterSynchronization/app.config" Line="14" Column="34" />
+      <File FileName="Simulations/ClusterSynchronization/Properties/Settings.Designer.cs" Line="86" Column="14" />
+      <File FileName="Simulations/ClusterSIR/Program.cs" Line="32" Column="162" />
+      <File FileName="Simulations/ClusterSIR/Properties/Settings.settings" Line="1" Column="1" />
+      <File FileName="Simulations/ClusterSIR/app.config" Line="21" Column="23" />
+      <File FileName="Simulations/ClusterSIR/Properties/Settings.Designer.cs" Line="72" Column="68" />
+      <File FileName="Simulations/ClusterConsensus/Program.cs" Line="46" Column="7" />
+      <File FileName="Simulations/ClusterConsensus/app.config" Line="21" Column="23" />
+      <File FileName="Simulations/ClusterConsensus/Properties/Settings.Designer.cs" Line="83" Column="38" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/FruchtermanReingoldLayout.cs" Line="108" Column="99" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="NETGen.NetworkModels" expanded="True">
-            <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
+        <State expanded="True" selected="True">
+          <Node name="NETGen.Layouts" expanded="True">
+            <Node name="NETGen.Layouts.FruchtermanReingold" expanded="True" />
           </Node>
-          <Node name="Simulations" expanded="True">
-            <Node name="ClusterPaper" expanded="True" />
-            <Node name="DemoSimulation" expanded="True" selected="True" />
-            <Node name="gitHubParser" expanded="True" />
-            <Node name="MonoParser" expanded="True" />
-          </Node>
-          <Node name="NETGen.Core" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">

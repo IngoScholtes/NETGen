@@ -65,47 +65,57 @@ namespace NETGen.Layout.FruchtermanReingold
 			_laidout = true;
 			
 			System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(delegate(object o)	
-			{			
+			{					
+				Vertex[] vertices = n.Vertices.ToArray();
+				Edge[] edges = n.Edges.ToArray();
+				
 				for (int i=0; i<_iterations; i++)
 				{
+					int c=0;
 	                // parallely Calculate repulsive forces for every pair of vertices		
-	                Parallel.ForEach(n.Vertices.ToArray(), v =>
+	                Parallel.ForEach(vertices, v =>
 	                {
 	                    disp[v] = new Vector3(0d, 0d, 1d);
 	
 	                    // computation of repulsive forces
-	                    foreach(Vertex u in n.Vertices.ToArray())
+	                    foreach(Vertex u in vertices)
 	                    {
 	                        if (v != u)
 	                        {
 	                            Vector3 delta = _vertexPositions[v] - _vertexPositions[u];
 	                            disp[v] = disp[v] + (delta / Vector3.Length(delta)) * repulsion(Vector3.Length(delta), _k);
 	                        }
+							c++;
 	                    }
 	                });				
 			        
 	                // Parallely calculate attractive forces for all pairs of connected nodes
-					foreach(Edge e in n.Edges)				
+					foreach(Edge e in edges) 				
 					{
 						Vertex v = e.Source;
 						Vertex w = e.Target;
 	                    Vector3 delta = _vertexPositions[v] - _vertexPositions[w];
 						disp[v] = disp[v] - (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
 						disp[w] = disp[w] + (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
+						c++;
 					}
 	
 	                // Limit to frame and include temperature cooling that reduces displacement step by step
-					foreach(Vertex v in n.Vertices)
+					foreach(Vertex v in vertices)
 					{
 	                    Vector3 vPos = _vertexPositions[v] + (disp[v] / Vector3.Length(disp[v])) * Math.Min(Vector3.Length(disp[v]), t);
 	                    vPos.X = Math.Min(width-10, Math.Max(10, vPos.X));
 	                    vPos.Y = Math.Min(height-10, Math.Max(10, vPos.Y));
 	                    _vertexPositions[v] = vPos;
+						c++;
 					}
 					t-= tempstep;
-				}
+					
+					Console.WriteLine("Layout step took: "+ (DateTime.Now - start).TotalMilliseconds.ToString() + " ms for " + c + " computations");
+					start = DateTime.Now;
+				}				
 			}));
-			Console.WriteLine("Layout took: "+ (DateTime.Now - start).TotalMilliseconds.ToString() + " ms");
+			
 		}
 
         /// <summary>

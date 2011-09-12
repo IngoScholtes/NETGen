@@ -6,8 +6,25 @@ using NETGen.Core;
 
 namespace NETGen.NetworkModels.WattsStrogatz
 {
+	
+	/// <summary>
+	/// This class represents a random netwrk generated according to the lattice model introduced by Watts and Strogatz
+	/// </summary>
     public class WSNetwork : Network
     {
+		
+		/// <summary>
+		/// Generates a random network according to the Watts/Strogatz model
+		/// </summary>
+		/// <param name='n'>
+		/// The number of nodes in the network
+		/// </param>
+		/// <param name='m'>
+		/// The number of edges per node
+		/// </param>
+		/// <param name='p'>
+		/// THe probability wth which each edge is reconnected to a random node
+		/// </param>
         public WSNetwork(int n, int m, double p)
         {
             Dictionary<int, Vertex> vertices = new Dictionary<int, Vertex>();
