@@ -55,7 +55,7 @@ namespace MonoParser
 			
 			// Scan the assemblies
 			List<Assembly> assemblies = new List<Assembly>();
-			foreach(string s in System.IO.Directory.GetFiles(args[1], "*.dll"))
+			foreach(string s in System.IO.Directory.GetFiles(args[1], "*.dll", System.IO.SearchOption.AllDirectories))
 			{
 				Assembly a = Assembly.LoadFile(s);
 				assemblies.Add(a);
@@ -64,7 +64,7 @@ namespace MonoParser
 			Console.WriteLine("Found {0} assemblies", assemblies.Count);
 			
 			// Scan for classes
-			foreach(Assembly a in assemblies)			
+			foreach(Assembly a in assemblies)
 				foreach(Type t in a.GetTypes())
 					if(t.FullName!="System.Object")
 						if((t.IsClass || t.IsInterface || t.IsAbstract) && n.VertexCount < limit)
@@ -102,7 +102,7 @@ namespace MonoParser
 			
 			Console.WriteLine("Found {0} types and {1} connections", n.VertexCount, n.EdgeCount);
 			
-			n.ReduceToLargestConnectedComponent();
+			// n.ReduceToLargestConnectedComponent();
 			
 			int maxDegree = int.MinValue;
 			Vertex maxVertex = null;
@@ -114,7 +114,7 @@ namespace MonoParser
 					maxDegree = v.Degree;
 					maxVertex = v;
 				}
-			}				
+			}
 			
 			Console.WriteLine(maxVertex.Label);
 			
@@ -122,7 +122,7 @@ namespace MonoParser
 			
 			Network.SaveToGraphML(args[2], n);				
 			
-			NetworkVisualizer.Start(n, new FruchtermanReingoldLayout(10));
+			//NetworkVisualizer.Start(n, new FruchtermanReingoldLayout(10));
 			
 		}
 		
@@ -134,7 +134,7 @@ namespace MonoParser
 			Vertex v_Vert = n.SearchVertex(v.FullName);
 			Vertex w_Vert = n.SearchVertex(w.FullName);
 			if(v_Vert != null && w_Vert != null)
-				n.CreateEdge(v_Vert, w_Vert);
+				n.CreateEdge(v_Vert, w_Vert, EdgeType.DirectedAB);
 		}
 	}
 }

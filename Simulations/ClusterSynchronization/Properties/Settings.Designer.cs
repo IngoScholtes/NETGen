@@ -43,49 +43,58 @@ namespace EpidemicSynchronization.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public int clusters {
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int Nodes {
             get {
-                return ((int)(this["clusters"]));
+                return ((int)(this["Nodes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5000")]
+        public int Edges {
+            get {
+                return ((int)(this["Edges"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public int clusterSize {
+        public int Clusters {
             get {
-                return ((int)(this["clusterSize"]));
+                return ((int)(this["Clusters"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public int m {
+        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
+        public double Modularity_From {
             get {
-                return ((int)(this["m"]));
+                return ((double)(this["Modularity_From"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double p_in_from {
+        [global::System.Configuration.DefaultSettingValueAttribute("0.05")]
+        public double Modularity_Step {
             get {
-                return ((double)(this["p_in_from"]));
+                return ((double)(this["Modularity_Step"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
-        public double p_in_step {
+        [global::System.Configuration.DefaultSettingValueAttribute("0.95")]
+        public double Modularity_To {
             get {
-                return ((double)(this["p_in_step"]));
+                return ((double)(this["Modularity_To"]));
             }
         }
-        
+		
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]

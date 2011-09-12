@@ -43,6 +43,7 @@ namespace NETGen.Layout.FruchtermanReingold
         [MethodImpl(MethodImplOptions.Synchronized)]
 		public void DoLayout(double width, double height, Network n)
 		{
+			DateTime start = DateTime.Now;
             double _area = width * height;
             double _k = Math.Sqrt(_area / (double)n.Vertices.Count());
             _k *= 0.75d;						
@@ -84,26 +85,27 @@ namespace NETGen.Layout.FruchtermanReingold
 	                });				
 			        
 	                // Parallely calculate attractive forces for all pairs of connected nodes
-					Parallel.ForEach(n.Edges.ToArray(), e => 				
+					foreach(Edge e in n.Edges)				
 					{
 						Vertex v = e.Source;
 						Vertex w = e.Target;
 	                    Vector3 delta = _vertexPositions[v] - _vertexPositions[w];
 						disp[v] = disp[v] - (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
 						disp[w] = disp[w] + (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
-					});
+					}
 	
 	                // Limit to frame and include temperature cooling that reduces displacement step by step
-					Parallel.ForEach(n.Vertices.ToArray(), v =>
+					foreach(Vertex v in n.Vertices)
 					{
 	                    Vector3 vPos = _vertexPositions[v] + (disp[v] / Vector3.Length(disp[v])) * Math.Min(Vector3.Length(disp[v]), t);
 	                    vPos.X = Math.Min(width-10, Math.Max(10, vPos.X));
 	                    vPos.Y = Math.Min(height-10, Math.Max(10, vPos.Y));
 	                    _vertexPositions[v] = vPos;
-					});
+					}
 					t-= tempstep;
 				}
 			}));
+			Console.WriteLine("Layout took: "+ (DateTime.Now - start).TotalMilliseconds.ToString() + " ms");
 		}
 
         /// <summary>

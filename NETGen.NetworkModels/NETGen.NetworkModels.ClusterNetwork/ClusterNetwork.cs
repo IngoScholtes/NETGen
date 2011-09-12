@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NETGen.Core;
+using MathNet.Numerics;
 
 namespace NETGen.NetworkModels.Cluster
 {
@@ -20,13 +21,22 @@ namespace NETGen.NetworkModels.Cluster
         /// <param name="clusters"></param>
         /// <param name="clusterSize"></param>
         /// <param name="p_in"></param>
-        public ClusterNetwork(int clusters, int clusterSize, double intra_p, double inter_p)
+        public ClusterNetwork(int nodes, int edges, int clusters, double modularity)
         {            
             _clusters = new Dictionary<int, List<Vertex>>();
             _clusterAssignment = new Dictionary<Vertex, int>();
 
             InterClusterEdges = 0;
             IntraClusterEdges = 0;
+			
+			// Compute the size of each (equally-sized) cluster
+			int clusterSize = nodes / clusters;
+			
+			// From this we can compute the edge probability for pairs of nodes within the same community
+			double p_i =  modularity * edges / (clusters * Combinatorics.Combinations(clusterSize, 2)) + edges / Combinatorics.Combinations(nodes, 2); 
+			
+			// And this allows us to compute p_e
+            double p_e = (edges - clusters * MathNet.Numerics.Combinatorics.Combinations(clusterSize, 2) * p_i) / (Combinatorics.Combinations(clusters * clusterSize, 2) - clusters * MathNet.Numerics.Combinatorics.Combinations(clusterSize, 2));			
 
             // create a number of modules, each being an erdös/renyi network
             for (int i = 0; i < clusters; i++)
@@ -52,12 +62,12 @@ namespace NETGen.NetworkModels.Cluster
 						//probability of edge creation for members of same clusters is intra_p
                         if (_clusterAssignment[v] == _clusterAssignment[w])
 						{
-                            if (NextRandomDouble() <= intra_p)
+                            if (NextRandomDouble() <= p_i)
                                 CreateEdge(v, w);
                         }
                         else // probability for members of different clusters is inter_p
 						{
-                            if (NextRandomDouble() <= inter_p)
+                            if (NextRandomDouble() <= p_e)
                                 CreateEdge(v, w);
 						}
                     }                   

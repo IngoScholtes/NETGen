@@ -30,6 +30,7 @@ namespace DemoSimulation
 		static double bias1 = 0d;
 		static double bias2 = 0d;
 		static double currentBias = 0d;
+		static string resultfile = null;
 		
         static void Main(string[] args)
         {			
@@ -38,48 +39,25 @@ namespace DemoSimulation
 					// The neighbor selection bias is given as command line argument
 					bias1 = double.Parse(args[0]);
 					bias2 = double.Parse(args[1]);
+					resultfile = args[2];
 			}
 			catch(Exception)
 			{
-				Console.WriteLine("Usage: mono ./DemoSimulation.exe [initial_bias] [secondary_bias]");
+				Console.WriteLine("Usage: mono ./DemoSimulation.exe [initial_bias] [secondary_bias] [resultfile]");
 				return;
 			}
-						
-			// The number of clusters (c) and the nodes within a cluster (Nc)
-            int c = 20;
-            int Nc = 20;
+									
+			// Create the network with given size and modularity ... 
+            network = new NETGen.NetworkModels.Cluster.ClusterNetwork(1000, 5000, 20, 0.9d);
 			
-			// The number of desired edges
-            int m = 6 * c * Nc;			
-
-            // In order to yield a connected network, at least ...
-            double inter_thresh = 3d * ((c * Math.Log(c)) / 2d);
-				// ... edges between communities are required
-			
-			// So the maximum number of edges within communities we s create is ... 
-            double intra_edges = m - inter_thresh;
-			
-			Console.WriteLine("Number of intra_edge pairs = " + c * Combinatorics.Combinations(Nc, 2));
-			Console.WriteLine("Number of inter_edge pairs = " + (Combinatorics.Combinations(c * Nc, 2) - (c * Combinatorics.Combinations(Nc, 2))));
-
-            // Calculate the p_i necessary to yield the desired number of intra_edges
-            double pi =  intra_edges / (c * Combinatorics.Combinations(Nc, 2));
-			
-			// From this we can compute p_e ...
-            double p_e = (m - c * MathNet.Numerics.Combinatorics.Combinations(Nc, 2) * pi) / (Combinatorics.Combinations(c * Nc, 2) - c * MathNet.Numerics.Combinatorics.Combinations(Nc, 2));
-            Console.WriteLine("Generating cluster network with p_i = {0:0.0000}, p_e = {1:0.0000}", pi, p_e);                
-            
-			// Create the network ... 
-            network = new NETGen.NetworkModels.Cluster.ClusterNetwork(c, Nc, pi, p_e);
-			
-			// ... and reduce it to the GCC
+			// Reduce it to the GCC in order to guarantee connectedness
             network.ReduceToLargestConnectedComponent();	
 			
 			Console.WriteLine("Created network has {0} vertices and {1} edges. Modularity = {2:0.00}", network.VertexCount, network.EdgeCount, network.NewmanModularity);			
                         
-			// Run the OopenGL visualization				
+			// Run the OopenGL visualization
 			NetworkColorizer colorizer = new NetworkColorizer();			
-			NetworkVisualizer.Start(network, new FruchtermanReingoldLayout(15), colorizer);						
+			NetworkVisualizer.Start(network, new FruchtermanReingoldLayout(20), colorizer);						
 			
 			currentBias = bias1;
 			
@@ -112,7 +90,7 @@ namespace DemoSimulation
 			MathNet.Numerics.Distributions.Normal avgs_normal = new MathNet.Numerics.Distributions.Normal(300d, 50d);
 			MathNet.Numerics.Distributions.Normal devs_normal = new MathNet.Numerics.Distributions.Normal(20d, 5d);
 			
-			for(int i=0; i<c; i++)
+			for(int i=0; i<network.ClusterIDs.Length; i++)
 			{
 				double groupAvg = avgs_normal.Sample();
 				double groupStdDev = devs_normal.Sample();
@@ -126,13 +104,15 @@ namespace DemoSimulation
 			
 			sync.OnStep+=new EpidemicSynchronization.StepHandler(collectLocalOrder);			
 			
+			Console.ReadKey();
+			
 			// Run the simulation synchronously 
 			sync.Run();
 			
 			Console.ReadKey();			
 						
 			// Collect and print the results
-            SyncResults res = sync.Collect();			
+            SyncResults res = sync.Collect();
            	Console.WriteLine("Order {0:0.00} reached after {1} rounds", res.order, res.time);
         }
 		
@@ -142,15 +122,22 @@ namespace DemoSimulation
 			
 			bool switchCoupling = true; 
 			
-			Console.WriteLine("--- Step {000000}: Global Order = {1:0.00} Current Bias = {2:0.00} ---", time, sync.ComputeOrder(network.Vertices.ToArray()), currentBias);
+			System.IO.File.AppendAllText(resultfile, time.ToString());
+			
+			double globalOrder = sync.ComputeOrder(network.Vertices.ToArray());
+			
+			Console.WriteLine("--- Step {000000}: Global Order = {1:0.00} Current Bias = {2:0.00} ---", time, globalOrder, currentBias);
+			System.IO.File.AppendAllText(resultfile, string.Format("\t{0:0.00}", globalOrder));
 			foreach(int g in network.ClusterIDs)
 			{
 					clusterOrder[g] = sync.ComputeOrder(network.GetNodesInCluster(g));
+					System.IO.File.AppendAllText(resultfile, string.Format("\t{0:0.00}", clusterOrder[g]));
 					Console.Write("{0:0.00} ", clusterOrder[g]);
 					if(clusterOrder[g]<0.95d)
 						switchCoupling = false;
 			}
 			Console.Write("\n");
+			System.IO.File.AppendAllText(resultfile, "\n");
 			
 			if(switchCoupling)
 			{

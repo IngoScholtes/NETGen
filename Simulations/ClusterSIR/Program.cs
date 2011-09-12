@@ -28,55 +28,31 @@ namespace ClusterSIR
             List<double> modularity;
             string line = "";
             System.IO.File.Delete(Properties.Settings.Default.ResultFile);
-
-                int Nc = Properties.Settings.Default.clusterSize;
-                int c = Properties.Settings.Default.clusters;
-                double edges = Properties.Settings.Default.m * Nc * c;
-                // what is the maximum p_i possible for the given parameters? 
-
-                // in order to yield a connected network, at least ... 
-                double inter_thresh = 1.2d * ((c * Math.Log(c)) / 2d);       // ... inter edges are required
-
-                double intra_edges = edges - inter_thresh;      // the maximum number of expected intra edges
-
-                // this yields a maximum p_i of ... 
-                double max_pi = intra_edges / (c * Combinatorics.Combinations(Nc, 2));
-
-                for (double p_in = 0; p_in <= max_pi; p_in += Properties.Settings.Default.p_i_step)
+               
+            for (double mod = Properties.Settings.Default.Modularity_From; mod <=  Properties.Settings.Default.Modularity_To; mod += Properties.Settings.Default.Modularity_Step)
+            {
+                Console.WriteLine();
+                line = "";
+                for (double bias = Properties.Settings.Default.bias_from; bias <= Properties.Settings.Default.bias_to; bias += Properties.Settings.Default.bias_step)
                 {
-                    Console.WriteLine();
-                    line = "";
-                    for (double bias = Properties.Settings.Default.bias_from; bias <= Properties.Settings.Default.bias_to; bias += Properties.Settings.Default.bias_step)
+                    SIRResult res;
+                    results = new List<double>();
+                    modularity = new List<double>();
+                    System.Threading.Tasks.Parallel.For(0, Properties.Settings.Default.runs, j =>
                     {
-                        SIRResult res;
-                        results = new List<double>();
-                        modularity = new List<double>();
-                        System.Threading.Tasks.Parallel.For(0, Properties.Settings.Default.runs, j =>
-                        {
-                            // compute the parameter p_e that will give the desired edge number
-                            double p_e = (edges - c * MathNet.Numerics.Combinatorics.Combinations(Nc, 2) * p_in) / (Combinatorics.Combinations(c * Nc, 2) - c * MathNet.Numerics.Combinatorics.Combinations(Nc, 2));
-                            if (p_e < 0)
-                                throw new Exception("probability out of range");
-                            ClusterNetwork net = null;
-                            do
-                            {
-                                if (net != null)
-                                    Console.WriteLine("Network (inter = {0}, intra = {1} not connected ... ", net.InterClusterEdges, net.IntraClusterEdges);
-                                net = new ClusterNetwork(Properties.Settings.Default.clusters, Properties.Settings.Default.clusterSize, p_in, p_e);
-                            }
-                            while (!net.Connected);
+                       ClusterNetwork net = new ClusterNetwork(0, 0,0 ,0d);                            
 
-                            Console.WriteLine("Run {0}, created cluster network for p_in={1:0.00} with modularity={2:0.00}", j, p_in, (net as ClusterNetwork).NewmanModularity);
-                            res = RunSpreading(net, bias, Properties.Settings.Default.k);
-                            results.Add(res.InfectedRatio);
-                            modularity.Add(res.Modularity);
-                        });
-                        line = string.Format(new CultureInfo("en-US").NumberFormat, "{0:0.000} {1:0.000} {2:0.000} {3:0.000} \t", MathNet.Numerics.Statistics.Statistics.Mean(modularity.ToArray()), bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()), MathNet.Numerics.Statistics.Statistics.StandardDeviation(results.ToArray()));
-                        System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, line + "\n");
-                        Console.WriteLine("Finished spreading for bias = {0:0.00}, Average cover = {1:0.00}", bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()));
-                    }
-                    System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, "\n");
-                }                           
+                        Console.WriteLine("Run {0}, created cluster network with modularity={2:0.00}", j, (net as ClusterNetwork).NewmanModularity);
+                        res = RunSpreading(net, bias, Properties.Settings.Default.k);
+                        results.Add(res.InfectedRatio);
+                        modularity.Add(res.Modularity);
+                    });
+                    line = string.Format(new CultureInfo("en-US").NumberFormat, "{0:0.000} {1:0.000} {2:0.000} {3:0.000} \t", MathNet.Numerics.Statistics.Statistics.Mean(modularity.ToArray()), bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()), MathNet.Numerics.Statistics.Statistics.StandardDeviation(results.ToArray()));
+                    System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, line + "\n");
+                    Console.WriteLine("Finished spreading for bias = {0:0.00}, Average cover = {1:0.00}", bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()));
+                }
+                System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, "\n");
+            }                           
         }
 
         public static SIRResult RunSpreading(ClusterNetwork net, double bias, double k, int delay = 0)
