@@ -7,6 +7,8 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
+using Cloo;
+
 namespace NETGen.Layout.FruchtermanReingold
 {	
 	
@@ -15,7 +17,15 @@ namespace NETGen.Layout.FruchtermanReingold
     /// </summary>
 	public class FruchtermanReingoldLayout : ILayoutProvider
 	{
-		private bool _laidout = false;
+		private bool _laidout = false;		
+		private bool _openCLSupported = true;
+		
+		Cloo.ComputeContext _context;
+		Cloo.ComputeProgram _program;
+		
+		Cloo.ComputeDevice _device;
+		Cloo.ComputePlatform _platform;
+		
 		
         /// <summary>
         ///  The number of iterations to be used in the computation of vertex positions
@@ -31,7 +41,26 @@ namespace NETGen.Layout.FruchtermanReingold
 		public FruchtermanReingoldLayout (int iterations)
 		{
 			_iterations = iterations;
-            _vertexPositions = new ConcurrentDictionary<Vertex, Vector3>();		                      
+            _vertexPositions = new ConcurrentDictionary<Vertex, Vector3>();	
+			
+#if !DEBUG
+			try 
+			{		
+#endif			
+				_platform = Cloo.ComputePlatform.Platforms[0];
+				Logger.AddMessage(LogEntryType.Info, "Detected GPU platform " + _platform.Name);
+				
+				_device = _platform.Devices[0];
+				Logger.AddMessage(LogEntryType.Info, "Detected GPU device " + _device.Name);											
+#if !DEBUG			
+			}
+			catch(Exception)
+			{				
+				_openCLSupported = false;
+				Logger.AddMessage(LogEntryType.Warning, "OpenCL failed to initialize, falling back to CPU");
+			}
+#endif
+			
 		}
 
         /// <summary>
@@ -67,11 +96,10 @@ namespace NETGen.Layout.FruchtermanReingold
 			System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(delegate(object o)	
 			{					
 				Vertex[] vertices = n.Vertices.ToArray();
-				Edge[] edges = n.Edges.ToArray();
+				Edge[] edges = n.Edges.ToArray();				
 				
 				for (int i=0; i<_iterations; i++)
 				{
-					int c=0;
 	                // parallely Calculate repulsive forces for every pair of vertices		
 	                Parallel.ForEach(vertices, v =>
 	                {
@@ -85,7 +113,6 @@ namespace NETGen.Layout.FruchtermanReingold
 	                            Vector3 delta = _vertexPositions[v] - _vertexPositions[u];
 	                            disp[v] = disp[v] + (delta / Vector3.Length(delta)) * repulsion(Vector3.Length(delta), _k);
 	                        }
-							c++;
 	                    }
 	                });				
 			        
@@ -97,7 +124,6 @@ namespace NETGen.Layout.FruchtermanReingold
 	                    Vector3 delta = _vertexPositions[v] - _vertexPositions[w];
 						disp[v] = disp[v] - (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
 						disp[w] = disp[w] + (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
-						c++;
 					}
 	
 	                // Limit to frame and include temperature cooling that reduces displacement step by step
@@ -107,11 +133,10 @@ namespace NETGen.Layout.FruchtermanReingold
 	                    vPos.X = Math.Min(width-10, Math.Max(10, vPos.X));
 	                    vPos.Y = Math.Min(height-10, Math.Max(10, vPos.Y));
 	                    _vertexPositions[v] = vPos;
-						c++;
 					}
 					t-= tempstep;
 					
-					Console.WriteLine("Layout step took: "+ (DateTime.Now - start).TotalMilliseconds.ToString() + " ms for " + c + " computations");
+					Logger.AddMessage(LogEntryType.Info, string.Format("Layout step {0} computed in {1} ms", i, (DateTime.Now - start).TotalMilliseconds.ToString()));
 					start = DateTime.Now;
 				}				
 			}));

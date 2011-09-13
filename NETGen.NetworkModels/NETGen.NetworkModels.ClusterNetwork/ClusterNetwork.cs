@@ -47,7 +47,7 @@ namespace NETGen.NetworkModels.Cluster
         /// <param name="edges">The number of edges in the network</param>
         /// <param name="clusters">The number of (equal-sized) clusters of the network</param>        
         /// <param name="modularity">The Newman modularity of the resulting network</param>
-        public ClusterNetwork(int nodes, int edges, int clusters, double modularity)
+        public ClusterNetwork(int nodes, int edges, int clusters, double modularity, bool reduce_to_LCC = false)
         {            
             _clusters = new Dictionary<int, List<Vertex>>();
             _clusterAssignment = new Dictionary<Vertex, int>();
@@ -96,7 +96,19 @@ namespace NETGen.NetworkModels.Cluster
                             if (NextRandomDouble() <= p_e)
                                 CreateEdge(v, w);
 						}
-                    }                   
+                    }
+			
+			if(reduce_to_LCC)
+			{
+				ReduceToLargestConnectedComponent();
+				
+				foreach(Vertex v in _clusterAssignment.Keys.ToArray())
+					if(!ContainsVertex(v.ID))
+					{
+						_clusters.Remove(_clusterAssignment[v]);
+						_clusterAssignment.Remove(v);
+					}
+			}
         }        
 		
 		/// <summary>
@@ -115,6 +127,55 @@ namespace NETGen.NetworkModels.Cluster
 				if(_clusterAssignment[v]!=_clusterAssignment[w])
 					result = true;
 			return result;
+		}
+		
+		/// <summary>
+		/// Returns the expected modularity of a random network of given size
+		/// </summary>
+		/// <returns>
+		/// The Newman modularity 
+		/// </returns>
+		/// <param name='nodes'>
+		/// The number of nodes in the network
+		/// </param>
+		/// <param name='edges'>
+		/// The number of edges in the network
+		/// </param>
+		/// <param name='clusters'>
+		/// The number of clusters in the network
+		/// </param>
+		public static double GetRandomModularity(int nodes, int clusters)
+		{
+			int clustersize = nodes / clusters;
+			return ((double)(clusters * Combinatorics.Combinations(clustersize, 2))) / (double) Combinatorics.Combinations(nodes, 2);
+		}
+		
+		/// <summary>
+		/// Returns the maximums modularity of a network that is expected to remain connected
+		/// </summary>
+		/// <returns>
+		/// The Newman modularity 
+		/// </returns>
+		/// <param name='nodes'>
+		/// The number of nodes in the network
+		/// </param>
+		/// <param name='edges'>
+		/// The number of edges in the network
+		/// </param>
+		/// <param name='clusters'>
+		/// The number of clusters in the network
+		/// </param>
+		public static double GetMaxConnectedModularity(int nodes, int edges, int clusters)
+		{
+			int clusterSize = nodes / clusters;
+			
+			// Critical number of inter-cluster edges that need to be added for the network to remain connected
+			double minInterEdges = clusters * Math.Log(clusters) / 2d;			
+			double maxIntraEdges = edges - minInterEdges;
+			
+			double p_i = maxIntraEdges / (double) (clusters * Combinatorics.Combinations(clusterSize, 2));
+				
+			return p_i * clusters * Combinatorics.Combinations(clusterSize, 2) / (double) edges - GetRandomModularity(nodes, clusters); 			
 		}
 		
 		
@@ -184,31 +245,32 @@ namespace NETGen.NetworkModels.Cluster
          {
              get
              {
-                 double Q = 0d;
+                double Q = 0d;
+				
+				int max_id = int.MinValue;
+				
+				foreach(int i in ClusterIDs)
+					max_id = Math.Max(i, max_id);
 
-                 // entry e[i,j] contains the fraction of edges linking vertices of community i to vertices of community j
-                 double[,] e = new double[ClusterIDs.Length, ClusterIDs.Length];
+                 // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
+                 double[,] e = new double[max_id+1, max_id+1];
 
                  // entry a[i] contains the fraction of edges that connect to community i
-                 double[] a = new double[ClusterIDs.Length];
+                 double[] a = new double[max_id+1];
 
                  double edges = EdgeCount;
 
                  foreach (int i in ClusterIDs)
-                 {
                      foreach (int j in ClusterIDs)
                      {
-                         Vertex[] members2 = GetNodesInCluster(j);
-
+                         Vertex[] members = GetNodesInCluster(j);
                          double count_ij = 0d;
-
-                         foreach (Vertex v in members2)
+                         foreach (Vertex v in members)
                              foreach (Vertex w in v.Neigbors)
                                  if (GetClusterForNode(w) == i)
                                      count_ij++;
                          e[i, j] = count_ij / (2d*edges);
                      }
-                 }
 
                  foreach (int i in ClusterIDs)
                  {

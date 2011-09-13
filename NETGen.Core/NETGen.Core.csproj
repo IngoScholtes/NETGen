@@ -48,6 +48,7 @@
     <Compile Include="Network.cs" />
     <Compile Include="Vertex.cs" />
     <Compile Include="DiscreteDynamics.cs" />
+    <Compile Include="Logger.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

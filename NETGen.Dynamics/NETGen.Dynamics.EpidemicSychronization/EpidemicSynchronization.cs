@@ -35,9 +35,7 @@ namespace NETGen.Dynamics.EpidemicSynchronization
 		ConcurrentDictionary<Edge, double> _relativeCouplingFrequency;
 		
 		public ConcurrentDictionary<Vertex, double> _MuPeriods;
-		public ConcurrentDictionary<Vertex, double> _SigmaPeriods;
-		
-		public ConcurrentDictionary<KeyValuePair<Vertex,Vertex>, double> _CouplingStrengths;
+		public ConcurrentDictionary<Vertex, double> _SigmaPeriods;	
 		
 		MathNet.Numerics.Distributions.Normal _normal;
 		
@@ -45,35 +43,30 @@ namespace NETGen.Dynamics.EpidemicSynchronization
 		double order;
 		
 		//sync settings
-        static public bool Compensate_cp = false;
-        static public double MuPeriod = 100;
-        static public long SigmaPeriod = 20;
-        static public double PeriodCouplingStrength = 2d;
-        static public bool DegreeWeight = true;
-        static public bool DoubleDegreeWeight = false;
-        static public double CouplingProbability = 0.05d;
-		
-		double _orderThreshold;
+        public bool Compensate_cp = false;
+        public double MuPeriod = 100;
+        public long SigmaPeriod = 20;
+        public double PeriodCouplingStrength = 2d;
+        public bool DegreeWeight = true;
+        public bool DoubleDegreeWeight = false;
+        public double CouplingProbability = 1d;		
 		
 		public Func<Vertex, Vertex> NeighborSelector;
 		
-		public EpidemicSynchronization(Network n, NetworkColorizer colorizer, Func<Vertex, Vertex> selectNeighbor = null, double orderThreshold = 0.9d)
+		public EpidemicSynchronization(Network n, NetworkColorizer colorizer = null, Func<Vertex, Vertex> selectNeighbor = null)
 		{
 			_network = n;
 			_colorizer = colorizer;
 			
 			_MuPeriods = new ConcurrentDictionary<Vertex, double>();
 			_SigmaPeriods = new ConcurrentDictionary<Vertex, double>();
-			_CouplingStrengths = new ConcurrentDictionary<KeyValuePair<Vertex,Vertex>, double>();
 			
 			if(selectNeighbor==null)
 				NeighborSelector = new Func<Vertex, Vertex>( v => {
 					return v.RandomNeighbor;
 				});
 			else
-				NeighborSelector = selectNeighbor;
-			
-			_orderThreshold = orderThreshold;
+				NeighborSelector = selectNeighbor;			
 		}
 		
 		protected override void Init()
@@ -96,8 +89,6 @@ namespace NETGen.Dynamics.EpidemicSynchronization
 			{
                 _avgoffsets[e] = 0d;
 				_relativeCouplingFrequency[e] = 0d;
-				_CouplingStrengths[new KeyValuePair<Vertex,Vertex>(e.Source, e.Target)] = PeriodCouplingStrength;
-				_CouplingStrengths[new KeyValuePair<Vertex,Vertex>(e.Target, e.Source)] = PeriodCouplingStrength;
 			}
 
             foreach (Vertex v in _network.Vertices)
@@ -115,61 +106,50 @@ namespace NETGen.Dynamics.EpidemicSynchronization
                 _period[v] = _normal.Sample();
 
                 // random clock skews
-                _localClock[v] = _network.NextRandom(0, (int)MuPeriod);
+                _localClock[v] = _network.NextRandom(0, (int) _normal.Mean);
                 _phase[v] = getPhase(v, _localClock, _period);
                 _SineSignal[v] = Math.Sin(_phase[v]);
 				
 				if(_colorizer != null)
 					_colorizer[v] = ColorFromSignal(v, _SineSignal);			
             }
+			Logger.AddMessage(LogEntryType.Info, "Sychchronization module initialized");
 		}
 	
 		protected override void Step()
-		{
-			
+		{			
 			// Simply reset all edge colors to the default
-			_colorizer.RecomputeColors((Edge e) => {
-				return _colorizer.DefaultEdgeColor;
-			});
+			if(_colorizer!= null)
+				_colorizer.RecomputeColors((Edge e) => { return _colorizer.DefaultEdgeColor; });
 			
 			// perform coupling to the user supplied neighbor
             foreach (Vertex v in _network.Vertices)
             {
-                // neighbor selection either up to the user-supplied lambda expression or defaulting to random neighbor
-                Vertex neighbor = NeighborSelector(v);
-				
-				_colorizer[v.GetEdgeToSuccessor(neighbor)] = Color.Red;
-				
-				_relativeCouplingFrequency[v.GetEdgeToSuccessor(neighbor)]++;
-
-                // actually perform coupling
-                AdjustPeriods(v, neighbor, _phase, _period, avgDeg);
+				if(_network.NextRandomDouble() <= CouplingProbability)
+				{
+	                // neighbor selection either up to the user-supplied lambda expression or defaulting to random neighbor
+	                Vertex neighbor = NeighborSelector(v);								
+					
+					if(_colorizer!=null)
+						_colorizer[v.GetEdgeToSuccessor(neighbor)] = Color.Red;
+					
+					_relativeCouplingFrequency[v.GetEdgeToSuccessor(neighbor)]++;
+	
+	                // actually perform coupling
+	                AdjustPeriods(v, neighbor, _phase, _period, avgDeg);
+				}
             }
 
-            double avgSine = 0d;
-            double avgCosine = 0d;
-
-            // advance clock, compute signal and phase
+            // Parallely advance clock, compute signal and phase
             Parallel.ForEach(_network.Vertices.ToArray(), v =>
             {
                 _localClock[v]++;
                 _phase[v] = getPhase(v, _localClock, _period);
                 _SineSignal[v] = Math.Sin(_phase[v]);
                 _CosineSignal[v] = Math.Cos(_phase[v]);
-
-                avgSine += _SineSignal[v];
-                avgCosine += _CosineSignal[v];
 				if (_colorizer!=null)
 					_colorizer[v] = ColorFromSignal(v, _SineSignal);
-
             });
-            avgSine /= _network.VertexCount;
-            avgCosine /= _network.VertexCount;
-            order = Math.Sqrt(avgSine * avgSine + avgCosine * avgCosine);
-			
-			// Stop if the order parameter is larger than specified threshold
-			if(order>_orderThreshold)
-				Stop();
 		}
 		
 		/// <summary>
@@ -184,16 +164,21 @@ namespace NETGen.Dynamics.EpidemicSynchronization
 		public double ComputeOrder(Vertex[] vertices)
 		{
 			double avgSine = 0d;
-			double avgCosine = 0d;
+			double avgCosine = 0d;			
+			double count = 0;
 			
 			foreach(Vertex v in vertices)
 			{
-				avgSine += _SineSignal[v];
-				avgCosine += _CosineSignal[v];
+				if(v!=null)
+				{
+					avgSine += _SineSignal[v];
+					avgCosine += _CosineSignal[v];
+					count ++;
+				}
 			}
 			
-			avgSine /= (double) vertices.Length;
-			avgCosine /= (double) vertices.Length;
+			avgSine /= count;
+			avgCosine /= count;
 			
 			return Math.Sqrt(avgSine * avgSine + avgCosine * avgCosine);
 		}
@@ -203,26 +188,25 @@ namespace NETGen.Dynamics.EpidemicSynchronization
 			double min = MathNet.Numerics.Statistics.Statistics.Minimum(_relativeCouplingFrequency.Values);
 			double max = MathNet.Numerics.Statistics.Statistics.Maximum(_relativeCouplingFrequency.Values);
 			
-			_colorizer.RecomputeColors((Edge e) => {
-				int color = (int)((_relativeCouplingFrequency[e]-min)/(max - min) * 255f);
-            	return Color.FromArgb(Color.White.R, Color.White.G-color, Color.White.B-color);
-			});
+			if(_colorizer != null)
+				_colorizer.RecomputeColors((Edge e) => {
+					int color = (int)((_relativeCouplingFrequency[e]-min)/(max - min) * 255f);
+            		return Color.FromArgb(Color.White.R, Color.White.G-color, Color.White.B-color);
+				});
+			Logger.AddMessage(LogEntryType.Info, "Sychchronization module finished");
 		}
-		
-		
 		
 		private void AdjustPeriods(Vertex v, Vertex w, ConcurrentDictionary<Vertex, double> _phase, ConcurrentDictionary<Vertex, double> _period, double avgDeg)
         {
-
             if (v == null || w == null)
                 return;
-
+			
             // exchange phases
             // interpret phase as position on a circle and compute the angle between the nodes
 
             // unweighted coupling strength
-            double couplingStrengthV = _CouplingStrengths[new KeyValuePair<Vertex,Vertex>(v,w)];
-            double couplingStrengthW = _CouplingStrengths[new KeyValuePair<Vertex,Vertex>(w,v)];
+            double couplingStrengthV = PeriodCouplingStrength;
+            double couplingStrengthW = PeriodCouplingStrength;
 
             double f = 1d;
             if (Compensate_cp)

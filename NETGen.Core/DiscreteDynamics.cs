@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace NETGen.Core
 {
@@ -11,6 +13,9 @@ namespace NETGen.Core
 	{			
 		public RunState State = RunState.Idle;
 		
+		private List<string> _dataColumns;
+		private ConcurrentDictionary<long, ConcurrentDictionary<string, double>> _timeSeries;
+		
 		public long SimulationStep { get; private set; }
 		
 		protected virtual void Init() {}
@@ -20,37 +25,82 @@ namespace NETGen.Core
 		public abstract ResultType Collect();
 		
 		public delegate void StepHandler(long step);
+		public delegate void StopHandler();
 		public event StepHandler OnStep;				
+		public event StopHandler OnStop;				
 		
 		/// <summary>
 		/// Stops a simulation
 		/// </summary>
 		public void Stop() {
 			State = RunState.Stopped;
+			if(OnStop!=null)
+				OnStop();
 		}
 		
 		/// <summary>
 		/// Synchronously runs the discrete simulation and blocks until it finishes
 		/// </summary>
-		public void Run() {
+		public void Run() {			
+			_dataColumns = new List<string>();
+			_timeSeries = new ConcurrentDictionary<long, ConcurrentDictionary<string,double>>();
 			SimulationStep = 0;
 			Init();
 			State = RunState.Running;
+			Logger.AddMessage(LogEntryType.Info, string.Format("Started dynamics module [{0}]", this.GetType().Name));
 			while(State == RunState.Running)
 			{
+				#if !DEBUG
 				try{
+				#endif
 					Step();
 					if(OnStep!=null)
 						OnStep(SimulationStep);
 					SimulationStep++;
+				#if !DEBUG
 				}
-				catch(Exception)
+				catch(Exception ex)
 				{
 					State = RunState.Error;
+					Logger.AddMessage(LogEntryType.Error, "Exception in dynamics module at " + ex.Source + ", message = " + ex.Message + "\n" + ex.StackTrace);
 					return;
 				}
+				#endif
 			}
 			Finish();
+		}
+		
+		public void AddDataPoint(string column, double val)
+		{
+			if(!_dataColumns.Contains(column))
+				_dataColumns.Add(column);
+			
+			if(!_timeSeries.ContainsKey(SimulationStep))
+				_timeSeries[SimulationStep] = new ConcurrentDictionary<string, double>();
+			
+			_timeSeries[SimulationStep][column] = val;
+		}
+		
+		public void WriteTimeSeries(string file)
+		{
+			string header = "# Time"; 
+			foreach(string col in _dataColumns)
+				header+= "\t" + col;
+			header += "\n";
+			System.IO.File.WriteAllText(file, header);
+			
+			for(long t = 0; t< SimulationStep; t++)
+			{
+				if (_timeSeries.ContainsKey(t))
+				{
+					string line = t.ToString();
+					foreach(string col in _dataColumns)
+						line += string.Format("\t{0:0.0000}", _timeSeries[t][col]);
+					line += "\n";
+					System.IO.File.AppendAllText(file, line);
+				}
+			}
+			
 		}
 		
 		/// <summary>

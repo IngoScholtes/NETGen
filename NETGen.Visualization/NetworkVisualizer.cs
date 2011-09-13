@@ -162,7 +162,7 @@ namespace NETGen.Visualization
 			
 			// Draw the vertices
 			foreach(Vertex v in _network.Vertices)
-				DrawVertex(v, _colorizer[v], 10);
+				DrawVertex(v, _colorizer[v], 8, 2);
 			
  
 			// Swap screen and backbuffer
@@ -201,7 +201,7 @@ namespace NETGen.Visualization
 		/// <param name='segments'>
 		/// The number of triangle segments to use. A higher number will look more prety but will take more time to render
 		/// </param>
-		void DrawVertex(Vertex v, Color c, int segments)
+		void DrawVertex(Vertex v, Color c, int segments, int radius)
         {
             GL.Color3(c);
             GL.Begin(BeginMode.TriangleFan);
@@ -209,7 +209,7 @@ namespace NETGen.Visualization
             for (int i = 0; i < 360; i+=360/segments)
             {
                 double degInRad = i * 3.1416/180;
-                GL.Vertex2(_layout.GetPositionOfNode(v).X + Math.Cos(degInRad) * 3, _layout.GetPositionOfNode(v).Y+Math.Sin(degInRad) * 3);
+                GL.Vertex2(_layout.GetPositionOfNode(v).X + Math.Cos(degInRad) * radius, _layout.GetPositionOfNode(v).Y+Math.Sin(degInRad) * radius);
             }
 			GL.End();
 		}

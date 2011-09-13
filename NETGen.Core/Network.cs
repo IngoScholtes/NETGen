@@ -581,11 +581,10 @@ namespace NETGen.Core
         {
             List<Vertex> lcc = LargestConnectedComponent;
 
-                // remove all vertices not belonging to the largest component
-                foreach (Vertex w in Vertices.ToArray())
-                    if (!lcc.Contains(w))
-                        RemoveVertex(w);
-                return;
+            // remove all vertices not belonging to the largest component
+            foreach (Vertex w in Vertices.ToArray())
+                if (!lcc.Contains(w))
+                    RemoveVertex(w);
         }
 
         /// <summary>
