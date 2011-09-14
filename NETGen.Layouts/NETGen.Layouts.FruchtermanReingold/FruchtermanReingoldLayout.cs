@@ -7,8 +7,6 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
-using Cloo;
-
 namespace NETGen.Layout.FruchtermanReingold
 {	
 	
@@ -17,15 +15,7 @@ namespace NETGen.Layout.FruchtermanReingold
     /// </summary>
 	public class FruchtermanReingoldLayout : ILayoutProvider
 	{
-		private bool _laidout = false;		
-		private bool _openCLSupported = true;
-		
-		Cloo.ComputeContext _context;
-		Cloo.ComputeProgram _program;
-		
-		Cloo.ComputeDevice _device;
-		Cloo.ComputePlatform _platform;
-		
+		private bool _laidout = false;			
 		
         /// <summary>
         ///  The number of iterations to be used in the computation of vertex positions
@@ -41,26 +31,7 @@ namespace NETGen.Layout.FruchtermanReingold
 		public FruchtermanReingoldLayout (int iterations)
 		{
 			_iterations = iterations;
-            _vertexPositions = new ConcurrentDictionary<Vertex, Vector3>();	
-			
-#if !DEBUG
-			try 
-			{		
-#endif			
-				_platform = Cloo.ComputePlatform.Platforms[0];
-				Logger.AddMessage(LogEntryType.Info, "Detected GPU platform " + _platform.Name);
-				
-				_device = _platform.Devices[0];
-				Logger.AddMessage(LogEntryType.Info, "Detected GPU device " + _device.Name);											
-#if !DEBUG			
-			}
-			catch(Exception)
-			{				
-				_openCLSupported = false;
-				Logger.AddMessage(LogEntryType.Warning, "OpenCL failed to initialize, falling back to CPU");
-			}
-#endif
-			
+            _vertexPositions = new ConcurrentDictionary<Vertex, Vector3>();		
 		}
 
         /// <summary>

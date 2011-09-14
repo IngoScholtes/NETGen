@@ -53,6 +53,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.Layouts.Radial", "NE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.Layouts.Random", "NETGen.Layouts\NETGen.Layouts.Random\NETGen.Layouts.Random.csproj", "{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.Layouts.HuForceDirected", "NETGen.Layouts\NETGen.Layouts.HuForceDirected\NETGen.Layouts.HuForceDirected.csproj", "{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DE06944B-DD92-41DD-AA85-2C4D66C4A9E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.Layout.Tests", "Tests\LayoutTests\NETGen.Layout.Tests.csproj", "{04258183-C570-40D3-B0D0-043FFB443F30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,8 +67,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
+		Default|Any CPU = Default|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Debug|x86.Build.0 = Debug|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Release|x86.ActiveCfg = Release|Any CPU
+		{04258183-C570-40D3-B0D0-043FFB443F30}.Release|x86.Build.0 = Release|Any CPU
 		{05738475-4CEA-425D-8775-7DD94A3611FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{05738475-4CEA-425D-8775-7DD94A3611FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05738475-4CEA-425D-8775-7DD94A3611FD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -87,6 +108,18 @@ Global
 		{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}.Release|x86.ActiveCfg = Release|Any CPU
 		{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}.Release|x86.Build.0 = Release|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Debug|x86.Build.0 = Debug|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}.Release|x86.Build.0 = Release|Any CPU
 		{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -336,6 +369,8 @@ Global
 		{BC0350FF-A9F3-4801-843B-E7EDFB298F4F} = {C779CFBB-B9C8-49FF-9B06-6190A7E664C4}
 		{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9} = {C779CFBB-B9C8-49FF-9B06-6190A7E664C4}
 		{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41} = {C779CFBB-B9C8-49FF-9B06-6190A7E664C4}
+		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2} = {C779CFBB-B9C8-49FF-9B06-6190A7E664C4}
+		{04258183-C570-40D3-B0D0-043FFB443F30} = {DE06944B-DD92-41DD-AA85-2C4D66C4A9E1}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Simulations\DemoSimulation\DemoSimulation.csproj
