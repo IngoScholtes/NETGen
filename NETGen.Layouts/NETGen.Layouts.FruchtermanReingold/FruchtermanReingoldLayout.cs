@@ -7,7 +7,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
-namespace NETGen.Layout.FruchtermanReingold
+namespace NETGen.Layouts.FruchtermanReingold
 {	
 	
     /// <summary>

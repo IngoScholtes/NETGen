@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NETGen.Core;
 using NETGen.Visualization;
 
-namespace NETGen.Layout.RandomLayout
+namespace NETGen.Layouts.RandomLayout
 {
 
     /// <summary>

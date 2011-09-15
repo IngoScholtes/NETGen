@@ -1,43 +1,61 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.Layouts/NETGen.Layouts.HuForceDirected/HuForceDirectedLayout.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/ClusterSync/Properties/Settings.Designer.cs">
     <Files>
-      <File FileName="Simulations/DemoSimulation/Program.cs" Line="33" Column="10" />
-      <File FileName="Simulations/ClusterSynchronization/ClusterSynchronization.cs" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterSynchronization/app.config" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterSynchronization/Properties/Settings.Designer.cs" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterSIR/Program.cs" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterSIR/Properties/Settings.settings" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterSIR/app.config" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterSIR/Properties/Settings.Designer.cs" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterConsensus/Program.cs" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterConsensus/app.config" Line="1" Column="1" />
-      <File FileName="Simulations/ClusterConsensus/Properties/Settings.Designer.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/FruchtermanReingoldLayout.cs" Line="18" Column="36" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.EpidemicSychronization/EpidemicSynchronization.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/Edge.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/Logger.cs" Line="1" Column="1" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Spreading.Simple/SimpleSpreading.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Spreading.SIR/SIRSpreading.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="64" Column="6" />
+      <File FileName="NETGen.Core/Logger.cs" Line="20" Column="6" />
       <File FileName="NETGen.Core/Network.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="124" Column="22" />
-      <File FileName="Simulations/MonoParser/MonoParser.cs" Line="15" Column="3" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.HuForceDirected/HuForceDirectedLayout.cs" Line="11" Column="24" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.Positioned/PositionedLayout.cs" Line="42" Column="4" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.HuForceDirected/BurtscherGCG.2.0.cu" Line="597" Column="17" />
-      <File FileName="Tests/LayoutTests/LayoutTests.cs" Line="6" Column="40" />
+      <File FileName="NETGen.Visualization/ILayoutProvider.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.HuForceDirected/BurtscherGCG.2.0.cu" Line="1" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.Random/RandomLayout.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.Radial/RadialLayout.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.Positioned/PositionedLayout.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/FruchtermanReingoldLayout.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="Applications/Demo/Demo.cs" Line="80" Column="3" />
+      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="166" Column="86" />
+      <File FileName="Tests/NETGen.Dynamics.Tests.cs" Line="22" Column="3" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="210" Column="14" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/EpidemicSync.cs" Line="125" Column="9" />
+      <File FileName="Tests/NETGen.Core.Tests.cs" Line="1" Column="1" />
+      <File FileName="Tests/NETGen.Layout.Tests.cs" Line="20" Column="4" />
+      <File FileName="Applications/ClusterConsensus/app.config" Line="9" Column="10" />
+      <File FileName="Applications/ClusterConsensus/Properties/Settings.settings" Line="1" Column="1" />
+      <File FileName="Applications/ClusterConsensus/Properties/Settings.Designer.cs" Line="16" Column="64" />
+      <File FileName="Applications/ClusterConsensus/ClusterAggregation.cs" Line="26" Column="36" />
+      <File FileName="Applications/ClusterSIR/ClusterSIR.cs" Line="23" Column="2" />
+      <File FileName="Applications/ClusterSIR/app.config" Line="46" Column="11" />
+      <File FileName="Applications/ClusterSIR/Properties/Settings.settings" Line="1" Column="1" />
+      <File FileName="Applications/ClusterSIR/Properties/Settings.Designer.cs" Line="11" Column="11" />
+      <File FileName="Applications/ClusterSpreading/ClusterSpreading.cs" Line="11" Column="36" />
+      <File FileName="Applications/ClusterSpreading/app.config" Line="43" Column="11" />
+      <File FileName="Applications/ClusterSpreading/Properties/Settings.Designer.cs" Line="11" Column="11" />
+      <File FileName="Applications/ClusterSync/app.config" Line="27" Column="23" />
+      <File FileName="Applications/ClusterSync/Properties/Settings.settings" Line="29" Column="35" />
+      <File FileName="Applications/ClusterSync/Properties/Settings.Designer.cs" Line="82" Column="69" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="NETGen.Layouts" expanded="True">
-            <Node name="NETGen.Layouts.HuForceDirected" expanded="True" selected="True" />
-          </Node>
-          <Node name="Tests" expanded="True">
-            <Node name="LayoutTests" expanded="True">
-              <Node name="References" expanded="True" />
+          <Node name="Applications" expanded="True">
+            <Node name="ClusterPaper" expanded="True">
+              <Node name="ClusterAggregation" expanded="True" />
+              <Node name="ClusterSIR" expanded="True" />
+              <Node name="ClusterSpreading" expanded="True">
+                <Node name="Properties" expanded="True" />
+              </Node>
+              <Node name="ClusterSync" expanded="True" selected="True">
+                <Node name="Properties" expanded="True">
+                  <Node name="Settings.settings" expanded="True" />
+                </Node>
+              </Node>
             </Node>
+            <Node name="Demo" expanded="True" />
           </Node>
+          <Node name="NETGen.Visualization" expanded="True" />
+          <Node name="Tests" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">

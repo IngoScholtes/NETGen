@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using NETGen.Core;
 using NETGen.Visualization;
 
-namespace NETGen.Layout.Radial
+namespace NETGen.Layouts.Radial
 {
 
     /// <summary>

@@ -8,7 +8,7 @@ using GASS.CUDA.Types;
 using NETGen.Core;
 using NETGen.Visualization;
 
-namespace NETGen.Layout.HuForceDirected
+namespace NETGen.Layouts.HuForceDirected
 {
 	public class HuForceDirectedLayout : NETGen.Visualization.ILayoutProvider
 	{

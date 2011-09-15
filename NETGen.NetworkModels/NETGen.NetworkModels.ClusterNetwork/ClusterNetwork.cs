@@ -12,8 +12,7 @@ namespace NETGen.NetworkModels.Cluster
 	/// A class representing a random network with given size and modularity
 	/// </summary>
     public class ClusterNetwork : NETGen.Core.Network
-    {
-		
+    {		
 		/// <summary>
 		/// The cluster members 
 		/// </summary>
@@ -30,7 +29,7 @@ namespace NETGen.NetworkModels.Cluster
 		/// <value>
 		/// The number of inter cluster edges.
 		/// </value>
-        public int InterClusterEdges { get; private set; }
+        public int InterClusterEdgeNumber { get; private set; }
 		
 		/// <summary>
 		/// Gets the total number of edhes within clusters
@@ -38,7 +37,10 @@ namespace NETGen.NetworkModels.Cluster
 		/// <value>
 		/// The number of intra cluster edges.
 		/// </value>
-        public int IntraClusterEdges { get; private set; }
+        public int IntraClusterEdgeNumber { get; private set; }
+		
+		public List<Edge> InterClusterEdges;
+		public List<Edge> IntraClusterEdges;
 
         /// <summary>
         /// Generates a random network of given size and with given modularity
@@ -51,15 +53,21 @@ namespace NETGen.NetworkModels.Cluster
         {            
             _clusters = new Dictionary<int, List<Vertex>>();
             _clusterAssignment = new Dictionary<Vertex, int>();
+			
+			IntraClusterEdges = new List<Edge>(edges);
+			InterClusterEdges = new List<Edge>(edges);
 
-            InterClusterEdges = 0;
-            IntraClusterEdges = 0;
+            InterClusterEdgeNumber = 0;
+            IntraClusterEdgeNumber = 0;
 			
 			// Compute the size of each (equally-sized) cluster
 			int clusterSize = nodes / clusters;
 			
+			double p_i = 0;
+			
 			// From this we can compute the edge probability for pairs of nodes within the same community ...
-			double p_i =  modularity * edges / (clusters * Combinatorics.Combinations(clusterSize, 2)) + edges / Combinatorics.Combinations(nodes, 2); 
+			if(clusterSize >1)
+				p_i =  modularity * edges / (clusters * Combinatorics.Combinations(clusterSize, 2)) + edges / Combinatorics.Combinations(nodes, 2); 
 			
 			// This allows us to compute p_e ...
             double p_e = (edges - clusters * MathNet.Numerics.Combinatorics.Combinations(clusterSize, 2) * p_i) / (Combinatorics.Combinations(clusters * clusterSize, 2) - clusters * MathNet.Numerics.Combinatorics.Combinations(clusterSize, 2));			
@@ -89,12 +97,20 @@ namespace NETGen.NetworkModels.Cluster
                         if (_clusterAssignment[v] == _clusterAssignment[w])
 						{
                             if (NextRandomDouble() <= p_i)
-                                CreateEdge(v, w);
+							{
+	                                Edge e = CreateEdge(v, w);
+									IntraClusterEdgeNumber++;
+									IntraClusterEdges.Add(e);
+							}
                         }
                         else // probability for members of different clusters is inter_p
 						{
                             if (NextRandomDouble() <= p_e)
-                                CreateEdge(v, w);
+							{
+                                Edge e = CreateEdge(v, w);
+								InterClusterEdgeNumber++;
+								InterClusterEdges.Add(e);
+							}
 						}
                     }
 			
@@ -109,6 +125,8 @@ namespace NETGen.NetworkModels.Cluster
 						_clusterAssignment.Remove(v);
 					}
 			}
+			
+			Logger.AddMessage(LogEntryType.Info, string.Format("Created cluster network with N = {0}, M = {1}, Q = {2:0.00}", VertexCount, EdgeCount, NewmanModularity));
         }        
 		
 		/// <summary>
@@ -170,7 +188,7 @@ namespace NETGen.NetworkModels.Cluster
 			int clusterSize = nodes / clusters;
 			
 			// Critical number of inter-cluster edges that need to be added for the network to remain connected
-			double minInterEdges = clusters * Math.Log(clusters) / 2d;			
+			double minInterEdges = clusters * Math.Log(clusters) / 2d;
 			double maxIntraEdges = edges - minInterEdges;
 			
 			double p_i = maxIntraEdges / (double) (clusters * Combinatorics.Combinations(clusterSize, 2));

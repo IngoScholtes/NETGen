@@ -6,7 +6,8 @@ using System.Text;
 namespace NETGen.Visualization
 {
 	/// <summary>
-	/// An interface that custom network layout mechanisms have to implement
+	/// An interface that custom network layout mechanisms have to implement. 
+	/// This is the point of extensibility for the modules in NETGen.Layouts
 	/// </summary>
     public interface ILayoutProvider
     {

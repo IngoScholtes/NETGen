@@ -5,7 +5,7 @@ using System.Text;
 using NETGen.Visualization;
 using NETGen.Core;
 
-namespace NETGen.Layout.Positioned
+namespace NETGen.Layouts.Positioned
 {
 
     /// <summary>

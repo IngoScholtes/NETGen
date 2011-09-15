@@ -8,7 +8,7 @@
     <ProjectGuid>{BC0350FF-A9F3-4801-843B-E7EDFB298F4F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NETGen.Layout.Positioned</RootNamespace>
+    <RootNamespace>NETGen.Layouts.Positioned</RootNamespace>
     <AssemblyName>NETGen.Layout.Positioned</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

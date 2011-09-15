@@ -7,7 +7,8 @@ namespace NETGen.Core
 	public enum RunState { Idle = 0, Running = 2, Stopped = 3, Error = 4 };
 
 	/// <summary>
-	/// Represents a dynamical process that runs in discrete steps. Implementors of this class can be run synchronously and asynchronously
+	/// Represents a dynamical process that runs in discrete steps. Implementors of this class can be run synchronously and asynchronously.
+	/// This is the point of extensibility for modules in NETGen.Dynamics.
 	/// </summary>
 	public abstract class DiscreteDynamics<ResultType>
 	{			
@@ -79,27 +80,41 @@ namespace NETGen.Core
 				_timeSeries[SimulationStep] = new ConcurrentDictionary<string, double>();
 			
 			_timeSeries[SimulationStep][column] = val;
-		}
+		}		
+		
 		
 		public void WriteTimeSeries(string file)
 		{
-			string header = "# Time"; 
-			foreach(string col in _dataColumns)
-				header+= "\t" + col;
-			header += "\n";
-			System.IO.File.WriteAllText(file, header);
-			
-			for(long t = 0; t< SimulationStep; t++)
+			if(file==null)
 			{
-				if (_timeSeries.ContainsKey(t))
-				{
-					string line = t.ToString();
-					foreach(string col in _dataColumns)
-						line += string.Format("\t{0:0.0000}", _timeSeries[t][col]);
-					line += "\n";
-					System.IO.File.AppendAllText(file, line);
-				}
+				Logger.AddMessage(LogEntryType.Error, "Could not write time-series: 'null' given as filename");
+				return;
 			}
+			
+			try{
+				string header = "# Time"; 
+				foreach(string col in _dataColumns)
+					header+= "\t" + col;
+				header += "\n";
+				System.IO.File.WriteAllText(file, header);
+				
+				for(long t = 0; t< SimulationStep; t++)
+				{
+					if (_timeSeries.ContainsKey(t))
+					{
+						string line = t.ToString();
+						foreach(string col in _dataColumns)
+							line += string.Format("\t{0:0.0000}", _timeSeries[t][col]);
+						line += "\n";
+						System.IO.File.AppendAllText(file, line);
+					}
+				}
+				Logger.AddMessage(LogEntryType.Info, "Time series written successfully");
+			} catch(System.IO.IOException ex)
+			{
+				Logger.AddMessage(LogEntryType.Error, "Could not write time-series:" + ex.Message);
+			}
+			
 			
 		}
 		

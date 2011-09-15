@@ -11,7 +11,8 @@ namespace NETGen.Core
     /// This is NETGen's central class, representing a thread-safe network consisting of vertices and directed or undirected edges. This class is multi-thread-efficient and thread-safe,
     /// multiple concurrent read accesses are allowed, while concurrent read/write accesses are being synchronized. Please note, that an exception will be thrown when a write-access (like e.g.
     /// AddVertex, RemoveEdge, ... is nested inside a thread-safe iteration (like e.g. the Vertices and Edges iterators). If you need to do such an operation, 
-    /// obtain a copy of the thread-safe iterator first. Please refer to the iterators for more information. The network is internally stored as a adjacency list
+    /// obtain a copy of the thread-safe iterator first. Please refer to the iterators for more information. The network is internally stored as a adjacency list. 
+    /// This class is the base class of extensions in NETGen.NetworkModels
     /// </summary>
     public class Network
     {
