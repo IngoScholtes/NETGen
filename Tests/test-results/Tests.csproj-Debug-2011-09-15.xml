@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <UnitTestResult>
+      <TestDate>2011-09-15T21:02:47</TestDate>
+      <Status>Success Failure</Status>
+      <TotalFailures>2</TotalFailures>
+      <TotalSuccess>4</TotalSuccess>
+      <TotalIgnored>0</TotalIgnored>
+      <Time />
+      <Message>Child test failed</Message>
+    </UnitTestResult>
+  </Results>
+  <Tests>
+    <TestRecord Name="NETGen">
+      <Results>
+        <UnitTestResult>
+          <TestDate>2011-09-15T21:02:47</TestDate>
+          <Status>Success Failure</Status>
+          <TotalFailures>2</TotalFailures>
+          <TotalSuccess>4</TotalSuccess>
+          <TotalIgnored>0</TotalIgnored>
+          <Time />
+          <Message>Child test failed</Message>
+        </UnitTestResult>
+      </Results>
+      <Tests>
+        <TestRecord Name="Core">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2011-09-15T21:02:47</TestDate>
+              <Status>Success</Status>
+              <TotalFailures>0</TotalFailures>
+              <TotalSuccess>2</TotalSuccess>
+              <TotalIgnored>0</TotalIgnored>
+              <Time />
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="Tests">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2011-09-15T21:02:47</TestDate>
+                  <Status>Success</Status>
+                  <TotalFailures>0</TotalFailures>
+                  <TotalSuccess>2</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                </UnitTestResult>
+              </Results>
+              <Tests>
+                <TestRecord Name="NetworkTests">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2011-09-15T21:02:47</TestDate>
+                      <Status>Success</Status>
+                      <TotalFailures>0</TotalFailures>
+                      <TotalSuccess>2</TotalSuccess>
+                      <TotalIgnored>0</TotalIgnored>
+                      <Time />
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="LoggerTest">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T13:20:28</TestDate>
+                          <Status>Success</Status>
+                          <TotalFailures>0</TotalFailures>
+                          <TotalSuccess>1</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>Test successful
+
+Execution time: 0.01ms</Message>
+                          <ConsoleOutput>[APP]	1:20:28 PM	[LayoutTests.dll/LoggerTest         ]	
+[APP]	1:20:28 PM	[LayoutTests.dll/LoggerTest         ]	
+</ConsoleOutput>
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T21:02:47</TestDate>
+                          <Status>Success</Status>
+                          <TotalFailures>0</TotalFailures>
+                          <TotalSuccess>1</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>Test successful
+
+Execution time: 0.06ms</Message>
+                          <ConsoleOutput>[APP]	9:02:48 PM	[ LayoutTests.dll/LoggerTest ]	
+[APP]	9:02:48 PM	[ LayoutTests.dll/LoggerTest ]	
+</ConsoleOutput>
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="DiscreteDynamicsTest">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T21:02:47</TestDate>
+                          <Status>Success</Status>
+                          <TotalFailures>0</TotalFailures>
+                          <TotalSuccess>1</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>Test successful
+
+Execution time: 0.00ms</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+              </Tests>
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+        <TestRecord Name="Dynamics">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2011-09-15T21:02:47</TestDate>
+              <Status>Failure</Status>
+              <TotalFailures>1</TotalFailures>
+              <TotalSuccess>0</TotalSuccess>
+              <TotalIgnored>0</TotalIgnored>
+              <Time />
+              <Message>Child test failed</Message>
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="Tests">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2011-09-15T21:02:47</TestDate>
+                  <Status>Failure</Status>
+                  <TotalFailures>1</TotalFailures>
+                  <TotalSuccess>0</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                  <Message>Child test failed</Message>
+                </UnitTestResult>
+              </Results>
+              <Tests>
+                <TestRecord Name="NETGen">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2011-09-15T21:02:47</TestDate>
+                      <Status>Failure</Status>
+                      <TotalFailures>1</TotalFailures>
+                      <TotalSuccess>0</TotalSuccess>
+                      <TotalIgnored>0</TotalIgnored>
+                      <Time />
+                      <Message>Child test failed</Message>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="EpidemicSyncTest">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T21:02:47</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.NullReferenceException : Object reference not set to an instance of an object</Message>
+                          <StackTrace>  at NETGen.Core.DiscreteDynamics`1[NETGen.Dynamics.Synchronization.SyncResults].WriteTimeSeries (System.String file) [0x00000] in &lt;filename unknown&gt;:0 
+  at NETGen.Dynamics.Tests.NETGen.EpidemicSyncTest () [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x000d5] in /home/ischoltes/Downloads/mono-2.10/build/mono-2.10.5/mcs/class/corlib/System.Reflection/MonoMethod.cs:226 </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T21:03:06</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.NullReferenceException : Object reference not set to an instance of an object</Message>
+                          <StackTrace>  at NETGen.Core.DiscreteDynamics`1[NETGen.Dynamics.Synchronization.SyncResults].WriteTimeSeries (System.String file) [0x00000] in &lt;filename unknown&gt;:0 
+  at NETGen.Dynamics.Tests.NETGen.EpidemicSyncTest () [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x000d5] in /home/ischoltes/Downloads/mono-2.10/build/mono-2.10.5/mcs/class/corlib/System.Reflection/MonoMethod.cs:226 </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T21:06:46</TestDate>
+                          <Status>Success</Status>
+                          <TotalFailures>0</TotalFailures>
+                          <TotalSuccess>1</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>Test successful
+
+Execution time: 0.02ms</Message>
+                          <ConsoleOutput>[ERROR]	9:06:47 PM	[ NETGen.Core.dll/WriteTimeSeries ]	Could not write time-series: 'null' given as filename
+</ConsoleOutput>
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+              </Tests>
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+        <TestRecord Name="Layout">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2011-09-15T21:02:47</TestDate>
+              <Status>Success Failure</Status>
+              <TotalFailures>1</TotalFailures>
+              <TotalSuccess>1</TotalSuccess>
+              <TotalIgnored>0</TotalIgnored>
+              <Time />
+              <Message>Child test failed</Message>
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="Tests">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2011-09-15T21:02:47</TestDate>
+                  <Status>Success Failure</Status>
+                  <TotalFailures>1</TotalFailures>
+                  <TotalSuccess>1</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                  <Message>Child test failed</Message>
+                </UnitTestResult>
+              </Results>
+              <Tests>
+                <TestRecord Name="TestLayoutMechanisms">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2011-09-15T21:02:47</TestDate>
+                      <Status>Success Failure</Status>
+                      <TotalFailures>1</TotalFailures>
+                      <TotalSuccess>1</TotalSuccess>
+                      <TotalIgnored>0</TotalIgnored>
+                      <Time />
+                      <Message>Child test failed</Message>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="TestFruchtermanReingold">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T21:02:47</TestDate>
+                          <Status>Success</Status>
+                          <TotalFailures>0</TotalFailures>
+                          <TotalSuccess>1</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>Test successful
+
+Execution time: 5.22ms</Message>
+                          <ConsoleOutput>[INFO]	9:02:50 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 0 computed in 1665.396 ms
+[INFO]	9:02:51 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 1 computed in 824.942 ms
+[INFO]	9:02:52 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 2 computed in 685.239 ms
+[INFO]	9:02:52 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 3 computed in 797.693 ms
+[INFO]	9:02:53 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 4 computed in 692.406 ms
+</ConsoleOutput>
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="TestHuForceDirected">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T21:02:47</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>  Expected: not (0.00, 0.00, 0.00)
+  But was:  (0.00, 0.00, 0.00)
+</Message>
+                          <StackTrace>  at NUnit.Framework.Assert.Fail (System.String message, System.Object[] args) [0x0002a] in /home/ischoltes/Downloads/mono-2.10/build/mono-2.10.5/mcs/nunit24/NUnitFramework/framework/Assert.cs:2083 
+  at NUnit.Framework.Assert.Fail (System.String message) [0x00000] in /home/ischoltes/Downloads/mono-2.10/build/mono-2.10.5/mcs/nunit24/NUnitFramework/framework/Assert.cs:2093 
+  at NETGen.Layout.Tests.TestLayoutMechanisms.TestHuForceDirected () [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x000d5] in /home/ischoltes/Downloads/mono-2.10/build/mono-2.10.5/mcs/class/corlib/System.Reflection/MonoMethod.cs:226 </StackTrace>
+                          <ConsoleOutput>[INFO]	9:02:54 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 5 computed in 784.142 ms
+</ConsoleOutput>
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+              </Tests>
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+        <TestRecord Name="NetworkModels">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2011-09-15T21:02:47</TestDate>
+              <Status>Success</Status>
+              <TotalFailures>0</TotalFailures>
+              <TotalSuccess>1</TotalSuccess>
+              <TotalIgnored>0</TotalIgnored>
+              <Time />
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="Tests">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2011-09-15T21:02:47</TestDate>
+                  <Status>Success</Status>
+                  <TotalFailures>0</TotalFailures>
+                  <TotalSuccess>1</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                </UnitTestResult>
+              </Results>
+              <Tests>
+                <TestRecord Name="TestNetworkModels">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2011-09-15T21:02:47</TestDate>
+                      <Status>Success</Status>
+                      <TotalFailures>0</TotalFailures>
+                      <TotalSuccess>1</TotalSuccess>
+                      <TotalIgnored>0</TotalIgnored>
+                      <Time />
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="TestClusterNetwork">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2011-09-15T21:02:47</TestDate>
+                          <Status>Success</Status>
+                          <TotalFailures>0</TotalFailures>
+                          <TotalSuccess>1</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>Test successful
+
+Execution time: 3.38ms</Message>
+                          <ConsoleOutput>[INFO]	9:02:55 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 6 computed in 960.98 ms
+[INFO]	9:02:56 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 7 computed in 912.164 ms
+[INFO]	9:02:57 PM	[ ClusterNetwork.dll/.ctor                     ]	Created cluster network with N = 2000, M = 5116, Q = 0.89
+[INFO]	9:02:57 PM	[ NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1 ]	Layout step 8 computed in 888.168 ms
+</ConsoleOutput>
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+              </Tests>
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+      </Tests>
+    </TestRecord>
+  </Tests>
+</TestRecord>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{04258183-C570-40D3-B0D0-043FFB443F30}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>LayoutTests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>Tests</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="NETGen.Layout.Tests.cs" />
+    <Compile Include="NETGen.NetworkModels.Tests.cs" />
+    <Compile Include="NETGen.Core.Tests.cs" />
+    <Compile Include="NETGen.Dynamics.Tests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NETGen.Layouts\NETGen.Layouts.Random\NETGen.Layouts.Random.csproj">
+      <Project>{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}</Project>
+      <Name>NETGen.Layouts.Random</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.Layouts\NETGen.Layouts.Radial\NETGen.Layouts.Radial.csproj">
+      <Project>{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9}</Project>
+      <Name>NETGen.Layouts.Radial</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.Layouts\NETGen.Layouts.Positioned\NETGen.Layouts.Positioned.csproj">
+      <Project>{BC0350FF-A9F3-4801-843B-E7EDFB298F4F}</Project>
+      <Name>NETGen.Layouts.Positioned</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.Layouts\NETGen.Layouts.HuForceDirected\NETGen.Layouts.HuForceDirected.csproj">
+      <Project>{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2}</Project>
+      <Name>NETGen.Layouts.HuForceDirected</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.Layouts\NETGen.Layouts.FruchtermanReingold\NETGen.Layouts.FruchtermanReingold.csproj">
+      <Project>{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}</Project>
+      <Name>NETGen.Layouts.FruchtermanReingold</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.Visualization\NETGen.Visualization.csproj">
+      <Project>{FB24B173-DEFF-49D9-B232-561887EC652C}</Project>
+      <Name>NETGen.Visualization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.Core\NETGen.Core.csproj">
+      <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
+      <Name>NETGen.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.NetworkModels\NETGen.NetworkModels.ErdoesRenyi\NETGen.NetworkModels.ErdoesRenyi.csproj">
+      <Project>{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}</Project>
+      <Name>NETGen.NetworkModels.ErdoesRenyi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.NetworkModels\NETGen.NetworkModels.ClusterNetwork\NETGen.NetworkModels.Cluster.csproj">
+      <Project>{05738475-4CEA-425D-8775-7DD94A3611FD}</Project>
+      <Name>NETGen.NetworkModels.Cluster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.NetworkModels\NETGen.NetworkModels.Tree\NETGen.NetworkModels.Tree.csproj">
+      <Project>{73A4A13B-B39A-4635-8AAF-F093BD699437}</Project>
+      <Name>NETGen.NetworkModels.Tree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.NetworkModels\NETGen.NetworkModels.WattsStrogatz\NETGen.NetworkModels.WattsStrogatz.csproj">
+      <Project>{64531B8E-C8B0-41A1-ACC2-330662B77269}</Project>
+      <Name>NETGen.NetworkModels.WattsStrogatz</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.NetworkModels\NETGen.NetworkModels.PreferentialAttachment\NETGen.NetworkModels.BarabasiAlbert.csproj">
+      <Project>{E9546ABC-586C-4BAE-BE40-2DB84AFA7CFF}</Project>
+      <Name>NETGen.NetworkModels.BarabasiAlbert</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETGen.Dynamics\NETGen.Dynamics.Synchronization.Epidemic\NETGen.Dynamics.Synchronization.Epidemic.csproj">
+      <Project>{83540F86-4BD1-4FC3-9065-A5A838C66D50}</Project>
+      <Name>NETGen.Dynamics.Synchronization.Epidemic</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <UnitTestResult>
+      <TestDate>2011-09-14T15:59:41</TestDate>
+      <Status>Success</Status>
+      <TotalFailures>0</TotalFailures>
+      <TotalSuccess>2</TotalSuccess>
+      <TotalIgnored>0</TotalIgnored>
+      <Time />
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2011-09-14T16:01:24</TestDate>
+      <Status>Success</Status>
+      <TotalFailures>0</TotalFailures>
+      <TotalSuccess>2</TotalSuccess>
+      <TotalIgnored>0</TotalIgnored>
+      <Time />
+    </UnitTestResult>
+  </Results>
+  <Tests>
+    <TestRecord Name="LayoutTests">
+      <Results>
+        <UnitTestResult>
+          <TestDate>2011-09-14T15:59:41</TestDate>
+          <Status>Success</Status>
+          <TotalFailures>0</TotalFailures>
+          <TotalSuccess>2</TotalSuccess>
+          <TotalIgnored>0</TotalIgnored>
+          <Time />
+        </UnitTestResult>
+        <UnitTestResult>
+          <TestDate>2011-09-14T16:01:24</TestDate>
+          <Status>Success</Status>
+          <TotalFailures>0</TotalFailures>
+          <TotalSuccess>2</TotalSuccess>
+          <TotalIgnored>0</TotalIgnored>
+          <Time />
+        </UnitTestResult>
+      </Results>
+      <Tests>
+        <TestRecord Name="TestLayoutMechanisms">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2011-09-14T15:59:41</TestDate>
+              <Status>Success</Status>
+              <TotalFailures>0</TotalFailures>
+              <TotalSuccess>2</TotalSuccess>
+              <TotalIgnored>0</TotalIgnored>
+              <Time />
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2011-09-14T16:01:24</TestDate>
+              <Status>Success</Status>
+              <TotalFailures>0</TotalFailures>
+              <TotalSuccess>2</TotalSuccess>
+              <TotalIgnored>0</TotalIgnored>
+              <Time />
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="TestFruchtermanReingold">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2011-09-14T15:59:41</TestDate>
+                  <Status>Success</Status>
+                  <TotalFailures>0</TotalFailures>
+                  <TotalSuccess>1</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                  <Message>Test successful
+
+Execution time: 5.22ms</Message>
+                  <ConsoleOutput>[INFO]	3:59:43 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 0 computed in 1674.568 ms
+[INFO]	3:59:44 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 1 computed in 708.21 ms
+[INFO]	3:59:45 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 2 computed in 659.651 ms
+[INFO]	3:59:45 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 3 computed in 649.72 ms
+[INFO]	3:59:46 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 4 computed in 756.613 ms
+[INFO]	3:59:47 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 5 computed in 652.774 ms
+</ConsoleOutput>
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2011-09-14T16:01:24</TestDate>
+                  <Status>Success</Status>
+                  <TotalFailures>0</TotalFailures>
+                  <TotalSuccess>1</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                  <Message>Test successful
+
+Execution time: 5.23ms</Message>
+                  <ConsoleOutput>[INFO]	4:01:26 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 0 computed in 1659.464 ms
+[INFO]	4:01:27 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 1 computed in 717.668 ms
+[INFO]	4:01:28 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 2 computed in 785.453 ms
+[INFO]	4:01:28 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 3 computed in 655.47 ms
+[INFO]	4:01:29 PM	[NETGen.Layout.FruchtermanReingold.dll/&lt;&gt;m__1]	Layout step 4 computed in 677.461 ms
+</ConsoleOutput>
+                  <ConsoleError />
+                </UnitTestResult>
+              </Results>
+            </TestRecord>
+            <TestRecord Name="TestHuForceDirected">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2011-09-14T15:59:41</TestDate>
+                  <Status>Success</Status>
+                  <TotalFailures>0</TotalFailures>
+                  <TotalSuccess>1</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                  <Message>Test successful
+
+Execution time: 0.17ms</Message>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2011-09-14T16:01:24</TestDate>
+                  <Status>Success</Status>
+                  <TotalFailures>0</TotalFailures>
+                  <TotalSuccess>1</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                  <Message>Test successful
+
+Execution time: 0.15ms</Message>
+                  <ConsoleOutput>
+</ConsoleOutput>
+                  <ConsoleError />
+                </UnitTestResult>
+              </Results>
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+      </Tests>
+    </TestRecord>
+  </Tests>
+</TestRecord>

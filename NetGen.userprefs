@@ -1,15 +1,19 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Applications/CuttleFishCXFPlayer/Main.cs">
     <Files>
-      <File FileName="Applications/Demo/Demo.cs" Line="20" Column="1" />
-      <File FileName="Applications/CuttleFishCXFPlayer/Main.cs" Line="25" Column="30" />
+      <File FileName="Applications/Demo/Demo.cs" Line="35" Column="23" />
+      <File FileName="Applications/CuttleFishCXFPlayer/Main.cs" Line="58" Column="52" />
+      <File FileName="NETGen.Core/Network.cs" Line="443" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.Radial/RadialLayout.cs" Line="33" Column="32" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="59" Column="9" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.Random/RandomLayout.cs" Line="58" Column="6" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
+        <State expanded="True" selected="True">
           <Node name="Applications" expanded="True">
-            <Node name="CuttleFishCXFPlayer" expanded="True" selected="True" />
+            <Node name="CuttleFishCXFPlayer" expanded="True" />
             <Node name="Demo" expanded="True" />
           </Node>
           <Node name="NETGen.Dynamics" expanded="True">
@@ -18,6 +22,7 @@
           <Node name="NETGen.Layouts" expanded="True">
             <Node name="NETGen.Layouts.HuForceDirected" expanded="True" />
             <Node name="NETGen.Layouts.Radial" expanded="True" />
+            <Node name="NETGen.Layouts.Random" expanded="True" />
           </Node>
           <Node name="NETGen.NetworkModels" expanded="True">
             <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
@@ -46,7 +51,6 @@
     <BreakpointStore>
       <Breakpoint file="/home/ischoltes/Code/NETGen/NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" line="64" />
       <Breakpoint file="/home/ischoltes/Code/NETGen/NETGen.Layouts/NETGen.Layouts.HuForceDirected/HuForceDirectedLayout.cs" line="66" />
-      <Breakpoint file="/home/ischoltes/Code/NETGen/Applications/CuttleFishCXFPlayer/Main.cs" line="32" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
