@@ -17,9 +17,20 @@ namespace NETGen.Layouts.Radial
     public class RadialLayout : ConcurrentDictionary<Vertex, Vector3>, ILayoutProvider
     {        
 		private bool _laidout = false;
+		private double width; 
+		private double height; 
+		private Network net;
+		private double exp_base;
+		
+		public RadialLayout(double exp_base)
+		{
+			this.exp_base = exp_base;
+		}
 		
         public Vector3 GetPositionOfNode(Vertex v)
         {
+			if(!ContainsKey(v))
+				DoLayout(width, height, net);
             return this[v];
         }
 
@@ -34,6 +45,10 @@ namespace NETGen.Layouts.Radial
 
         public void DoLayout(double width, double height, Network net)
         {
+			this.width = width;
+			this.height = height;
+			this.net = net;
+	
             ConcurrentDictionary<int, int> nodesPerLevel = new ConcurrentDictionary<int, int>(System.Environment.ProcessorCount, 100);
             ConcurrentDictionary<int, int> countPerLevel = new ConcurrentDictionary<int, int>(System.Environment.ProcessorCount, 100);
 			ConcurrentDictionary<int, double> startPosPerLevel = new ConcurrentDictionary<int, double>(System.Environment.ProcessorCount, 0);
@@ -41,14 +56,13 @@ namespace NETGen.Layouts.Radial
             double n = (double)net.VertexCount;
             int maxLevel = 0;
 
-            double basis = 2d;
 
             //assign levels 
             Parallel.ForEach(net.Vertices.ToArray(), v => 
             {
-                int level = (int)Math.Round(Math.Log(n / 2, basis) - Math.Log(Math.Max((double)v.Degree, 7d), basis));
+                int level = (int)Math.Round(Math.Log(n / 2, exp_base) - Math.Log(Math.Max((double)v.Degree, 7d), exp_base));
                 if (level < 0)
-                    level = (int)Math.Round(Math.Log(n / 2, basis) - Math.Log(1d, basis));
+                    level = (int)Math.Round(Math.Log(n / 2, exp_base) - Math.Log(1d, exp_base));
                 maxLevel = Math.Max(level, maxLevel);
                 if (!nodesPerLevel.ContainsKey(level))
                 {
@@ -63,9 +77,9 @@ namespace NETGen.Layouts.Radial
             // assign positions 
             Parallel.ForEach(net.Vertices.ToArray(), v => 
             {
-                int level = (int)Math.Round(Math.Log(n / 2, basis) - Math.Log(Math.Max((double)v.Degree, 7d), basis));
+                int level = (int)Math.Round(Math.Log(n / 2, exp_base) - Math.Log(Math.Max((double)v.Degree, 7d), exp_base));
                 if (level < 0)
-                    level = (int)Math.Round(Math.Log(n / 2, basis) - Math.Log(1d, basis));
+                    level = (int)Math.Round(Math.Log(n / 2, exp_base) - Math.Log(1d, exp_base));
                 if (!countPerLevel.ContainsKey(level))
                     countPerLevel[level] = 1;
                 else

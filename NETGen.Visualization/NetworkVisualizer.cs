@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 using OpenTK;
 using OpenTK.Input;
@@ -50,7 +51,12 @@ namespace NETGen.Visualization
 		private double _deltaX = 0d;
 		private double _deltaY = 0d;		
 		private double _zoom = 1d;
+		
+		private static AutoResetEvent _initialized = new AutoResetEvent(false);
 	
+		private static NetworkVisualizer Instance;
+		
+		public static Bitmap ScreenShot = null;
  
 		internal NetworkVisualizer(Network network, ILayoutProvider layout, NetworkColorizer colorizer, int width, int height) : base(width, height, GraphicsMode.Default, "NETGen Display")
 		{
@@ -59,7 +65,7 @@ namespace NETGen.Visualization
 			Mouse.ButtonUp += new EventHandler<MouseButtonEventArgs>(Mouse_ButtonUp);
 			Mouse.Move += new EventHandler<MouseMoveEventArgs>(Mouse_Move);		
 			Mouse.WheelChanged += new EventHandler<MouseWheelEventArgs>(Mouse_WheelChanged);			
-
+						
 			
 			if (colorizer == null)
 				_colorizer = new NetworkColorizer();
@@ -135,7 +141,7 @@ namespace NETGen.Visualization
 			Title = "Rendering at "+ Fps.GetFps(e.Time).ToString() + " fps";
 		}
 
- 
+ 		[MethodImpl(MethodImplOptions.Synchronized)]
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{			
 			base.OnRenderFrame(e);
@@ -162,11 +168,13 @@ namespace NETGen.Visualization
 			
 			// Draw the vertices
 			foreach(Vertex v in _network.Vertices)
-				DrawVertex(v, _colorizer[v], 8, 2);
+				DrawVertex(v, _colorizer[v], 5, 2);
 			
  
 			// Swap screen and backbuffer
 			SwapBuffers();
+			
+			GrabImage();
 		}
 		
 		/// <summary>
@@ -227,8 +235,9 @@ namespace NETGen.Visualization
 		{			
 			// The actual rendering needs to be done in a separate thread placed in the single thread appartment state
 			_mainThread = new Thread(new ThreadStart(new Action(delegate() {				
-					NetworkVisualizer p =  new NetworkVisualizer(network, layout, colorizer, width, height);
-					p.Run(80f);
+					Instance =  new NetworkVisualizer(network, layout, colorizer, width, height);
+					_initialized.Set();
+					Instance.Run(80f);
             })));
 						
             _mainThread.SetApartmentState(ApartmentState.STA);
@@ -236,8 +245,29 @@ namespace NETGen.Visualization
 			
 			// Fire up the thread
             _mainThread.Start();
-			
+			_initialized.WaitOne();
 		}
+		
+		[MethodImpl(MethodImplOptions.Synchronized)]
+	    public static void GrabImage()
+        {
+            if (GraphicsContext.CurrentContext == null)
+                throw new GraphicsContextMissingException();
+ 
+            if(ScreenShot==null)
+				ScreenShot = new Bitmap(Instance.ClientSize.Width, Instance.ClientSize.Height);
+			
+            System.Drawing.Imaging.BitmapData data =
+                ScreenShot.LockBits(Instance.ClientRectangle, System.Drawing.Imaging.ImageLockMode.WriteOnly, 
+					System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			
+            GL.ReadPixels(0, 0, Instance.ClientSize.Width, Instance.ClientSize.Height,PixelFormat.Bgra,
+				PixelType.UnsignedByte, data.Scan0);
+			
+            ScreenShot.UnlockBits(data);
+
+        }
+
 	}
 
 }

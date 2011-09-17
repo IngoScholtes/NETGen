@@ -61,7 +61,7 @@ Author: Martin Burtscher
 /******************************************************************************/
 
 // childd is aliased with velxd, velyd, velzd, accxd, accyd, acczd, and sortd but they never use the same memory locations
-__constant__ int nnodesd, nbodiesd;
+__device__ __constant__ int nnodesd, nbodiesd;
 __constant__ float dtimed, dthfd, epssqd, itolsqd;
 __constant__ volatile float *massd, *posxd, *posyd, *poszd, *velxd, *velyd, *velzd, *accxd, *accyd, *acczd;
 __constant__ volatile float *maxxd, *maxyd, *maxzd, *minxd, *minyd, *minzd;
@@ -560,6 +560,10 @@ void ForceCalculationKernel()
 /*** advance bodies ***********************************************************/
 /******************************************************************************/
 
+extern "C" __global__ void dummy(float4* data)
+{
+}
+
 __global__
 __launch_bounds__(THREADS6, FACTOR6)
 void IntegrationKernel()
@@ -683,14 +687,14 @@ int main(int argc, char *argv[])
     fprintf(stderr, "There is no CUDA capable device\n");
     exit(-1);
   }
-  if (deviceProp.major < 2) {
-    fprintf(stderr, "Need at least compute capability 2.0\n");
-    exit(-1);
-  }
-  if (deviceProp.warpSize != WARPSIZE) {
-    fprintf(stderr, "Warp size must be %d\n", deviceProp.warpSize);
-    exit(-1);
-  }
+///  if (deviceProp.major < 2) {
+ //   fprintf(stderr, "Need at least compute capability 2.0\n");
+ //   exit(-1);
+  //}
+ // if (deviceProp.warpSize != WARPSIZE) {
+  //  fprintf(stderr, "Warp size must be %d\n", deviceProp.warpSize);
+  //  exit(-1);
+ // }
 
   blocks = deviceProp.multiProcessorCount;
   fprintf(stderr, "blocks = %d\n", blocks);

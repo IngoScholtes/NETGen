@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using NETGen.Core;
 using NETGen.Visualization;
 
@@ -12,16 +12,19 @@ namespace NETGen.Layouts.RandomLayout
     public class RandomLayout : ILayoutProvider 
     {
 
-        Dictionary<Vertex, Vector3> _vertexPositions;
+        ConcurrentDictionary<Vertex, Vector3> _vertexPositions;
 		
 		private bool _laidout = false;
+		
+		double width; 
+		double height;
 
         /// <summary>
         /// Initializes a simple random layout that assigns random positions to vertices
         /// </summary>
 		public RandomLayout()
 		{
-            _vertexPositions = new Dictionary<Vertex, Vector3>();
+            _vertexPositions = new ConcurrentDictionary<Vertex, Vector3>();
 		}
 
         /// <summary>
@@ -32,12 +35,8 @@ namespace NETGen.Layouts.RandomLayout
         /// <param name="n"></param>
         public void DoLayout(double width, double height, Network n)
         {
-            foreach (Vertex v in n.Vertices)
-            {
-                if (!_vertexPositions.ContainsKey(v))
-                    _vertexPositions[v] = new Vector3(v.Network.NextRandomDouble() * width, v.Network.NextRandomDouble() * height, 0);
-            }
-			_laidout = true;
+			this.width = width;
+			this.height = height;
         }
 		
         /// <summary>
@@ -47,6 +46,8 @@ namespace NETGen.Layouts.RandomLayout
         /// <returns></returns>
         public Vector3 GetPositionOfNode(Vertex v)
         {
+			if(!_vertexPositions.ContainsKey(v))
+				_vertexPositions[v] = new Vector3(v.Network.NextRandomDouble() * width, v.Network.NextRandomDouble() * height, 0);
             return _vertexPositions[v];
         }
 		

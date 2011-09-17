@@ -1,59 +1,28 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/ClusterSync/Properties/Settings.Designer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/CuttleFishCXFPlayer/Main.cs">
     <Files>
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Spreading.Simple/SimpleSpreading.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Spreading.SIR/SIRSpreading.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="64" Column="6" />
-      <File FileName="NETGen.Core/Logger.cs" Line="20" Column="6" />
-      <File FileName="NETGen.Core/Network.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Visualization/ILayoutProvider.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.HuForceDirected/BurtscherGCG.2.0.cu" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.Random/RandomLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.Radial/RadialLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.Positioned/PositionedLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/FruchtermanReingoldLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="Applications/Demo/Demo.cs" Line="80" Column="3" />
-      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="166" Column="86" />
-      <File FileName="Tests/NETGen.Dynamics.Tests.cs" Line="22" Column="3" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="210" Column="14" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/EpidemicSync.cs" Line="125" Column="9" />
-      <File FileName="Tests/NETGen.Core.Tests.cs" Line="1" Column="1" />
-      <File FileName="Tests/NETGen.Layout.Tests.cs" Line="20" Column="4" />
-      <File FileName="Applications/ClusterConsensus/app.config" Line="9" Column="10" />
-      <File FileName="Applications/ClusterConsensus/Properties/Settings.settings" Line="1" Column="1" />
-      <File FileName="Applications/ClusterConsensus/Properties/Settings.Designer.cs" Line="16" Column="64" />
-      <File FileName="Applications/ClusterConsensus/ClusterAggregation.cs" Line="26" Column="36" />
-      <File FileName="Applications/ClusterSIR/ClusterSIR.cs" Line="23" Column="2" />
-      <File FileName="Applications/ClusterSIR/app.config" Line="46" Column="11" />
-      <File FileName="Applications/ClusterSIR/Properties/Settings.settings" Line="1" Column="1" />
-      <File FileName="Applications/ClusterSIR/Properties/Settings.Designer.cs" Line="11" Column="11" />
-      <File FileName="Applications/ClusterSpreading/ClusterSpreading.cs" Line="11" Column="36" />
-      <File FileName="Applications/ClusterSpreading/app.config" Line="43" Column="11" />
-      <File FileName="Applications/ClusterSpreading/Properties/Settings.Designer.cs" Line="11" Column="11" />
-      <File FileName="Applications/ClusterSync/app.config" Line="27" Column="23" />
-      <File FileName="Applications/ClusterSync/Properties/Settings.settings" Line="29" Column="35" />
-      <File FileName="Applications/ClusterSync/Properties/Settings.Designer.cs" Line="82" Column="69" />
+      <File FileName="Applications/Demo/Demo.cs" Line="20" Column="1" />
+      <File FileName="Applications/CuttleFishCXFPlayer/Main.cs" Line="25" Column="30" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
-            <Node name="ClusterPaper" expanded="True">
-              <Node name="ClusterAggregation" expanded="True" />
-              <Node name="ClusterSIR" expanded="True" />
-              <Node name="ClusterSpreading" expanded="True">
-                <Node name="Properties" expanded="True" />
-              </Node>
-              <Node name="ClusterSync" expanded="True" selected="True">
-                <Node name="Properties" expanded="True">
-                  <Node name="Settings.settings" expanded="True" />
-                </Node>
-              </Node>
-            </Node>
+            <Node name="CuttleFishCXFPlayer" expanded="True" selected="True" />
             <Node name="Demo" expanded="True" />
           </Node>
+          <Node name="NETGen.Dynamics" expanded="True">
+            <Node name="NETGen.Dynamics.Synchronization.Epidemic" expanded="True" />
+          </Node>
+          <Node name="NETGen.Layouts" expanded="True">
+            <Node name="NETGen.Layouts.HuForceDirected" expanded="True" />
+            <Node name="NETGen.Layouts.Radial" expanded="True" />
+          </Node>
+          <Node name="NETGen.NetworkModels" expanded="True">
+            <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
+          </Node>
+          <Node name="NETGen.Core" expanded="True" />
           <Node name="NETGen.Visualization" expanded="True" />
           <Node name="Tests" expanded="True" />
         </State>
@@ -74,7 +43,11 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/ischoltes/Code/NETGen/NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" line="64" />
+      <Breakpoint file="/home/ischoltes/Code/NETGen/NETGen.Layouts/NETGen.Layouts.HuForceDirected/HuForceDirectedLayout.cs" line="66" />
+      <Breakpoint file="/home/ischoltes/Code/NETGen/Applications/CuttleFishCXFPlayer/Main.cs" line="32" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <AuthorInfo Name="Ingo Scholtes" Email="ischoltes@ethz.ch" Copyright="" Company="ETH Zuerich" Trademark="" />
