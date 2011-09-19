@@ -23,10 +23,15 @@ namespace CuttleFishCXFPlayer
 			catch
 			{
 				Console.WriteLine("Usage: CuttleFishCXFPlayer [cxfFile] [cefFile]");
+				// Some stupid change
 			}
 			
 			Network n = new Network();
 			NetworkColorizer colorizer = new NetworkColorizer();
+			
+			colorizer.DefaultBackgroundColor = Color.White;
+			colorizer.DefaultVertexColor = Color.Black; 
+			colorizer.DefaultEdgeColor = Color.Black;
 			
 			// read the input network
 			foreach(string s in cxf)
@@ -51,16 +56,12 @@ namespace CuttleFishCXFPlayer
 			
 			// Start the visualizer and compute the layout
 			
-			NetworkVisualizer.Start(n, new RandomLayout(), colorizer);
+			NetworkVisualizer.Start(n, new FruchtermanReingoldLayout(15), colorizer);
 			
 			int iteration = 0;
 			
 			NetworkVisualizer.ComputeLayout();
 			NetworkVisualizer.SaveCurrentImage(string.Format("frame_{0}.bmp", iteration));
-			
-			colorizer.DefaultBackgroundColor = Color.White;
-			colorizer.DefaultVertexColor = Color.Black; 
-			colorizer.DefaultEdgeColor = Color.Black;
 			
 			Logger.AddMessage(LogEntryType.AppMsg, "Press enter to step through network evolution ...");
 			Console.ReadLine();
@@ -93,8 +94,6 @@ namespace CuttleFishCXFPlayer
 					string tgt = ExtractTargetLabel(line);
 					Vertex v = n.SearchVertex(src);
 					Vertex w = n.SearchVertex(tgt);
-					v = n.CreateVertex(src);
-					w = n.CreateVertex(tgt);
 					n.CreateEdge(v, w);					
 				}
 				else if (line.Contains("removeEdge"))
