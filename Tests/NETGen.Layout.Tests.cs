@@ -23,8 +23,9 @@ namespace NETGen.Layout.Tests
 		public void TestHuForceDirected()
 		{					
 			HuForceDirectedLayout layout = new HuForceDirectedLayout(20);
+			layout.Init(2000d, 1000d, network);
 			Assert.IsTrue(layout.CUDAEnabled);
-			layout.DoLayout(2000d, 1000d, network);
+			layout.DoLayout();
 			
 			foreach(Vertex v in network.Vertices)
 			{
@@ -43,9 +44,8 @@ namespace NETGen.Layout.Tests
 		public void TestFruchtermanReingold()
 		{	
 			FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(10);
-			layout.DoLayout(2000d, 1000d, network);
-			System.Threading.Thread.Sleep(5000);
-			Assert.IsTrue(layout.IsLaidout());
+			layout.Init(2000d, 1000d, network);
+			layout.DoLayout();
 			foreach(Vertex v in network.Vertices)
 			{
 				try {

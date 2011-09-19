@@ -10,7 +10,7 @@ using NETGen.Visualization;
 
 namespace NETGen.Layouts.HuForceDirected
 {
-	public class HuForceDirectedLayout : NETGen.Visualization.ILayoutProvider
+	public class HuForceDirectedLayout : NETGen.Visualization.LayoutProvider
 	{
 		public bool CUDAEnabled = true;
 		
@@ -67,7 +67,7 @@ namespace NETGen.Layouts.HuForceDirected
 #endif
 		}
 		
-		public void DoLayout(double width, double height, Network n)
+		public override void DoLayout()
 		{
 			CUdeviceptr p1 = new CUdeviceptr();
 			
@@ -78,7 +78,7 @@ namespace NETGen.Layouts.HuForceDirected
 			CUfunction func = new CUfunction();	
 			CUResult res;
 			
-			int nnodes = (int) n.VertexCount*2;
+			int nnodes = (int) Network.VertexCount*2;
 			int blocks = 32;
 			
 			if (nnodes < 1024*blocks) nnodes = 1024*blocks;
@@ -138,15 +138,10 @@ namespace NETGen.Layouts.HuForceDirected
 				Logger.AddMessage(LogEntryType.Warning, "CUDA Error in IntegrationKernel: "+res.ToString());
 		}
 		
-		public Vector3 GetPositionOfNode(Vertex v)
+		public override Vector3 GetPositionOfNode(Vertex v)
         {
             return new Vector3();
         }
-		
-		public bool IsLaidout()
-		{
-			return false;
-		}
 	}
 }
 

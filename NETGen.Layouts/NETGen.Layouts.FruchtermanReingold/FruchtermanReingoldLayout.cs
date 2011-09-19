@@ -13,16 +13,17 @@ namespace NETGen.Layouts.FruchtermanReingold
     /// <summary>
     ///  A spring-based model according to (T. Fruchterman and E. Reingold 1991). Edges are thought to be elastic springs that lead to an attractive force between connected vertices. Furthermore, there is an antagonistic, repulsive force between every pair of vertices. Computation is being done in parallel on as many processing cores as available. 
     /// </summary>
-	public class FruchtermanReingoldLayout : ILayoutProvider
+	public class FruchtermanReingoldLayout : LayoutProvider
 	{
-		private bool _laidout = false;			
 		
         /// <summary>
         ///  The number of iterations to be used in the computation of vertex positions
         /// </summary>
 		private int _iterations = 0;
 
-        private ConcurrentDictionary<Vertex, Vector3> _vertexPositions;
+        private ConcurrentDictionary<Vertex, Vector3> _vertexPositions;		
+		
+		private ConcurrentBag<Vertex> _newVertices;
 		
         /// <summary>
         /// Creates a Fruchterman/Reingold layout using a given number of iterations for the computation of forces and positions. A larger iterations value will enhance the layouting quality, but will require more computation
@@ -32,6 +33,24 @@ namespace NETGen.Layouts.FruchtermanReingold
 		{
 			_iterations = iterations;
             _vertexPositions = new ConcurrentDictionary<Vertex, Vector3>();		
+			_newVertices = new ConcurrentBag<Vertex>();
+		}
+		
+		public override void Init(double width, double height, Network network)
+		{			
+			base.Init(width, height, network);
+			
+			foreach(Vertex v in network.Vertices)
+			{
+				_vertexPositions[v] = new Vector3(network.NextRandomDouble() * width, network.NextRandomDouble() * height, 1d);
+				_newVertices.Add(v);
+			}
+			
+			// Add vertex to _newVertices whenever one is added to the network
+			network.OnVertexAdded+=new Network.VertexUpdateHandler( delegate(Vertex v) {
+				_vertexPositions[v] = new Vector3(network.NextRandomDouble() * width, network.NextRandomDouble() * height, 1d);
+				_newVertices.Add(v);
+			});
 		}
 
         /// <summary>
@@ -41,77 +60,68 @@ namespace NETGen.Layouts.FruchtermanReingold
         /// <param name="height">height of the frame</param>
         /// <param name="n">The network to compute the layout for</param>
         [MethodImpl(MethodImplOptions.Synchronized)]
-		public void DoLayout(double width, double height, Network n)
+		public override void DoLayout()
 		{
+			Logger.AddMessage(LogEntryType.Info, "Computing Fruchterman-Reingold layout ...");
 			DateTime start = DateTime.Now;
-            double _area = width * height;
-            double _k = Math.Sqrt(_area / (double)n.Vertices.Count());
+            double _area = Width * Height;
+            double _k = Math.Sqrt(_area / (double)Network.Vertices.Count());
             _k *= 0.75d;						
 			
             // The displacement calculated for each vertex in each step
-            ConcurrentDictionary<Vertex, Vector3> disp = new ConcurrentDictionary<Vertex, Vector3>(System.Environment.ProcessorCount, (int) n.VertexCount);
-			
-			_vertexPositions = new ConcurrentDictionary<Vertex, Vector3>(System.Environment.ProcessorCount, (int) n.VertexCount);
+            ConcurrentDictionary<Vertex, Vector3> disp = new ConcurrentDictionary<Vertex, Vector3>(System.Environment.ProcessorCount, (int) Network.VertexCount);
             	
-			double t = width/10;
-            double tempstep = t / (double) _iterations;
+			double t = Width/10;
+            double tempstep = t / (double) _iterations;			
+							
+			Vertex[] vertices = Network.Vertices.ToArray();
+			Edge[] edges = Network.Edges.ToArray();				
 			
-			Parallel.ForEach(n.Vertices.ToArray(), v=>
-            {
-                _vertexPositions[v] = new Vector3(n.NextRandomDouble() * width, n.NextRandomDouble() * height, 1d);
-				disp[v] = new Vector3(0d, 0d, 1d);
-			});
-			
-			_laidout = true;
-			
-			System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(delegate(object o)	
-			{					
-				Vertex[] vertices = n.Vertices.ToArray();
-				Edge[] edges = n.Edges.ToArray();				
-				
-				for (int i=0; i<_iterations; i++)
+			for (int i=0; i<_iterations; i++)
+			{
+                // parallely Calculate repulsive forces of nodes to every new node
+                Parallel.ForEach(_newVertices, v =>
+                {
+                    disp[v] = new Vector3(0d, 0d, 1d);
+
+                    // computation of repulsive forces
+                    foreach(Vertex u in vertices)
+                    {
+                        if (v != u)
+                        {
+                            Vector3 delta = _vertexPositions[v] - _vertexPositions[u];
+                            disp[v] = disp[v] + (delta / Vector3.Length(delta)) * repulsion(Vector3.Length(delta), _k);
+                        }
+                    }
+                });				
+		        
+                // Parallely calculate attractive forces for all pairs of connected nodes
+				Parallel.ForEach(edges, e =>
 				{
-	                // parallely Calculate repulsive forces for every pair of vertices		
-	                Parallel.ForEach(vertices, v =>
-	                {
-	                    disp[v] = new Vector3(0d, 0d, 1d);
-	
-	                    // computation of repulsive forces
-	                    foreach(Vertex u in vertices)
-	                    {
-	                        if (v != u)
-	                        {
-	                            Vector3 delta = _vertexPositions[v] - _vertexPositions[u];
-	                            disp[v] = disp[v] + (delta / Vector3.Length(delta)) * repulsion(Vector3.Length(delta), _k);
-	                        }
-	                    }
-	                });				
-			        
-	                // Parallely calculate attractive forces for all pairs of connected nodes
-					foreach(Edge e in edges) 				
-					{
-						Vertex v = e.Source;
-						Vertex w = e.Target;
-	                    Vector3 delta = _vertexPositions[v] - _vertexPositions[w];
+					Vertex v = e.Source;
+					Vertex w = e.Target;
+                    Vector3 delta = _vertexPositions[v] - _vertexPositions[w];
+					if(_newVertices.Contains(v))
 						disp[v] = disp[v] - (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
-						disp[w] = disp[w] + (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
-					}
-	
-	                // Limit to frame and include temperature cooling that reduces displacement step by step
-					foreach(Vertex v in vertices)
-					{
-	                    Vector3 vPos = _vertexPositions[v] + (disp[v] / Vector3.Length(disp[v])) * Math.Min(Vector3.Length(disp[v]), t);
-	                    vPos.X = Math.Min(width-10, Math.Max(10, vPos.X));
-	                    vPos.Y = Math.Min(height-10, Math.Max(10, vPos.Y));
-	                    _vertexPositions[v] = vPos;
-					}
-					t-= tempstep;
-					
-					Logger.AddMessage(LogEntryType.Info, string.Format("Layout step {0} computed in {1} ms", i, (DateTime.Now - start).TotalMilliseconds.ToString()));
-					start = DateTime.Now;
-				}				
-			}));
-			
+					if(_newVertices.Contains(w))
+					disp[w] = disp[w] + (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
+				});
+
+                // Limit to frame and include temperature cooling that reduces displacement step by step
+				Parallel.ForEach(_newVertices, v =>
+				{
+                    Vector3 vPos = _vertexPositions[v] + (disp[v] / Vector3.Length(disp[v])) * Math.Min(Vector3.Length(disp[v]), t);
+                    vPos.X = Math.Min(Width-10, Math.Max(10, vPos.X));
+                    vPos.Y = Math.Min(Height-10, Math.Max(10, vPos.Y));
+                    _vertexPositions[v] = vPos;
+				});
+				t-= tempstep;
+				
+				Logger.AddMessage(LogEntryType.Info, string.Format("Layout step {0} computed in {1} ms", i, (DateTime.Now - start).TotalMilliseconds.ToString()));
+				start = DateTime.Now;
+			}
+			_newVertices = new ConcurrentBag<Vertex>();
+			Logger.AddMessage(LogEntryType.Info, "Layout completed");
 		}
 
         /// <summary>
@@ -141,14 +151,9 @@ namespace NETGen.Layouts.FruchtermanReingold
         /// </summary>
         /// <param name="v">The node to return the position for</param>
         /// <returns></returns>
-		public Vector3 GetPositionOfNode(NETGen.Core.Vertex v)
+		public override Vector3 GetPositionOfNode(NETGen.Core.Vertex v)
 		{
-            return _vertexPositions[v];
-		}
-		
-		public bool IsLaidout()
-		{
-			return _laidout;
+        	return _vertexPositions[v];
 		}
 	}
 }

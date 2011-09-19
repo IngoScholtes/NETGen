@@ -14,24 +14,30 @@ namespace NETGen.Layouts.Radial
     /// <summary>
     /// A radial layout, in which vertices are arranged on different circular levels depending on their degree. High degree vertices will be positioned in the center, low degree vertices will be positioned on the outer rim of the layout.
     /// </summary>
-    public class RadialLayout : ConcurrentDictionary<Vertex, Vector3>, ILayoutProvider
+    public class RadialLayout : LayoutProvider
     {        
-		private bool _laidout = false;
-		private double width; 
-		private double height; 
-		private Network net;
 		private double exp_base;
+		
+		private Dictionary<Vertex, Vector3> _vertexPositions;
 		
 		public RadialLayout(double exp_base)
 		{
 			this.exp_base = exp_base;
+			_vertexPositions = new Dictionary<Vertex, Vector3>();
 		}
 		
-        public Vector3 GetPositionOfNode(Vertex v)
+		public override void Init (double width, double height, NETGen.Core.Network network)
+		{
+			base.Init (width, height, network);
+			
+			Network.OnVertexAdded+= new Network.VertexUpdateHandler( delegate(Vertex v) {
+				DoLayout();
+			});
+		}
+				
+        public override Vector3 GetPositionOfNode(Vertex v)
         {
-			if(!ContainsKey(v))
-				DoLayout(width, height, net);
-            return this[v];
+            return _vertexPositions[v];
         }
 
         private static Vector3 getPosition(double width, double height, double angle, int level, double radius)
@@ -43,22 +49,19 @@ namespace NETGen.Layouts.Radial
 
         }
 
-        public void DoLayout(double width, double height, Network net)
+        public override void DoLayout()
         {
-			this.width = width;
-			this.height = height;
-			this.net = net;
 	
             ConcurrentDictionary<int, int> nodesPerLevel = new ConcurrentDictionary<int, int>(System.Environment.ProcessorCount, 100);
             ConcurrentDictionary<int, int> countPerLevel = new ConcurrentDictionary<int, int>(System.Environment.ProcessorCount, 100);
 			ConcurrentDictionary<int, double> startPosPerLevel = new ConcurrentDictionary<int, double>(System.Environment.ProcessorCount, 0);
 
-            double n = (double)net.VertexCount;
+            double n = (double) Network.VertexCount;
             int maxLevel = 0;
 
 
             //assign levels 
-            Parallel.ForEach(net.Vertices.ToArray(), v => 
+            Parallel.ForEach(Network.Vertices.ToArray(), v => 
             {
                 int level = (int)Math.Round(Math.Log(n / 2, exp_base) - Math.Log(Math.Max((double)v.Degree, 7d), exp_base));
                 if (level < 0)
@@ -68,14 +71,14 @@ namespace NETGen.Layouts.Radial
                 {
                     nodesPerLevel[level] = 1;
                     if (!startPosPerLevel.ContainsKey(level))
-                        startPosPerLevel[level] = net.NextRandomDouble() * Math.PI * 2d;
+                        startPosPerLevel[level] = Network.NextRandomDouble() * Math.PI * 2d;
                 }
                 else
                     nodesPerLevel[level]++;
             });
 
             // assign positions 
-            Parallel.ForEach(net.Vertices.ToArray(), v => 
+            Parallel.ForEach(Network.Vertices.ToArray(), v => 
             {
                 int level = (int)Math.Round(Math.Log(n / 2, exp_base) - Math.Log(Math.Max((double)v.Degree, 7d), exp_base));
                 if (level < 0)
@@ -84,20 +87,14 @@ namespace NETGen.Layouts.Radial
                     countPerLevel[level] = 1;
                 else
                     countPerLevel[level]++;
-                double radius = ((double)width / 2d) / ((double)maxLevel + 1);
+                double radius = ((double)Width / 2d) / ((double)maxLevel + 1);
                 double angle = startPosPerLevel[level] + ((double)countPerLevel[level] / (double)nodesPerLevel[level]) * Math.PI * 2d;
 
                 
-               this[v] = getPosition(width, height, angle, level, radius);
+               _vertexPositions[v] = getPosition(Width, Height, angle, level, radius);
             
             //     v.VertexSize = Math.Max((int)(5 + (((double)v.Degree) / (double)(n / 2)) * 20d), 1);
             });
-			_laidout = true;
         }
-		
-		public bool IsLaidout()
-		{
-			return _laidout;
-		}
     }
 }

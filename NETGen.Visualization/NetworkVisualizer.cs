@@ -42,7 +42,8 @@ namespace NETGen.Visualization
 		
 		private Network _network;		
 		private NetworkColorizer _colorizer;		
-		private ILayoutProvider _layout;
+		private LayoutProvider _layout;
+		private static Bitmap _screenshot = null;
 		
 		private System.Drawing.Point _panStart;			
 		private bool _panning = false;		
@@ -53,28 +54,28 @@ namespace NETGen.Visualization
 		private double _zoom = 1d;
 		
 		private static AutoResetEvent _initialized = new AutoResetEvent(false);
+		private static AutoResetEvent _screenshotExists = new AutoResetEvent(false);
 	
 		private static NetworkVisualizer Instance;
 		
-		public static Bitmap ScreenShot = null;
  
-		internal NetworkVisualizer(Network network, ILayoutProvider layout, NetworkColorizer colorizer, int width, int height) : base(width, height, GraphicsMode.Default, "NETGen Display")
+		internal NetworkVisualizer(Network network, LayoutProvider layout, NetworkColorizer colorizer, int width, int height) : base(width, height, GraphicsMode.Default, "NETGen Display")
 		{
 			Keyboard.KeyDown += new EventHandler<KeyboardKeyEventArgs>(Keyboard_KeyDown);
 			Mouse.ButtonDown += new EventHandler<MouseButtonEventArgs>(Mouse_ButtonDown);
 			Mouse.ButtonUp += new EventHandler<MouseButtonEventArgs>(Mouse_ButtonUp);
 			Mouse.Move += new EventHandler<MouseMoveEventArgs>(Mouse_Move);		
 			Mouse.WheelChanged += new EventHandler<MouseWheelEventArgs>(Mouse_WheelChanged);			
-						
+			
+			_layout = layout;			
+			_network = network;
+			
+			_layout.Init(Width, Height, _network); 
 			
 			if (colorizer == null)
 				_colorizer = new NetworkColorizer();
 			else
 				_colorizer = colorizer;
-			
-			_network = network;
-			_layout = layout;		
-
 		}
  
 		void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
@@ -138,8 +139,17 @@ namespace NETGen.Visualization
 		{
 			base.OnUpdateFrame(e); 					
  
-			Title = "Rendering at "+ Fps.GetFps(e.Time).ToString() + " fps";
+			Title = "Rendering network at "+ Fps.GetFps(e.Time).ToString() + " fps";
 		}
+		
+		/// <summary>
+		/// Updates the layout of the visualized network. 
+		/// </summary>
+		public static void ComputeLayout()
+		{
+			Instance._layout.DoLayout();
+		}
+		
 
  		[MethodImpl(MethodImplOptions.Synchronized)]
 		protected override void OnRenderFrame(FrameEventArgs e)
@@ -157,10 +167,6 @@ namespace NETGen.Visualization
 			
 			// Clear the buffer
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-			
-			// Apply the layout if necessary
-			if(!_layout.IsLaidout())
-				_layout.DoLayout(Width, Height, _network);
 			
 			// Draw the edges
 			foreach(Edge edge in _network.Edges)
@@ -231,7 +237,7 @@ namespace NETGen.Visualization
 		/// <param name='layout'>
 		/// Layout.
 		/// </param>
-		public static void Start(Network network, ILayoutProvider layout, NetworkColorizer colorizer = null, int width=800, int height=600)
+		public static void Start(Network network, LayoutProvider layout, NetworkColorizer colorizer = null, int width=800, int height=600)
 		{			
 			// The actual rendering needs to be done in a separate thread placed in the single thread appartment state
 			_mainThread = new Thread(new ThreadStart(new Action(delegate() {				
@@ -249,24 +255,52 @@ namespace NETGen.Visualization
 		}
 		
 		[MethodImpl(MethodImplOptions.Synchronized)]
-	    public static void GrabImage()
+	    private static void GrabImage()
         {
             if (GraphicsContext.CurrentContext == null)
                 throw new GraphicsContextMissingException();
  
-            if(ScreenShot==null)
-				ScreenShot = new Bitmap(Instance.ClientSize.Width, Instance.ClientSize.Height);
+            if(_screenshot==null)
+				_screenshot = new Bitmap(Instance.ClientSize.Width, Instance.ClientSize.Height);
 			
-            System.Drawing.Imaging.BitmapData data =
-                ScreenShot.LockBits(Instance.ClientRectangle, System.Drawing.Imaging.ImageLockMode.WriteOnly, 
-					System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			
-            GL.ReadPixels(0, 0, Instance.ClientSize.Width, Instance.ClientSize.Height,PixelFormat.Bgra,
-				PixelType.UnsignedByte, data.Scan0);
-			
-            ScreenShot.UnlockBits(data);
+			lock(_screenshot)
+			{
+				 System.Drawing.Imaging.BitmapData data =
+	             _screenshot.LockBits(Instance.ClientRectangle, System.Drawing.Imaging.ImageLockMode.WriteOnly, 
+						System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				
+	            GL.ReadPixels(0, 0, Instance.ClientSize.Width, Instance.ClientSize.Height,PixelFormat.Bgra,
+					PixelType.UnsignedByte, data.Scan0);
+				
+	            _screenshot.UnlockBits(data);
+			}
+			_screenshotExists.Set();
 
         }
+		
+		/// <summary>
+		/// Saves the last rendered image to a bitmap file. If the path to an existing file is given, the file will be overwritten. This call will block until there is a rendered screenshot available. 
+		/// </summary>
+		/// <param name='filename'>
+		/// The filename of the saved image.
+		/// </param>
+		public static void SaveCurrentImage(string filename)
+		{
+			// Wait until there is a screenshot
+			_screenshotExists.WaitOne();
+			
+			if(_screenshot != null && filename != null)
+			{
+				lock(_screenshot)
+					_screenshot.Save(filename);
+				Logger.AddMessage(LogEntryType.Info, "Network image has been written to  file");
+			}
+			else
+			{
+				Logger.AddMessage(LogEntryType.Warning, "Could not save network image");
+			}
+		}
+			
 
 	}
 

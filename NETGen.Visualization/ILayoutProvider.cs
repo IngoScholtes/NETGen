@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 
@@ -9,8 +10,12 @@ namespace NETGen.Visualization
 	/// An interface that custom network layout mechanisms have to implement. 
 	/// This is the point of extensibility for the modules in NETGen.Layouts
 	/// </summary>
-    public interface ILayoutProvider
+    public abstract class LayoutProvider
     {
+		protected double Width;
+		protected double Height; 
+		protected NETGen.Core.Network Network;
+		
 		/// <summary>
 		/// Returns the position of a vertex in the network
 		/// </summary>
@@ -20,7 +25,14 @@ namespace NETGen.Visualization
 		/// <param name='v'>
 		/// The vertex for which the position shall be returned
 		/// </param>
-        Vector3 GetPositionOfNode(NETGen.Core.Vertex v);
+        public abstract Vector3 GetPositionOfNode(NETGen.Core.Vertex v);
+		
+		public virtual void Init(double width, double height, NETGen.Core.Network network)
+		{
+			Width = width;
+			Height = height;
+			Network = network;
+		}
 		
 		/// <summary>
 		/// Computes all vertex positions of a network. This will be called whenever a layout has to be computed for the first time or whenever the recomputation of the layout is forced.
@@ -34,14 +46,6 @@ namespace NETGen.Visualization
 		/// <param name='n'>
 		/// N.
 		/// </param>
-        void DoLayout(double width, double height, NETGen.Core.Network n);
-		
-		/// <summary>
-		/// Returns whether the layout has yet been computed or not
-		/// </summary>
-		/// <returns>
-		/// <c>true</c> if the network is laidout; otherwise, <c>false</c>.
-		/// </returns>
-		bool IsLaidout();
+        public abstract void DoLayout();		
     }
 }
