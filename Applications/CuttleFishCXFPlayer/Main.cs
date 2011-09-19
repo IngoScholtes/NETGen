@@ -26,6 +26,7 @@ namespace CuttleFishCXFPlayer
 			}
 			
 			Network n = new Network();
+			NetworkColorizer colorizer = new NetworkColorizer();
 			
 			// read the input network
 			foreach(string s in cxf)
@@ -34,7 +35,9 @@ namespace CuttleFishCXFPlayer
 				if(type=="node")
 				{
 					string label = ExtractNodeLabel(s);
-					n.CreateVertex(label);
+					Vertex v = n.CreateVertex(label);
+					if(extractColor(s)!=Color.Empty)
+						colorizer[v] = extractColor(s);
 				}
 				else if (type=="edge")
 				{
@@ -47,12 +50,17 @@ namespace CuttleFishCXFPlayer
 			Console.WriteLine("Initial network: {0} Nodes, {1} Edges", n.VertexCount, n.EdgeCount);
 			
 			// Start the visualizer and compute the layout
-			NetworkVisualizer.Start(n, new FruchtermanReingoldLayout(1));
+			
+			NetworkVisualizer.Start(n, new RandomLayout(), colorizer);
 			
 			int iteration = 0;
 			
 			NetworkVisualizer.ComputeLayout();
 			NetworkVisualizer.SaveCurrentImage(string.Format("frame_{0}.bmp", iteration));
+			
+			colorizer.DefaultBackgroundColor = Color.White;
+			colorizer.DefaultVertexColor = Color.Black; 
+			colorizer.DefaultEdgeColor = Color.Black;
 			
 			Logger.AddMessage(LogEntryType.AppMsg, "Press enter to step through network evolution ...");
 			Console.ReadLine();
@@ -68,17 +76,25 @@ namespace CuttleFishCXFPlayer
 					NetworkVisualizer.SaveCurrentImage(string.Format("frame_{0}.bmp", iteration));					
 				}
 				if(line.Contains("addNode"))
-					n.CreateVertex(ExtractNodeLabel(line));
+				{
+					Vertex v = n.CreateVertex(ExtractNodeLabel(line));
+					if(extractColor(line)!=Color.Empty)
+						colorizer[v] = extractColor(line);
+				}
+				else if (line.Contains("removeNode"))
+				{
+					string label = ExtractNodeLabel(line);
+					Vertex v  = n.SearchVertex(label);
+					n.RemoveVertex(v);
+				}
 				else if (line.Contains("addEdge"))
 				{
 					string src = ExtractSourceLabel(line);
 					string tgt = ExtractTargetLabel(line);
 					Vertex v = n.SearchVertex(src);
 					Vertex w = n.SearchVertex(tgt);
-					if(v==null)
-						v = n.CreateVertex(src);
-					if(w==null)
-						w = n.CreateVertex(tgt);
+					v = n.CreateVertex(src);
+					w = n.CreateVertex(tgt);
 					n.CreateEdge(v, w);					
 				}
 				else if (line.Contains("removeEdge"))
@@ -87,15 +103,43 @@ namespace CuttleFishCXFPlayer
 					string tgt = ExtractTargetLabel(line);
 					Vertex v = n.SearchVertex(src);
 					Vertex w = n.SearchVertex(tgt);
-					if(v==null && w != null)
-						n.RemoveEdge(v, w);					
+					n.RemoveEdge(v, w);					
+				}
+				else if (line.Contains("editNode"))
+				{
+					string label = ExtractNodeLabel(line); 
+					Vertex v = n.SearchVertex(label); 
+					if(extractColor(line)!=Color.Empty)
+						colorizer[v] = extractColor(line);
+				}
+				else if (line.Contains("editEdge"))
+				{
+					string source = ExtractSourceLabel(line); 
+					string target = ExtractTargetLabel(line); 
+					Edge e = n.SearchVertex(source).GetEdgeToSuccessor(n.SearchVertex(target));
+					if(extractColor(line)!=Color.Empty)
+						colorizer[e] = extractColor(line);
 				}
 			}
+		}
+		
+		static Color extractColor(string s)
+		{
+			if( !s.Contains("color"))
+				return Color.Empty;
+			
+			float r, g, b;
+			string colors = s.Substring(s.IndexOf("color{")+6, s.IndexOf("}", s.IndexOf("color{")) - s.IndexOf("color{")-6);
+			string[] colorComponents = colors.Split(',');
+			r = float.Parse(colorComponents[0]);
+			g = float.Parse(colorComponents[1]);
+			b = float.Parse(colorComponents[2]);
+			return Color.FromArgb((int) (r * 255f), (int) (g * 255f), (int) (b * 255f));
 		}
 
 		static string ExtractSourceLabel (string s)
 		{
-			return s.Substring(s.IndexOf("(")+1, s.IndexOf(",")-s.IndexOf("(")-1);;
+			return s.Substring(s.IndexOf("(")+1, s.IndexOf(",")-s.IndexOf("(")-1);
 		}
 
 		static string ExtractTargetLabel (string s)
@@ -105,7 +149,7 @@ namespace CuttleFishCXFPlayer
 				
 		static string ExtractNodeLabel (string s)
 		{
-			return s.Substring(s.IndexOf("label")+5).Replace("{", "").Replace("}", "");;
+			return s.Substring(s.IndexOf("(")+1, s.IndexOf(")") - s.IndexOf("(")-1);
 		}
 	}
 }

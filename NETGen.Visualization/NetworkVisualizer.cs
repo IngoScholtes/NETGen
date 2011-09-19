@@ -167,6 +167,7 @@ namespace NETGen.Visualization
 			
 			// Clear the buffer
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			GL.ClearColor(_colorizer.DefaultBackgroundColor);
 			
 			// Draw the edges
 			foreach(Edge edge in _network.Edges)

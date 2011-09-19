@@ -83,6 +83,7 @@ namespace MonoParser
 						foreach(Type i in t.GetInterfaces())
 						TryAddTypeRelation(n, i, t);
 					}
+			
 					/*
 						foreach(PropertyInfo p in t.GetProperties())
 							TryAddTypeRelation(n, t, p.PropertyType);
@@ -92,12 +93,18 @@ namespace MonoParser
 							
 						foreach(MethodInfo m in t.GetMethods())
 						{
+							ParameterInfo[] info = m.GetParameters(); 
+						
 							MethodBody mb = m.GetMethodBody();
+				
+							mb.
+				
 							if(mb != null)
 								foreach(LocalVariableInfo i in m.GetMethodBody().LocalVariables)
 									TryAddTypeRelation(n, t, i.LocalType);
 						}
-						*/
+					*/
+						
 					//}
 			
 			Console.WriteLine("Found {0} types and {1} connections", n.VertexCount, n.EdgeCount);
