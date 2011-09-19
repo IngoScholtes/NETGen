@@ -115,12 +115,13 @@ namespace NETGen.Visualization
 		
 		protected override void OnResize(EventArgs e)
 		{
+			
 			base.OnResize(e);
 			
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
 			GL.Ortho(0, Width, Height, 0, -1, 1);
-			GL.Viewport(0, 0, Width, Height);
+			GL.Viewport(0, 0, Width, Height);			
 		}
  
 		protected override void OnLoad(EventArgs e)
@@ -264,18 +265,23 @@ namespace NETGen.Visualization
             if(_screenshot==null)
 				_screenshot = new Bitmap(Instance.ClientSize.Width, Instance.ClientSize.Height);
 			
-			lock(_screenshot)
-			{
-				 System.Drawing.Imaging.BitmapData data =
-	             _screenshot.LockBits(Instance.ClientRectangle, System.Drawing.Imaging.ImageLockMode.WriteOnly, 
-						System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-				
-	            GL.ReadPixels(0, 0, Instance.ClientSize.Width, Instance.ClientSize.Height,PixelFormat.Bgra,
-					PixelType.UnsignedByte, data.Scan0);
-				
-	            _screenshot.UnlockBits(data);
+			try {
+				lock(_screenshot)
+				{
+					 System.Drawing.Imaging.BitmapData data =
+		             _screenshot.LockBits(Instance.ClientRectangle, System.Drawing.Imaging.ImageLockMode.WriteOnly, 
+							System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+					
+		            GL.ReadPixels(0, 0, Instance.ClientSize.Width, Instance.ClientSize.Height,PixelFormat.Bgra,
+						PixelType.UnsignedByte, data.Scan0);
+					
+		            _screenshot.UnlockBits(data);
+				}
+				_screenshotExists.Set();
 			}
-			_screenshotExists.Set();
+			catch {
+				Logger.AddMessage(LogEntryType.Warning, "Error while copzing screen buffer to bitmap.");
+			}
 
         }
 		

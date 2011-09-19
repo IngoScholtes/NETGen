@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4BAF800A-0EBA-49B2-9DA7-90E33DBEE791}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>CuttleFishCXFPlayer</RootNamespace>
-    <AssemblyName>CuttleFishCXFPlayer</AssemblyName>
+    <ProjectGuid>{692B7732-D46B-4959-AB6D-B149F191FA3E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NETGen.Dynamics.CEF</RootNamespace>
+    <AssemblyName>NETGen.Dynamics.CEF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -19,8 +19,7 @@
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>~/Documents/OSS/network_mono.cxf ~/Documents/OSS/network_mono.cef</Commandlineparameters>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -28,41 +27,23 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OpenTK.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Main.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">
       <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
       <Name>NETGen.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.FruchtermanReingold\NETGen.Layouts.FruchtermanReingold.csproj">
-      <Project>{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}</Project>
-      <Name>NETGen.Layouts.FruchtermanReingold</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Radial\NETGen.Layouts.Radial.csproj">
-      <Project>{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9}</Project>
-      <Name>NETGen.Layouts.Radial</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\NETGen.Visualization\NETGen.Visualization.csproj">
       <Project>{FB24B173-DEFF-49D9-B232-561887EC652C}</Project>
       <Name>NETGen.Visualization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Random\NETGen.Layouts.Random.csproj">
-      <Project>{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}</Project>
-      <Name>NETGen.Layouts.Random</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CEFPlayer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
 </Project>

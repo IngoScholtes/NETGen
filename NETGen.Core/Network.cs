@@ -220,6 +220,46 @@ namespace NETGen.Core
             });
             return net;
         }       
+		
+		static string ExtractNodeLabel (string s)
+		{
+			return s.Substring(s.IndexOf("(")+1, s.IndexOf(")") - s.IndexOf("(")-1);
+		}
+		
+		static string ExtractSourceLabel (string s)
+		{
+			return s.Substring(s.IndexOf("(")+1, s.IndexOf(",")-s.IndexOf("(")-1);
+		}
+
+		static string ExtractTargetLabel (string s)
+		{
+			return s.Substring(s.IndexOf(",")+1, s.IndexOf(")")-s.IndexOf(",")-1);
+		}
+		
+		public static Network LoadFromCXF(string filename)
+		{
+			string[] cxf = System.IO.File.ReadAllLines(filename);
+			Network n = new Network();
+			
+			foreach(string s in cxf)
+			{
+				string type = s.Substring(0, s.IndexOf(":"));
+				if(type=="node")
+				{
+					string label = ExtractNodeLabel(s);
+					n.CreateVertex(label);
+//					if(colorizer!= null && extractColor(s)!=Color.Empty)
+					//	colorizer[v] = extractColor(s);
+				}
+				else if (type=="edge")
+				{
+					string sourceLabel = ExtractSourceLabel (s);
+					string targetLabel = ExtractTargetLabel (s);
+					n.CreateEdge(n.SearchVertex(sourceLabel), n.SearchVertex(targetLabel));
+				}
+			}
+			return n;
+		}
 
 		/// <summary>
 		/// Gets the number of vertices in the network
