@@ -24,7 +24,7 @@ namespace CuttleFishCXFPlayer
 			{
 				Console.WriteLine("Usage: CuttleFishCXFPlayer [cxfFile] [cefFile]");
 				// -------------- efg
->>>>>>> THEIRS
+
 			}
 			
 			Network n = new Network();
