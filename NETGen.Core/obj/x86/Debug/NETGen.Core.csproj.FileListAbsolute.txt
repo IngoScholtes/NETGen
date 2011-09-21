@@ -1,5 +1,0 @@
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\NETGen.Core\bin\Debug\NETGen.Core.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\NETGen.Core\bin\Debug\NETGen.Core.pdb
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\NETGen.Core\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\NETGen.Core\obj\x86\Debug\NETGen.Core.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\NETGen.Core\obj\x86\Debug\NETGen.Core.pdb

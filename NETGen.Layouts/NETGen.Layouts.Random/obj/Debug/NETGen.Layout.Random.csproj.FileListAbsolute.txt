@@ -1,9 +1,0 @@
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\bin\Debug\NETGen.Layout.Random.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\bin\Debug\NETGen.Layout.Random.pdb
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\bin\Debug\NETGen.Core.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\bin\Debug\NETGen.Visualization.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\bin\Debug\NETGen.Core.pdb
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\bin\Debug\NETGen.Visualization.pdb
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\obj\Debug\NETGen.Layout.Random.dll
-C:\Users\Ingo\Dropbox\Documents\NETGen\NetGen\LayoutProviders\LayoutPositioned\NETGen.Layout.Random\obj\Debug\NETGen.Layout.Random.pdb
