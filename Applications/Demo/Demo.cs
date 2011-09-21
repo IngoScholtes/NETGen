@@ -25,13 +25,14 @@ class Demo
 	static string resultfile = null;
 	static Dictionary<int, double> _clusterOrder = new Dictionary<int, double>();
 	
-	static int nodes = 1500; 
-	static int edges = 4500;
+	static int nodes = 1000; 
+	static int edges = 4000;
 	static int clusters = 20;		
 	
 	static double modularity = ClusterNetwork.GetMaxConnectedModularity(nodes, edges, clusters); 
 
-			
+	static Dictionary<int,bool> paceMakerMode = new Dictionary<int, bool>();
+
 	static double IntraClusterStrength = 2d;
 	static double InterClusterStrength = 2d;
 	
@@ -43,14 +44,16 @@ class Demo
 				resultfile = args[0];
 		} catch {}
 
-		// Create a network of given size and modularity ... 
-        network = new ClusterNetwork(nodes, edges, clusters, modularity, true);		
+		// Create a network of the given size and modularity ... 
+        network = new ClusterNetwork(nodes, edges, clusters, modularity, true);
 		
 		Console.WriteLine("Created network with {0} vertices, {1} edges and modularity {2:0.00}", network.VertexCount, network.EdgeCount, network.NewmanModularity);
                     
 		// Run the real-time visualization
 		NetworkColorizer colorizer = new NetworkColorizer();			
-		NetworkVisualizer.Start(network, new NETGen.Layouts.RandomLayout.RandomLayout(), colorizer);									
+		NetworkVisualizer.Start(network, new NETGen.Layouts.FruchtermanReingold.FruchtermanReingoldLayout(15), colorizer);	
+		
+		NetworkVisualizer.ComputeLayout();
 		
 		// Setup the synchronization simulation
 		sync = new EpidemicSync(network, colorizer);
@@ -58,20 +61,22 @@ class Demo
 		// Assign randomly distributed distribution parameters to clusters
 		Normal avgs_normal = new Normal(300d, 50d);
 		Normal devs_normal = new Normal(20d, 5d);
-					
+
+		// Natural frequencies in different groups are distributed according to normal distribution 
+		// with different parameters. Parameters are drawn from superordinate normal distribution
 		foreach(int i in network.ClusterIDs) 
 		{
-			// draw the distribution parameters from the above distribution ...
+			paceMakerMode[i] = false;
 			double groupAvg = avgs_normal.Sample();
 			double groupStdDev = devs_normal.Sample();
 			
-			// assign individual values
 			foreach(Vertex v in network.GetNodesInCluster(i))
 			{
 				sync.PeriodMeans[v] = groupAvg;
 				sync.PeriodStdDevs[v] = groupStdDev;
 			}
-		}		
+		}
+		
 		
 		foreach(Edge e in network.InterClusterEdges)
 		{
@@ -85,13 +90,14 @@ class Demo
 			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = IntraClusterStrength;
 		}
 		
-		sync.OnStep+=new EpidemicSync.StepHandler(collectLocalOrder);						
+		sync.OnStep+=new EpidemicSync.StepHandler(collectLocalOrder);	
+	
 		
 		Logger.AddMessage(LogEntryType.AppMsg, "Press enter to start synchronization experiment...");
 		Console.ReadLine();		
 		
 		// Run the simulation asynchronously so we can stop it anytime
-		sync.RunInBackground();																	
+		sync.RunInBackground();														
 					
 		// Simulation can be stopped by pressing enter
 		Console.ReadLine();							
@@ -124,20 +130,28 @@ class Demo
 			_clusterOrder[g] = localOrder;
 			sync.AddDataPoint(string.Format("order_{0}", g), localOrder);		
 			
-			if(localOrder>0.95d)
+			if(localOrder>0.95d && !paceMakerMode[g])
 			{
-				// nodes with links to other clusters become pacemakers, i.e. they are not influenced by nodes in the same cluster
-				foreach(Edge e in network.InterClusterEdges)
+				paceMakerMode[g] = true;
+				Logger.AddMessage(LogEntryType.AppMsg, string.Format("Cluster {0} switched to pacemaker mode", g));
+				
+				// nodes with no links to other clusters become pacemakers, i.e. they are not influenced by nodes in the same cluster
+				foreach(Vertex v in network.GetNodesInCluster(g))
 				{
+					if(!network.HasInterClusterConnection(v))
+						foreach
+				}
+				
+				
 					if(network.GetClusterForNode(e.Source)==g && network.GetClusterForNode(e.Target)!=g)
 						foreach(Vertex w in e.Source.Neigbors)
 							if(network.GetClusterForNode(w)==g)
-								sync.CouplingStrengths[new Tuple<Vertex, Vertex>(w, e.Source)] = 50d;
+								sync.CouplingStrengths[new Tuple<Vertex, Vertex>(w, e.Source)] = 0d;
 									
 					if(network.GetClusterForNode(e.Source)!=g && network.GetClusterForNode(e.Target)==g)
 						foreach(Vertex w in e.Target.Neigbors)
 							if(network.GetClusterForNode(w)==g)
-								sync.CouplingStrengths[new Tuple<Vertex, Vertex>(w, e.Target)] = 50d;
+								sync.CouplingStrengths[new Tuple<Vertex, Vertex>(w, e.Target)] = 0d;
 				}
 			}
 		}

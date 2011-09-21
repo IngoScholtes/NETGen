@@ -44,6 +44,7 @@ namespace NETGen.Visualization
 		private NetworkColorizer _colorizer;		
 		private LayoutProvider _layout;
 		private static Bitmap _screenshot = null;
+		private bool screenshot = false;
 		
 		private System.Drawing.Point _panStart;			
 		private bool _panning = false;		
@@ -178,11 +179,11 @@ namespace NETGen.Visualization
 			foreach(Vertex v in _network.Vertices)
 				DrawVertex(v, _colorizer[v], 5, 2);
 			
- 
 			// Swap screen and backbuffer
 			SwapBuffers();
 			
-			GrabImage();
+			if(screenshot)
+				GrabImage();
 		}
 		
 		/// <summary>
@@ -280,7 +281,7 @@ namespace NETGen.Visualization
 				_screenshotExists.Set();
 			}
 			catch {
-				Logger.AddMessage(LogEntryType.Warning, "Error while copzing screen buffer to bitmap.");
+				Logger.AddMessage(LogEntryType.Warning, "Error while copying screen buffer to bitmap.");
 			}
 
         }
@@ -293,6 +294,8 @@ namespace NETGen.Visualization
 		/// </param>
 		public static void SaveCurrentImage(string filename)
 		{
+			Instance.screenshot = true;
+			
 			// Wait until there is a screenshot
 			_screenshotExists.WaitOne();
 			
@@ -306,6 +309,10 @@ namespace NETGen.Visualization
 			{
 				Logger.AddMessage(LogEntryType.Warning, "Could not save network image");
 			}
+			
+			Instance.screenshot = false;
+			_screenshotExists.Reset();
+			
 		}
 			
 

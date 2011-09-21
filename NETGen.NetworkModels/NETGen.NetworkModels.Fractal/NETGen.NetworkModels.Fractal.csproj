@@ -6,10 +6,10 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B65D6DC7-8A16-478B-8DE5-6CF44D612D5D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>NETGen.NetworkModels.Fractal</RootNamespace>
     <AssemblyName>NETGen.NetworkModels.Fractal</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,4 +30,13 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="FractalNetwork.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">
+      <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
+      <Name>NETGen.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
