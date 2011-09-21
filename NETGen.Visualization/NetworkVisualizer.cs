@@ -177,7 +177,7 @@ namespace NETGen.Visualization
 			
 			// Draw the vertices
 			foreach(Vertex v in _network.Vertices)
-				DrawVertex(v, _colorizer[v], 5, 2);
+				DrawVertex(v, _colorizer[v], 10, 2);
 			
 			// Swap screen and backbuffer
 			SwapBuffers();

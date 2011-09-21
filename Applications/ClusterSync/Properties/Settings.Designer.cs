@@ -31,6 +31,15 @@ namespace Properties {
                 return ((string)(this["ResultFile"]));
             }
         }
+		
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("false")]
+        public bool Use_Pacemakers {
+            get {
+                return ((bool)(this["Use_Pacemakers"]));
+            }
+        }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

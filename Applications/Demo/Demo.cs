@@ -36,13 +36,22 @@ class Demo
 	static double IntraClusterStrength = 2d;
 	static double InterClusterStrength = 2d;
 	
+	static bool use_pacemakers = false;
+	
     static void Main(string[] args)
     {
 		try 
 		{
 				// The resultfile is given as command line argument
-				resultfile = args[0];
-		} catch {}
+			nodes = Int32.Parse(args[0]);	
+			edges = Int32.Parse(args[1]);
+			clusters = Int32.Parse(args[2]);
+			use_pacemakers = Boolean.Parse(args[3]);
+			resultfile = args[4];
+		} catch {
+			Console.WriteLine("Usage: mono Demo.exe [nodes] [edges] [clusters] [pacemakers=true|false] [resultfile]");
+			return;
+		}
 
 		// Create a network of the given size and modularity ... 
         network = new ClusterNetwork(nodes, edges, clusters, modularity, true);
@@ -60,15 +69,15 @@ class Demo
 		
 		// Assign randomly distributed distribution parameters to clusters
 		Normal avgs_normal = new Normal(300d, 50d);
-		Normal devs_normal = new Normal(20d, 5d);
 
 		// Natural frequencies in different groups are distributed according to normal distribution 
 		// with different parameters. Parameters are drawn from superordinate normal distribution
-		foreach(int i in network.ClusterIDs) 
+		
+		foreach(int i in network.ClusterIDs)
 		{
 			paceMakerMode[i] = false;
 			double groupAvg = avgs_normal.Sample();
-			double groupStdDev = devs_normal.Sample();
+			double groupStdDev = groupAvg/5d;
 			
 			foreach(Vertex v in network.GetNodesInCluster(i))
 			{
@@ -77,24 +86,17 @@ class Demo
 			}
 		}
 		
-		
-		foreach(Edge e in network.InterClusterEdges)
+		foreach(Edge e in network.Edges)
 		{
 			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = InterClusterStrength;
 			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = InterClusterStrength;
-		}
-		
-		foreach(Edge e in network.IntraClusterEdges)
-		{
-			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = IntraClusterStrength;
-			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = IntraClusterStrength;
 		}
 		
 		sync.OnStep+=new EpidemicSync.StepHandler(collectLocalOrder);	
 	
 		
 		Logger.AddMessage(LogEntryType.AppMsg, "Press enter to start synchronization experiment...");
-		Console.ReadLine();		
+		Console.ReadLine();	
 		
 		// Run the simulation asynchronously so we can stop it anytime
 		sync.RunInBackground();														
@@ -109,19 +111,17 @@ class Demo
     }		
 	
 	private static void collectLocalOrder(long time)
-	{					
+	{		
+		string line = "";
+		foreach(Vertex v in network.Vertices)
+			line += sync.Periods[v].ToString() + "\n";
+		System.IO.File.WriteAllText(string.Format("frequ_{0}.dat", time), line);
+		
 		// Compute and record global order parameter
 		double globalOrder = sync.ComputeOrder(network.Vertices.ToArray());			
 		sync.AddDataPoint("order_global", globalOrder); 			
 		
-		foreach(Edge e in network.InterClusterEdges)
-		{
-			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = InterClusterStrength / globalOrder;
-			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = InterClusterStrength / globalOrder;
-		}
-		
-		if(time %100 == 0)
-			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time = {000000}, Global Order = {1:0.00}", time, globalOrder));			
+		double avgLocalOrder = 0d;
 		
 		// Compute and record cluster order parameters
 		foreach(int g in network.ClusterIDs)
@@ -129,35 +129,32 @@ class Demo
 			double localOrder = sync.ComputeOrder(network.GetNodesInCluster(g));
 			_clusterOrder[g] = localOrder;
 			sync.AddDataPoint(string.Format("order_{0}", g), localOrder);		
+			avgLocalOrder += localOrder;
+			
 			
 			if(localOrder>0.95d && !paceMakerMode[g])
 			{
 				paceMakerMode[g] = true;
-				Logger.AddMessage(LogEntryType.AppMsg, string.Format("Cluster {0} switched to pacemaker mode", g));
 				
-				// nodes with no links to other clusters become pacemakers, i.e. they are not influenced by nodes in the same cluster
-				foreach(Vertex v in network.GetNodesInCluster(g))
+				if(use_pacemakers)
 				{
-					if(!network.HasInterClusterConnection(v))
-						foreach
-				}
-				
-				
-					if(network.GetClusterForNode(e.Source)==g && network.GetClusterForNode(e.Target)!=g)
-						foreach(Vertex w in e.Source.Neigbors)
-							if(network.GetClusterForNode(w)==g)
-								sync.CouplingStrengths[new Tuple<Vertex, Vertex>(w, e.Source)] = 0d;
-									
-					if(network.GetClusterForNode(e.Source)!=g && network.GetClusterForNode(e.Target)==g)
-						foreach(Vertex w in e.Target.Neigbors)
-							if(network.GetClusterForNode(w)==g)
-								sync.CouplingStrengths[new Tuple<Vertex, Vertex>(w, e.Target)] = 0d;
+					Logger.AddMessage(LogEntryType.AppMsg, string.Format("Cluster {0} switched to pacemaker mode", g));
+					
+					// nodes with no links to other clusters become pacemakers, i.e. they are not influenced by nodes in the same cluster
+					foreach(Vertex v in network.GetNodesInCluster(g))
+					{
+						if(network.HasInterClusterConnection(v))
+							foreach(Vertex w in v.Neigbors)
+								if(!network.HasInterClusterConnection(w))
+									sync.CouplingStrengths[new Tuple<Vertex, Vertex>(v, w)] = 0d;
+					}
 				}
 			}
+			
 		}
 		
 		if(time %100 == 0)
-			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Inter cluster = {0:0.000}, Intra cluster = {1:0.000}", InterClusterStrength, IntraClusterStrength));
+			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time = {000000}, Avg. Cluster Order = {1:0.00}, Global Order = {2:0.00}", time, avgLocalOrder/(double) network.ClusterIDs.Length, globalOrder));
 	}
 	
 	

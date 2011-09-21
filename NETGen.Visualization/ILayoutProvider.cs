@@ -46,6 +46,21 @@ namespace NETGen.Visualization
 		/// <param name='n'>
 		/// N.
 		/// </param>
-        public abstract void DoLayout();		
+        public abstract void DoLayout();
+		
+		/// <summary>
+		/// Asynchronously computes the layout.
+		/// </summary>
+		/// <param name='layoutCompleted'>
+		/// An optional lambda expression that will be executed after the layout has been completed. 
+		/// </param>
+		public void DoLayoutAsync(Action layoutCompleted = null)
+		{
+			System.Threading.ThreadPool.QueueUserWorkItem(delegate(object o) {
+				DoLayout();
+				if(layoutCompleted!=null)
+					layoutCompleted();
+			});
+		}
     }
 }

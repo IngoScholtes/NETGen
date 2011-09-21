@@ -38,7 +38,7 @@ public class ClusterSync
 		double orderThres = 0.99d;
 		
 		// Maximum time to wait for synchronization
-		long timeThres = 3000;
+		long timeThres = 10000;
 				
 		Logger.AddMessage(LogEntryType.AppMsg, 
 			string.Format("Parameters: N={0}, M={1}, C={2}, Runs={3}, Weight_From={4}, Weight_To={5}, Weight_Step={6}", 
@@ -61,39 +61,44 @@ public class ClusterSync
         {
             string line = "";
 			
-            for (double weight = Properties.Settings.Default.Weight_From; 
+    /*        for (double weight = Properties.Settings.Default.Weight_From; 
 				weight <= Properties.Settings.Default.Weight_To; 
 				weight += Properties.Settings.Default.Weight_Step)
-            {
+            { */
 				
 				// Collects results of individual runs to compute mean and stddev
                 List<double> results = new List<double>();
                 List<double> modularity = new List<double>();
+			
+				ConcurrentDictionary<int, List<double>> order = new ConcurrentDictionary<int,List<double>>();
 				
-				Logger.AddMessage(LogEntryType.AppMsg, string.Format("Starting runs for modularity {0:0.00} and weight {1:0.00}", mod, weight));
+				Logger.AddMessage(LogEntryType.AppMsg, string.Format("Starting runs for modularity {0:0.00}", mod));
 				
 				// Parallely start runs for this parameter set ... 
                 System.Threading.Tasks.Parallel.For(0, runs, j =>
                 {                 						
-					RunExperiment (nodes, edges, clusters, j, orderThres, timeThres, mod, weight, results, modularity);
+					RunExperiment (nodes, edges, clusters, j, orderThres, timeThres, mod, 0d, results, modularity, order);
                 });
-				
-				// Add mean and stddev to result string
-                line = string.Format (new CultureInfo ("en-US").NumberFormat, 
-					"{0} {1:0.000} {2:0.000} {3:0.000} \t", 
-					Statistics.Mean (modularity.ToArray()), 
-					weight, 
-					Statistics.Mean (results.ToArray()), 
-					Statistics.StandardDeviation (results.ToArray()));
-				
-				// Append string to file
-                System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, line + "\n");
-				
-                Logger.AddMessage(LogEntryType.AppMsg, string.Format("Finished runs for modularity = {0:0.00}, weight = {1:0.00}, Average time = {2:0.000000}", mod, weight, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray())));
-            }
 			
-			// Add a blank line separating the blocks
-            System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, "\n");
+				
+				foreach(int time in (from o in order.Keys orderby o ascending select o))
+				{			
+					// Add mean and stddev to result string
+                	line = string.Format (new CultureInfo ("en-US").NumberFormat, 
+					"{0} {1} {2:0.000} {3:0.000}\t", 
+					Statistics.Mean (modularity.ToArray()),
+					time,
+					Statistics.Mean (order[time].ToArray()), 
+					Statistics.StandardDeviation (order[time].ToArray()));
+				
+					// Append string to file
+	                System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, line + "\n");
+				}
+				// Add a blank line separating the blocks
+				System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, "\n");
+				
+                Logger.AddMessage(LogEntryType.AppMsg, string.Format("Finished runs for modularity = {0:0.00}, Average time = {1:0.000000}", mod, Statistics.Mean(results.ToArray())));
+      //      }      
         }
 		Logger.AddMessage(LogEntryType.AppMsg, "Successfuly completed all experiments");
     }
@@ -131,20 +136,22 @@ public class ClusterSync
 	/// <param name='modularity'>
 	/// The list that carries the modularity results
 	/// </param>
-	static void RunExperiment (int nodes, int edges, int clusters, int run, double orderThres, long timeThres, double mod, double weight, List<double> results, List<double> modularity)
+	static void RunExperiment (int nodes, int edges, int clusters, int run, double orderThres, long timeThres, double mod, double weight, List<double> results, List<double> modularity, ConcurrentDictionary<int,List<double>> orderEvolution)
 	{
 		// Setup the experiment by creating the network and the synchronization module
         ClusterNetwork net = new ClusterNetwork(nodes, edges, clusters, mod);
     	EpidemicSync sync = new EpidemicSync(net);
 		
+		Dictionary<int,bool> pacemaker_mode = new Dictionary<int, bool>();
+		
 		// Assign randomly distributed distribution parameters to clusters
-		Normal avgs_normal = new Normal(300d, 50d);		
+		Normal avgs_normal = new Normal(300d, 100d);		
 					
 		foreach(int i in net.ClusterIDs) 
 		{
 			// draw the distribution parameters from the above distribution ...
 			double groupAvg = avgs_normal.Sample();
-			double groupStdDev = groupAvg / 5d;
+			double groupStdDev = groupAvg/5d;
 			
 			// assign individual values
 			foreach(Vertex v in net.GetNodesInCluster(i))
@@ -152,36 +159,65 @@ public class ClusterSync
 				sync.PeriodMeans[v] = groupAvg;
 				sync.PeriodStdDevs[v] = groupStdDev;
 			}
+			pacemaker_mode[i] = false;
 		}
     	
     	// Assign coupling strengths
-    	foreach(Edge e in net.InterClusterEdges)
+    	foreach(Edge e in net.Edges)
     	{
-    		sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = weight;
-    		sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = weight;
-    	}						
-    	foreach(Edge e in net.IntraClusterEdges)
-    	{
-    		sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = weight;
-    		sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = weight;
-    	}
+    		sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = 2d;
+    		sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = 2d;
+    	}						    	
     	
     	// Set up code that will be called after each simulation step
     	sync.OnStep+= new EpidemicSync.StepHandler( 
-    	delegate(long time) { 
-    		double order = sync.ComputeOrder(net.Vertices.ToArray());
+    	delegate(long time) 
+		{
+    		double order = sync.ComputeOrder(net.Vertices.ToArray());			
+			// Record order evolution
+			
+			lock(orderEvolution)
+			{
+				if(!orderEvolution.ContainsKey((int)time))
+						orderEvolution[(int) time] = new List<double>();
+				orderEvolution[(int)time].Add(order);
+			}
+			
     		if (order>= orderThres || sync.SimulationStep>timeThres)
     			sync.Stop(); 
+			
     		if(time %100 == 0)
     			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Run {0}, Time {1}, Order = {2:0.00}", run, time, order));
-    	
+			
+    		if(Properties.Settings.Default.Use_Pacemakers)
+			{
+				foreach(int g in net.ClusterIDs)
+				{
+					double localOrder = sync.ComputeOrder(net.GetNodesInCluster(g));
+					
+					if(localOrder>orderThres && !pacemaker_mode[g])
+					{
+						pacemaker_mode[g] = true;
+						Logger.AddMessage(LogEntryType.AppMsg, string.Format("Cluster {0} switched to pacemaker mode", g));
+						
+						// nodes with inter-cluster links are not influenced by nodes having only intra-cluster links
+						foreach(Vertex v in net.GetNodesInCluster(g))
+						{
+							if(net.HasInterClusterConnection(v))
+								foreach(Vertex w in v.Neigbors)
+									if(!net.HasInterClusterConnection(w))
+										sync.CouplingStrengths[new Tuple<Vertex, Vertex>(v, w)] = 0d;
+						}
+					}
+				}
+			}
     	}); 
     	
     	// Synchronously run the experiment (blocks execution until experiment is finished)
     	sync.Run();
     	
     	// Write time-series of the order parameters (global and cluster-wise) to a file
-    	sync.WriteTimeSeries(string.Format("m_{0:0.00}__w_{1:0.00}_run{2}", mod, weight, run));
+    	sync.WriteTimeSeries(string.Format("m_{0:0.00}_run{1}", mod, run));
     	
     	// Add results of this run to the result lists
 	    results.Add((double) sync.SimulationStep);

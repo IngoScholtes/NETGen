@@ -1,32 +1,28 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Code Metrics">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/ClusterSync/app.config">
     <Files>
-      <File FileName="Applications/Demo/Demo.cs" Line="142" Column="14" />
-      <File FileName="Applications/CuttleFishCXFPlayer/Main.cs" Line="31" Column="65" />
-      <File FileName="NETGen.Core/Network.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.Radial/RadialLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="257" Column="27" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.Random/RandomLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.CEF/CEFPlayer.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.HuForceDirected/HuForceDirectedLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.Fractal/FractalNetwork.cs" Line="16" Column="40" />
-      <File FileName="Code Metrics" />
+      <File FileName="Applications/Demo/Demo.cs" Line="72" Column="44" />
+      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="162" Column="30" />
+      <File FileName="Applications/ClusterSync/Properties/Settings.Designer.cs" Line="40" Column="30" />
+      <File FileName="Applications/ClusterSync/app.config" Line="15" Column="23" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True" selected="True">
+        <State expanded="True">
           <Node name="Applications" expanded="True">
+            <Node name="ClusterPaper" expanded="True">
+              <Node name="ClusterSync" expanded="True" selected="True">
+                <Node name="Properties" expanded="True">
+                  <Node name="Settings.settings" expanded="True" />
+                </Node>
+              </Node>
+            </Node>
             <Node name="Demo" expanded="True" />
           </Node>
           <Node name="NETGen.Dynamics" expanded="True" />
           <Node name="NETGen.Layouts" expanded="True" />
-          <Node name="NETGen.NetworkModels" expanded="True">
-            <Node name="NETGen.NetworkModels.Fractal" expanded="True" />
-            <Node name="NETGen.NetworkModels.Tree" expanded="True" />
-          </Node>
-          <Node name="NETGen.Visualization" expanded="True" />
+          <Node name="NETGen.NetworkModels" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">

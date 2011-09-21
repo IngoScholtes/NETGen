@@ -50,7 +50,7 @@ namespace NETGen.Dynamics.Synchronization
 		// Some dictionaries that speed up computation
 		ConcurrentDictionary<Edge, double> _avgoffsets;
 		ConcurrentDictionary<Vertex, long> _localClock;
-		ConcurrentDictionary<Vertex, double> _period;
+		public ConcurrentDictionary<Vertex, double> Periods;
 		ConcurrentDictionary<Vertex, double> _SineSignal;
 		ConcurrentDictionary<Vertex, double> _CosineSignal;
 		ConcurrentDictionary<Vertex, double> _phase;					
@@ -144,7 +144,7 @@ namespace NETGen.Dynamics.Synchronization
 			// Initialize all necessary values and dictionaries ... 
             _avgoffsets = new ConcurrentDictionary<Edge, double>(System.Environment.ProcessorCount, (int) _network.VertexCount);
             _localClock = new ConcurrentDictionary<Vertex, long>(System.Environment.ProcessorCount, (int) _network.VertexCount);
-            _period = new ConcurrentDictionary<Vertex, double>(System.Environment.ProcessorCount, (int) _network.VertexCount);			
+            Periods = new ConcurrentDictionary<Vertex, double>(System.Environment.ProcessorCount, (int) _network.VertexCount);			
             _SineSignal = new ConcurrentDictionary<Vertex, double>(System.Environment.ProcessorCount, (int) _network.VertexCount);
             _CosineSignal = new ConcurrentDictionary<Vertex, double>(System.Environment.ProcessorCount, (int) _network.VertexCount);
             _phase = new ConcurrentDictionary<Vertex, double>(System.Environment.ProcessorCount, (int) _network.VertexCount);
@@ -180,11 +180,11 @@ namespace NETGen.Dynamics.Synchronization
 					_normal.StdDev = PeriodStdDevs[v];
 				
 				// Assign the initial period/frequency of the vertex
-                _period[v] = _normal.Sample();
+                Periods[v] = _normal.Sample();
 
                 // randomly skew the local clocks of nodes
                 _localClock[v] = _network.NextRandom(0, (int) _normal.Mean);
-                _phase[v] = getPhase(v, _localClock, _period);
+                _phase[v] = getPhase(v, _localClock, Periods);
                 _SineSignal[v] = Math.Sin(_phase[v]);
 				_CosineSignal[v] = Math.Cos(_phase[v]);
 				
@@ -216,7 +216,7 @@ namespace NETGen.Dynamics.Synchronization
 						_colorizer[v.GetEdgeToSuccessor(neighbor)] = Color.Red;					
 	
 	                // actually perform coupling
-	                AdjustPeriods(v, neighbor, _phase, _period, _avgDeg);
+	                AdjustPeriods(v, neighbor, _phase, Periods, _avgDeg);
 				}
             }
 
@@ -224,7 +224,7 @@ namespace NETGen.Dynamics.Synchronization
             Parallel.ForEach(_network.Vertices.ToArray(), v =>
             {
                 _localClock[v]++;
-                _phase[v] = getPhase(v, _localClock, _period);
+                _phase[v] = getPhase(v, _localClock, Periods);
                 _SineSignal[v] = Math.Sin(_phase[v]);
                 _CosineSignal[v] = Math.Cos(_phase[v]);
 				
