@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace NETGen.Core
 {
-	public enum LogEntryType { Info = 0, Warning = 1, Error = 2, SimMsg = 3, AppMsg = 4 }; 
+	public enum LogEntryType { Info = 0, Warning = 1, Error = 2, SimMsg = 3, AppMsg = 4, SimData = 5 }; 
 	
 	public class Logger
 	{
@@ -12,6 +12,7 @@ namespace NETGen.Core
 		public static bool ShowErrors = true;
 		public static bool ShowSimMsg = true;
 		public static bool ShowAppMsg = true;
+		public static bool ShowSimData = true;
 		
 		private static int maxModuleLength = int.MinValue;
 		
@@ -38,8 +39,7 @@ namespace NETGen.Core
 			if(frame!=null)
 				method = frame.GetMethod();
 			if(method!=null)
-				module = method.Module;
-			
+				module = method.Module;			
 			if(module!=null)
 				modulestring = module.Name;
 			if(method!=null)
@@ -54,25 +54,30 @@ namespace NETGen.Core
 			{
 				Console.WriteLine("[INFO]"+output);
 			}
-			if(type == LogEntryType.Warning && ShowWarnings)
+			else if(type == LogEntryType.Warning && ShowWarnings)
 			{
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.WriteLine("[WARNING]"+output);
 			}
-			if(type == LogEntryType.Error && ShowErrors)
+			else if(type == LogEntryType.Error && ShowErrors)
 			{
 				Console.ForegroundColor = ConsoleColor.Red;
 				Console.WriteLine("[ERROR]"+output);
 			}
-			if(type == LogEntryType.SimMsg && ShowSimMsg)
+			else if(type == LogEntryType.SimMsg && ShowSimMsg)
 			{
 				Console.ForegroundColor = ConsoleColor.Blue;
 				Console.WriteLine("[SIM]"+output);
 			}
-			if(type == LogEntryType.AppMsg && ShowAppMsg)
+			else if(type == LogEntryType.AppMsg && ShowAppMsg)
 			{
 				Console.ForegroundColor = ConsoleColor.Green;
 				Console.WriteLine("[APP]"+output);
+			}
+			else if(type == LogEntryType.SimData && ShowSimData)
+			{
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.WriteLine(output);
 			}
 			Console.ForegroundColor = ConsoleColor.Gray;
 		}

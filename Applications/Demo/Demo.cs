@@ -62,7 +62,7 @@ class Demo
 		NetworkColorizer colorizer = new NetworkColorizer();			
 		NetworkVisualizer.Start(network, new NETGen.Layouts.FruchtermanReingold.FruchtermanReingoldLayout(15), colorizer);	
 		
-		NetworkVisualizer.ComputeLayout();
+		NetworkVisualizer.Layout.DoLayout();
 		
 		// Setup the synchronization simulation
 		sync = new EpidemicSync(network, colorizer);
@@ -88,8 +88,8 @@ class Demo
 		
 		foreach(Edge e in network.Edges)
 		{
-			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = InterClusterStrength;
-			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = InterClusterStrength;
+			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = 2d;
+			sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = 2d;
 		}
 		
 		sync.OnStep+=new EpidemicSync.StepHandler(collectLocalOrder);	

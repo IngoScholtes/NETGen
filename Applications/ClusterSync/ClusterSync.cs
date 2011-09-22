@@ -61,10 +61,6 @@ public class ClusterSync
         {
             string line = "";
 			
-    /*        for (double weight = Properties.Settings.Default.Weight_From; 
-				weight <= Properties.Settings.Default.Weight_To; 
-				weight += Properties.Settings.Default.Weight_Step)
-            { */
 				
 				// Collects results of individual runs to compute mean and stddev
                 List<double> results = new List<double>();
@@ -97,8 +93,7 @@ public class ClusterSync
 				// Add a blank line separating the blocks
 				System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, "\n");
 				
-                Logger.AddMessage(LogEntryType.AppMsg, string.Format("Finished runs for modularity = {0:0.00}, Average time = {1:0.000000}", mod, Statistics.Mean(results.ToArray())));
-      //      }      
+                Logger.AddMessage(LogEntryType.AppMsg, string.Format("Finished runs for modularity = {0:0.00}, Average time = {1:0.000000}", mod, Statistics.Mean(results.ToArray())));  
         }
 		Logger.AddMessage(LogEntryType.AppMsg, "Successfuly completed all experiments");
     }

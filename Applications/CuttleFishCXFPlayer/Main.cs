@@ -34,7 +34,7 @@ namespace CuttleFishPlayer
 			NetworkVisualizer.Start(n, new RandomLayout(), colorizer);
 			
 			// Compute layout and save initial frame
-			NetworkVisualizer.ComputeLayout();
+			NetworkVisualizer.Layout.DoLayout();
 			NetworkVisualizer.SaveCurrentImage("frame_0000.bmp");
 			
 			// Load network evolution from cuttlefish cef file
@@ -42,7 +42,7 @@ namespace CuttleFishPlayer
 			
 			// On each evolution step, recompute layout and save current image
 			player.OnStep+= new DiscreteDynamics<long>.StepHandler( delegate(long time) {
-				NetworkVisualizer.ComputeLayout();
+				NetworkVisualizer.Layout.DoLayout();
 				NetworkVisualizer.SaveCurrentImage(string.Format("frame_{0000}.bmp", time));
 				Logger.AddMessage(LogEntryType.AppMsg, string.Format("Time {0000}: {1} Nodes, {2} Edges", time, n.VertexCount, n.EdgeCount));
 			});
