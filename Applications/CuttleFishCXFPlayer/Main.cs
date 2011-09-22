@@ -52,6 +52,7 @@ namespace CuttleFishPlayer
 			Console.ReadLine();			
 			player.Run();
 			
+			Network.SaveToGraphML("mono_network.graphml", n);
 		}
 	}
 }

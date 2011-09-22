@@ -42,7 +42,7 @@ namespace NETGen.Visualization
 		
 		private Network _network;		
 		private NetworkColorizer _colorizer;		
-		private LayoutProvider _layout;
+		public static LayoutProvider Layout;
 		private static Bitmap _screenshot = null;
 		private bool screenshot = false;
 		
@@ -68,10 +68,10 @@ namespace NETGen.Visualization
 			Mouse.Move += new EventHandler<MouseMoveEventArgs>(Mouse_Move);		
 			Mouse.WheelChanged += new EventHandler<MouseWheelEventArgs>(Mouse_WheelChanged);			
 			
-			_layout = layout;			
+			Layout = layout;			
 			_network = network;
 			
-			_layout.Init(Width, Height, _network); 
+			Layout.Init(Width, Height, _network); 
 			
 			if (colorizer == null)
 				_colorizer = new NetworkColorizer();
@@ -143,15 +143,6 @@ namespace NETGen.Visualization
  
 			Title = "Rendering network at "+ Fps.GetFps(e.Time).ToString() + " fps";
 		}
-		
-		/// <summary>
-		/// Updates the layout of the visualized network. 
-		/// </summary>
-		public static void ComputeLayout()
-		{
-			Instance._layout.DoLayout();
-		}
-		
 
  		[MethodImpl(MethodImplOptions.Synchronized)]
 		protected override void OnRenderFrame(FrameEventArgs e)
@@ -200,8 +191,8 @@ namespace NETGen.Visualization
 			GL.Color3(c);
 			GL.Begin(BeginMode.Lines);			
 			
-			GL.Vertex2(_layout.GetPositionOfNode(e.Source).X, _layout.GetPositionOfNode(e.Source).Y);
-			GL.Vertex2(_layout.GetPositionOfNode(e.Target).X, _layout.GetPositionOfNode(e.Target).Y);
+			GL.Vertex2(Layout.GetPositionOfNode(e.Source).X, Layout.GetPositionOfNode(e.Source).Y);
+			GL.Vertex2(Layout.GetPositionOfNode(e.Target).X, Layout.GetPositionOfNode(e.Target).Y);
 			
 			GL.End();
 		}
@@ -226,7 +217,7 @@ namespace NETGen.Visualization
             for (int i = 0; i < 360; i+=360/segments)
             {
                 double degInRad = i * 3.1416/180;
-                GL.Vertex2(_layout.GetPositionOfNode(v).X + Math.Cos(degInRad) * radius, _layout.GetPositionOfNode(v).Y+Math.Sin(degInRad) * radius);
+                GL.Vertex2(Layout.GetPositionOfNode(v).X + Math.Cos(degInRad) * radius, Layout.GetPositionOfNode(v).Y+Math.Sin(degInRad) * radius);
             }
 			GL.End();
 		}
