@@ -29,7 +29,7 @@ public class ClusterSync
 	/// </summary>
     public static void Main()
     {
-		int nodes = Properties.Settings.Default.Nodes;
+		int nodes =  Properties.Settings.Default.Nodes;	
 		int edges = Properties.Settings.Default.Edges;
 		int clusters = Properties.Settings.Default.Clusters;
 		int runs = Properties.Settings.Default.Runs;

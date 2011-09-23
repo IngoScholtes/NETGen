@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D48B4217-0FFE-4C33-8CFC-6EEDE62EFE98}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>NETGen.pyspg</RootNamespace>
-    <AssemblyName>NETGen.pyspg</AssemblyName>
+    <ProjectGuid>{186A0D96-30F5-4D68-AACC-8AC91A90A46B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>pyspgDemo</RootNamespace>
+    <AssemblyName>pyspgDemo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -20,6 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <Commandlineparameters>-g</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -31,16 +32,16 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="pyspgSimulation.cs" />
-    <Compile Include="ParameterAttribute.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NETGen.Core\NETGen.Core.csproj">
+    <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">
       <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
       <Name>NETGen.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.pyspg\NETGen.pyspg.csproj">
+      <Project>{D48B4217-0FFE-4C33-8CFC-6EEDE62EFE98}</Project>
+      <Name>NETGen.pyspg</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Mono.Posix" />
+    <Compile Include="ExampleSimulation.cs" />
   </ItemGroup>
 </Project>
