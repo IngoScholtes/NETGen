@@ -1,9 +1,9 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.pyspg/pyspgSimulation.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/pyspgDemo/ExampleSimulation.cs">
     <Files>
       <File FileName="Applications/Demo/Demo.cs" Line="65" Column="39" />
-      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="32" Column="49" />
+      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="1" Column="1" />
       <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/EpidemicSync.cs" Line="1" Column="1" />
       <File FileName="Applications/CuttleFishCXFPlayer/Main.cs" Line="1" Column="1" />
       <File FileName="Applications/GraphMLVisualizer/Main.cs" Line="1" Column="1" />
@@ -11,23 +11,16 @@
       <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="1" Column="1" />
       <File FileName="Tests/NETGen.Core.Tests.cs" Line="1" Column="1" />
       <File FileName="NETGen.Core/Logger.cs" Line="1" Column="1" />
-      <File FileName="NETGen.pyspg/pyspgSimulation.cs" Line="67" Column="83" />
-      <File FileName="Applications/pyspgDemo/ExampleSimulation.cs" Line="23" Column="44" />
-      <File FileName="NETGen.pyspg/ParamAttributes.cs" Line="11" Column="21" />
+      <File FileName="NETGen.pyspg/pyspgSimulation.cs" Line="190" Column="26" />
+      <File FileName="Applications/pyspgDemo/ExampleSimulation.cs" Line="14" Column="3" />
+      <File FileName="NETGen.pyspg/ParameterAttribute.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
-            <Node name="ClusterPaper" expanded="True">
-              <Node name="ClusterSync" expanded="True" />
-            </Node>
             <Node name="pyspgDemo" expanded="True" selected="True" />
           </Node>
-          <Node name="NETGen.Dynamics" expanded="True" />
-          <Node name="NETGen.Layouts" expanded="True" />
-          <Node name="NETGen.NetworkModels" expanded="True" />
-          <Node name="NETGen.pyspg" expanded="True" />
           <Node name="Tests" expanded="True" />
         </State>
       </Pad>
@@ -49,7 +42,6 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/ischoltes/Code/NETGen/NETGen.Layouts/NETGen.Layouts.HuForceDirected/HuForceDirectedLayout.cs" line="66" />
-      <Breakpoint file="/home/ischoltes/Code/NETGen/NETGen.pyspg/pyspgSimulation.cs" line="59" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

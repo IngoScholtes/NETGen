@@ -9,26 +9,30 @@ namespace NETGen.pyspg
 {
 	public abstract class pyspgSimulation<T> where T : pyspgSimulation<T>, new()
 	{		
+		private static string scriptname = "";
 		
 		public static void Init(string[] args)
 		{
-			if(args.Length==1 && args[0] == "-g")
+			//create instance of the derived type
+			T simulation = new T();
+			scriptname = "runsim_" + System.AppDomain.CurrentDomain.FriendlyName.Replace(".exe", "");
+			
+			if(args.Length==1 && args[0] == "-g")				
 			{
-				T simulation = new T();
 				simulation.BuildConfigFiles();
 			}
 			// Perform the run for a given input parameter file
-			else if (args.Length==2 && args[0] == "-i" && System.IO.File.Exists(args[1]))
+			else if (args.Length==2 && (args[0] == "-i" || args[0]=="-d") && System.IO.File.Exists(args[1]))
 			{				
 				// Set logger to data recording mode
-				Logger.ShowAppMsg = false;
-				Logger.ShowErrors = false;
-				Logger.ShowInfos = false;
-				Logger.ShowSimMsg = false;
-				Logger.ShowWarnings = false;
-				
-				//create instance of the derived type
-				T simulation = new T();
+				if(args[0]=="-i")
+				{
+					Logger.ShowAppMsg = false;
+					Logger.ShowErrors = false;
+					Logger.ShowInfos = false;
+					Logger.ShowSimMsg = false;
+					Logger.ShowWarnings = false;
+				}
 				
 				// set values of parameters to values according to input file
 				simulation.SetParameters(args[1]);
@@ -39,17 +43,16 @@ namespace NETGen.pyspg
 				// Print tab-separated output values to stdout
 				foreach(FieldInfo fi in GetFields(simulation.GetType(), typeof(ParameterAttribute)))
 					if( (fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).Type == ParameterType.Output )
-						Console.Write(fi.GetValue(simulation.GetType()).ToString()+"\t");						
-				
+						Console.Write(fi.GetValue(simulation).ToString()+"\t");			
+				Console.Write("\n");
 			}
-			// Check if the values can be set 
+			// Check if the values can be set correctly 
 			else if (args.Length==2 && args[0] == "-c")
 			{
 				if(!System.IO.File.Exists(args[1]))
 					Logger.AddMessage(LogEntryType.Error, "Input parameters file does not exist.");
 				
-				try {
-					T simulation = new T();
+				try {					
 					simulation.SetParameters(args[1]);
 					Logger.AddMessage(LogEntryType.AppMsg, "Input file ok.");
 				}
@@ -61,8 +64,9 @@ namespace NETGen.pyspg
 			{
 				Logger.AddMessage(LogEntryType.Info, "Usage: \t" + System.AppDomain.CurrentDomain.FriendlyName + " [options]");
 				Logger.AddMessage(LogEntryType.Info, "\t -g \t Generate pyspg config files for this simulation");
-				Logger.AddMessage(LogEntryType.Info, "\t -c [filename]\t Check whether the input parameter file is correct for this simulation");
-				Logger.AddMessage(LogEntryType.Info, "\t -i [filename]\t Run simulation for the given input parameter file");
+				Logger.AddMessage(LogEntryType.Info, "\t -c \t[filename]\t Check whether the input parameter file is correct for this simulation");
+				Logger.AddMessage(LogEntryType.Info, "\t -i \t[filename]\t Run simulation for the given input parameter file");
+				Logger.AddMessage(LogEntryType.Info, "\t -d \t[filename]\t Run single simulation for the given input parameter file with full debug output");
 			}
 		}
 		
@@ -83,14 +87,14 @@ namespace NETGen.pyspg
 		/// </param>
 		object CreateValue (Type simulationType, string paramname, string paramvalue)
 		{
-			if(simulationType.GetField(paramname).FieldType == typeof(int))
+			if(simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType == typeof(int))
 				return Int32.Parse(paramvalue);
-			else if (simulationType.GetField(paramname).FieldType == typeof(double))
+			else if (simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType == typeof(double))
 				return double.Parse(paramvalue);
-			else if (simulationType.GetField(paramname).FieldType == typeof(float))
+			else if (simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType == typeof(float))
 				return float.Parse(paramvalue);
-			else if (simulationType.GetField(paramname).FieldType.IsEnum)				
-				return Enum.Parse(simulationType.GetField(paramname).FieldType, paramvalue);
+			else if (simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType.IsEnum)				
+				return Enum.Parse(simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType, paramvalue);
 			return null;
 		}
 		
@@ -178,14 +182,14 @@ namespace NETGen.pyspg
 				
 				string label = "";
 				string textlabel = "";
-				output += TranslateType(outputfields[s].FieldType) +":help = " + fieldAttributes[s].Comment + ":label = " + label + ":textlabel = " + textlabel;
+				output += outputfields[s].Name +":help = " + fieldAttributes[s].Comment;
 			}			
 			System.IO.File.WriteAllText(filename, output);
 		}
 
-		static void BuildParamSkeleton (Dictionary<string, FieldInfo> inputfields, string filename)
+		static void BuildParamSkeleton (Dictionary<string, FieldInfo> inputfields, string filename, string executable)
 		{
-			string output = "@execute runsim_" + System.AppDomain.CurrentDomain.FriendlyName + "\n";
+			string output = "@execute " + executable + "\n";
 			
 			foreach(string s in inputfields.Keys)
 			{
@@ -199,7 +203,6 @@ namespace NETGen.pyspg
 		/// </summary>
 		private void BuildConfigFiles()
 		{			
-			
 			Type simulationType = this.GetType();			
 			
 			// Collect information of input and output types
@@ -221,17 +224,23 @@ namespace NETGen.pyspg
 				}
 			}
 			
+			Logger.AddMessage(LogEntryType.AppMsg, string.Format("Extracted {0} input and {1} output parameters.", inputfields.Keys.Count, outputfields.Keys.Count));
+			
 			// Generate the startupscript
-			BuildStartupScript ("runsim_" + System.AppDomain.CurrentDomain.FriendlyName);
+			BuildStartupScript (scriptname);
+			Logger.AddMessage(LogEntryType.AppMsg, string.Format("Startup script \"{0}\" generated.", scriptname));
 			
 			// Generate .ct file from input parameters
-			BuildCTFile (inputfields, fieldAttributes, "runsim_" + System.AppDomain.CurrentDomain.FriendlyName + ".ct");
+			BuildCTFile (inputfields, fieldAttributes, scriptname + ".ct");
+			Logger.AddMessage(LogEntryType.AppMsg, string.Format("pyspg script \"{0}\" generated.", scriptname + ".ct"));
 						
 			// Generate .stdout file from output parameters
-			BuildStdOutFile (outputfields, fieldAttributes, "runsim_" + System.AppDomain.CurrentDomain.FriendlyName + ".stdout");
+			BuildStdOutFile (outputfields, fieldAttributes, scriptname + ".stdout");
+			Logger.AddMessage(LogEntryType.AppMsg, string.Format("stdout script \"{0}\" generated.", scriptname + ".stdout"));
 			
 			// Generate parameters skeleton file parameters.dat
-			BuildParamSkeleton (inputfields, "parameters.dat");
+			BuildParamSkeleton (inputfields, "parameters.dat", scriptname);
+			Logger.AddMessage(LogEntryType.AppMsg, string.Format("Skeleton parameter config \"{0}\" generated.", "parameters.dat"));
 		}
 		
 		private static string TranslateType(Type t)
