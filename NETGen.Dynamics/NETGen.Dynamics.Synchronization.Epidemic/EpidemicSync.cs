@@ -25,6 +25,7 @@ namespace NETGen.Dynamics.Synchronization
         public long time;
     }
 	
+	// TODO: Change to resemble the frequency perspective of the original Kuramoto model
 	public class EpidemicSync : DiscreteDynamics<SyncResults>
 	{
 		/// <summary>

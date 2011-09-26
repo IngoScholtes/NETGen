@@ -2,7 +2,7 @@ using System;
 
 namespace NETGen.pyspg
 {
-	public enum ParameterType { Input = 0, Output = 1 };
+	public enum ParameterType { Input = 0, Output = 1, OutputFile = 2 };
 	
 	[AttributeUsage(AttributeTargets.Field, Inherited = false)]
 	public class ParameterAttribute : Attribute

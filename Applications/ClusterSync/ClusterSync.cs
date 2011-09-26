@@ -22,8 +22,6 @@ using NETGen.Dynamics.Synchronization;
 using NETGen.pyspg;
 #endregion
 
-public enum SimulationMode { WithoutPacemaker = 0, WithPacemakers = 1 }
-
 public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 {	
 	[Parameter(ParameterType.Input, "Number of nodes", 1000)]
@@ -44,14 +42,20 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	[Parameter(ParameterType.Input, "Number of clusters", 20)]
 	int clusters;
 	
-	[Parameter(ParameterType.Input, "Whether to use pacemakers", SimulationMode.WithoutPacemaker)]
-	SimulationMode simMode;
+	[Parameter(ParameterType.Input, "Probability for pacemakers to emerge", 0)]
+	double pacemakerProb;
 	
-	[Parameter(ParameterType.Input, "Desired Newman modularity of the network")]
+	[Parameter(ParameterType.Input, "Desired Newman modularity of the network", 0)]
 	double modularity_tgt;
 	
 	[Parameter(ParameterType.Output, "Final order")]
-	double order;
+	double orderParam;
+	
+	[Parameter(ParameterType.Output, "Initial Density")]
+	double initialDensity;
+	
+	[Parameter(ParameterType.Output, "Final density")]
+	double finalDensity;
 	
 	[Parameter(ParameterType.Output, "Measured Newman modularity of the network")]
 	double modularity_real;
@@ -59,13 +63,13 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	[Parameter(ParameterType.Output, "Time taken to synchronize")]
 	int time;
 	
+	[Parameter(ParameterType.OutputFile, "Evolution of cluster order and global order")]
+	string dynamics;
 	
 	public static void Main(string[] args)
     {	
 		Init(args);
 	}
-	
-	
 	
 	/// <summary>
 	/// Runs the cluster synchronization experiments, reading simulation parameters from the .config file
@@ -79,7 +83,7 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 		Dictionary<int,bool> pacemaker_mode = new Dictionary<int, bool>();
 		
 		// Assign randomly distributed distribution parameters to clusters
-		Normal avgs_normal = new Normal(300d, 100d);		
+		Normal avgs_normal = new Normal(300d, 100d);	
 					
 		foreach(int i in net.ClusterIDs) 
 		{
@@ -107,79 +111,63 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
     	sync.OnStep+= new EpidemicSync.StepHandler( 
     	delegate(long timestep) 
 		{
-    		double o = sync.ComputeOrder(net.Vertices.ToArray());			
-			// Record order evolution
-			/*
-			lock(orderEvolution)
-			{
-				if(!orderEvolution.ContainsKey((int)timestep))
-						orderEvolution[(int) timestep] = new List<double>();
-				orderEvolution[(int)timestep].Add(order);
-			}
-			*/
+    		orderParam = sync.ComputeOrder(net.Vertices.ToArray());			
 			
-    		if (order>= orderThres || sync.SimulationStep>timeThres)
+			// Record order evolution
+			sync.AddDataPoint("GlobalOrder", orderParam);
+			
+    		if (orderParam>= orderThres || sync.SimulationStep>timeThres)
     			sync.Stop(); 
 			
-    		if(time %100 == 0)
-    			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Run {0}, Time {1}, Order = {2:0.00}", timestep, o));
+    		if(timestep %100 == 0)
+    			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time {0}, Order = {1:0.00}", timestep, orderParam));
 			
-    		if(simMode == SimulationMode.WithPacemakers)
+
+			foreach(int g in net.ClusterIDs)
 			{
-				foreach(int g in net.ClusterIDs)
+				double localOrder = sync.ComputeOrder(net.GetNodesInCluster(g));
+				
+				sync.AddDataPoint(string.Format("ClusterOrder_{0}", g), localOrder);
+				
+				if(localOrder>orderThres && !pacemaker_mode[g])
 				{
-					double localOrder = sync.ComputeOrder(net.GetNodesInCluster(g));
+					pacemaker_mode[g] = true;					
 					
-					if(localOrder>orderThres && !pacemaker_mode[g])
+					// nodes with inter-cluster links are not influenced by nodes having only intra-cluster links
+					foreach(Vertex v in net.GetNodesInCluster(g))
 					{
-						pacemaker_mode[g] = true;
-						Logger.AddMessage(LogEntryType.AppMsg, string.Format("Cluster {0} switched to pacemaker mode", g));
-						
-						// nodes with inter-cluster links are not influenced by nodes having only intra-cluster links
-						foreach(Vertex v in net.GetNodesInCluster(g))
-						{
-							if(net.HasInterClusterConnection(v))
-								foreach(Vertex w in v.Neigbors)
-									if(!net.HasInterClusterConnection(w))
+						if(net.HasInterClusterConnection(v))
+							foreach(Vertex w in v.Neigbors)
+								if(!net.HasInterClusterConnection(w))
+									if (net.NextRandomDouble() <= pacemakerProb)
+									{
+										Logger.AddMessage(LogEntryType.AppMsg, string.Format("Cluster {0} switched to pacemaker mode", g));
 										sync.CouplingStrengths[new Tuple<Vertex, Vertex>(v, w)] = 0d;
-						}
+									}
 					}
 				}
 			}
-    	}); 
+    	});
+		
+		// compute coupling density in the initial situation
+		initialDensity = 0d;
+		foreach(var t in sync.CouplingStrengths.Keys)
+			initialDensity += sync.CouplingStrengths[t];
     	
     	// Synchronously run the experiment (blocks execution until experiment is finished)
     	sync.Run();
-    	
-    	// Write time-series of the order parameters (global and cluster-wise) to a file
-    	// sync.WriteTimeSeries(string.Format("m_{0:0.00}_run{1}", mod, run));
-    	
-    	// Add results of this run to the result lists
+		
+		// compute final coupling density
+		finalDensity = 0d;		
+		foreach(var t in sync.CouplingStrengths.Keys)
+			finalDensity += sync.CouplingStrengths[t];
+		
+		// Write time-series of the order parameters (global and cluster-wise) to a file
+    	sync.WriteTimeSeries(dynamics);
+		
+		// Set results     	
 	    time = (int) sync.SimulationStep;
-		order = sync.ComputeOrder(net.Vertices.ToArray());
+		orderParam = sync.ComputeOrder(net.Vertices.ToArray());
 	    modularity_real = net.NewmanModularity;
 	}
-    	
-	
-				
-			/*
-				
-				foreach(int time in (from o in order.Keys orderby o ascending select o))
-				{			
-					// Add mean and stddev to result string
-                	line = string.Format (new CultureInfo ("en-US").NumberFormat, 
-					"{0} {1} {2:0.000} {3:0.000}\t", 
-					Statistics.Mean (modularity.ToArray()),
-					time,
-					Statistics.Mean (order[time].ToArray()), 
-					Statistics.StandardDeviation (order[time].ToArray()));
-				
-					// Append string to file
-	                System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, line + "\n");
-				}
-				// Add a blank line separating the blocks
-				System.IO.File.AppendAllText(Properties.Settings.Default.ResultFile, "\n");
-				*/                
 }
-
-

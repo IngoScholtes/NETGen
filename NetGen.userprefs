@@ -1,26 +1,34 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/pyspgDemo/ExampleSimulation.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.pyspg/pyspgSimulation.cs">
     <Files>
-      <File FileName="Applications/Demo/Demo.cs" Line="65" Column="39" />
-      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/EpidemicSync.cs" Line="1" Column="1" />
-      <File FileName="Applications/CuttleFishCXFPlayer/Main.cs" Line="1" Column="1" />
-      <File FileName="Applications/GraphMLVisualizer/Main.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/Network.cs" Line="1" Column="1" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="1" Column="1" />
-      <File FileName="Tests/NETGen.Core.Tests.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/Logger.cs" Line="1" Column="1" />
-      <File FileName="NETGen.pyspg/pyspgSimulation.cs" Line="190" Column="26" />
-      <File FileName="Applications/pyspgDemo/ExampleSimulation.cs" Line="14" Column="3" />
-      <File FileName="NETGen.pyspg/ParameterAttribute.cs" Line="1" Column="1" />
+      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="44" Column="2" />
+      <File FileName="NETGen.pyspg/pyspgSimulation.cs" Line="69" Column="63" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/EpidemicSync.cs" Line="35" Column="3" />
+      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="61" Column="40" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
-            <Node name="pyspgDemo" expanded="True" selected="True" />
+            <Node name="ClusterPaper" expanded="True">
+              <Node name="ClusterSync" expanded="True" selected="True" />
+            </Node>
+            <Node name="CuttleFishPlayer" expanded="True" />
+            <Node name="Demo" expanded="True" />
+            <Node name="GraphMLVisualizer" expanded="True" />
+            <Node name="pyspgDemo" expanded="True" />
+            <Node name="Scientometrics" expanded="True" />
+            <Node name="TwitterRealTime" expanded="True" />
           </Node>
+          <Node name="NETGen.Dynamics" expanded="True">
+            <Node name="NETGen.Dynamics.Synchronization.Epidemic" expanded="True" />
+          </Node>
+          <Node name="NETGen.NetworkModels" expanded="True">
+            <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
+          </Node>
+          <Node name="NETGen.Core" expanded="True" />
+          <Node name="NETGen.pyspg" expanded="True" />
           <Node name="Tests" expanded="True" />
         </State>
       </Pad>

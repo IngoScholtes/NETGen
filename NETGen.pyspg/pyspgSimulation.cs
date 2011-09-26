@@ -89,12 +89,16 @@ namespace NETGen.pyspg
 		{
 			if(simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType == typeof(int))
 				return Int32.Parse(paramvalue);
+			else if(simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType == typeof(long))
+				return Int64.Parse(paramvalue);
 			else if (simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType == typeof(double))
 				return double.Parse(paramvalue);
 			else if (simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType == typeof(float))
 				return float.Parse(paramvalue);
 			else if (simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType.IsEnum)				
 				return Enum.Parse(simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType, paramvalue);
+			else if (simulationType.GetField(paramname, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FieldType == typeof(string))
+				return paramvalue;
 			return null;
 		}
 		
@@ -115,18 +119,23 @@ namespace NETGen.pyspg
 			foreach(string s in lines)
 			{
 				string paramname = s.Split(' ')[0]; 
+				if(paramname.StartsWith("store_") && paramname.EndsWith("_filename"))
+				{
+					paramname = paramname.Replace("store_", "").Replace("_filename", "");
+				}
 				string paramvalue = s.Split(' ')[1]; 
 				values[paramname] = CreateValue(simulationType, paramname, paramvalue);
 			}
-			
-			foreach(FieldInfo fi in simulationType.GetFields())				
-				fi.SetValue(fi.Name, values[fi.Name]);
+
+			foreach(FieldInfo fi in simulationType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
+				if(values.ContainsKey(fi.Name))
+					fi.SetValue(this, values[fi.Name]);
 		}
 
 		static void BuildStartupScript (string filename)
 		{
 			string output= "#!/bin/bash\n";
-			output += "mono-sgen ./" + System.AppDomain.CurrentDomain.FriendlyName + " $1 $2 $3";
+			output += "mono-sgen ~/opt/bin/" + System.AppDomain.CurrentDomain.FriendlyName + " $1 $2 $3";
 			
 			System.IO.File.WriteAllText(filename, output);
 		}
@@ -137,44 +146,51 @@ namespace NETGen.pyspg
 			foreach(string s in inputfields.Keys)
 			{
 				if(output!="")
-					output += "\n";
+						output += "\n";
 				
-				// Add type code
-				output += TranslateType(inputfields[s].FieldType);
-				
-				// Add parameter name
-				output += ":"+ inputfields[s].Name;
-				
-				// Add all possible choices
-				if (inputfields[s].FieldType.IsEnum)
+				if(fieldAttributes[s].Type == ParameterType.OutputFile)
 				{
-					bool first = true;
-					foreach(string e in inputfields[s].FieldType.GetEnumNames())
-					{
-						if(first)
-						{
-							output +=":";
-							first = false;
-						}
-						else
-							output += ",";
-						
-						output += "\"" + e + "\"";
-					}
+					output += "@conditional_file_out "	 + inputfields[s].Name; 
 				}
-				// Add default value
-				else 
-					output += ":" + (fieldAttributes[s].DefaultValue!=null?fieldAttributes[s].DefaultValue.ToString():"");
-				
-				// Add help string
-				output += ":" + fieldAttributes[s].Comment;
+				else
+				{
+					// Add type code
+					output += TranslateType(inputfields[s].FieldType);
+					
+					// Add parameter name
+					output += ":"+ inputfields[s].Name;
+					
+					// Add possible choices
+					if (inputfields[s].FieldType.IsEnum)
+					{
+						bool first = true;
+						foreach(string e in inputfields[s].FieldType.GetEnumNames())
+						{
+							if(first)
+							{
+								output +=":";
+								first = false;
+							}
+							else
+								output += ",";
+							
+							output += "\"" + e + "\"";
+						}
+					}
+					// Add default value
+					else 
+						output += ":" + (fieldAttributes[s].DefaultValue!=null?fieldAttributes[s].DefaultValue.ToString():"");
+					
+					// Add help string
+					output += ":" + fieldAttributes[s].Comment;
+				}
 			}
 			System.IO.File.WriteAllText(filename, output);
 		}
 
 		static void BuildStdOutFile (Dictionary<string, FieldInfo> outputfields, Dictionary<string, ParameterAttribute> fieldAttributes, string filename)
 		{
-			string output = "";
+			string output = "";			
 			foreach(string s in outputfields.Keys)
 			{
 				if(output!="")
@@ -187,13 +203,16 @@ namespace NETGen.pyspg
 			System.IO.File.WriteAllText(filename, output);
 		}
 
-		static void BuildParamSkeleton (Dictionary<string, FieldInfo> inputfields, string filename, string executable)
+		static void BuildParamSkeleton (Dictionary<string, FieldInfo> inputfields, Dictionary<string, ParameterAttribute> fieldAttributes, string filename, string executable)
 		{
 			string output = "@execute " + executable + "\n";
 			
 			foreach(string s in inputfields.Keys)
-			{
-				output += ":" + s + " " + (inputfields[s].GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).DefaultValue.ToString() + "\n";
+			{				
+				if(fieldAttributes[s].Type == ParameterType.OutputFile)
+					output += ":store_" + inputfields[s].Name + "_filename OUTFILENAME";
+				else
+					output += ":" + s + " " + (inputfields[s].GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).DefaultValue.ToString() + "\n";
 			}
 			System.IO.File.WriteAllText(filename, output);
 		}
@@ -212,7 +231,8 @@ namespace NETGen.pyspg
 			
 			foreach(FieldInfo fi in simulationType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static))
 			{
-				if( (fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).Type == ParameterType.Input)
+				if( (fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).Type == ParameterType.Input
+					|| (fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).Type == ParameterType.OutputFile)
 				{
 					inputfields[fi.Name] = fi;
 					fieldAttributes[fi.Name] = fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute;
@@ -239,7 +259,7 @@ namespace NETGen.pyspg
 			Logger.AddMessage(LogEntryType.AppMsg, string.Format("stdout script \"{0}\" generated.", scriptname + ".stdout"));
 			
 			// Generate parameters skeleton file parameters.dat
-			BuildParamSkeleton (inputfields, "parameters.dat", scriptname);
+			BuildParamSkeleton (inputfields, fieldAttributes, "parameters.dat", scriptname);
 			Logger.AddMessage(LogEntryType.AppMsg, string.Format("Skeleton parameter config \"{0}\" generated.", "parameters.dat"));
 		}
 		
