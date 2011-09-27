@@ -51,7 +51,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.MongoDB", "NETGen.Mo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETGen.Dynamics", "NETGen.Dynamics", "{D61A434F-8A9C-4EFC-A15C-92A5BC19D05C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.Dynamics.Synchronization.Epidemic", "NETGen.Dynamics\NETGen.Dynamics.Synchronization.Epidemic\NETGen.Dynamics.Synchronization.Epidemic.csproj", "{83540F86-4BD1-4FC3-9065-A5A838C66D50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.Dynamics.Synchronization.Kuramoto", "NETGen.Dynamics\NETGen.Dynamics.Synchronization.Epidemic\NETGen.Dynamics.Synchronization.Kuramoto.csproj", "{83540F86-4BD1-4FC3-9065-A5A838C66D50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETGen.Dynamics.Spreading.SIR", "NETGen.Dynamics\NETGen.Dynamics.Spreading.SIR\NETGen.Dynamics.Spreading.SIR.csproj", "{08949738-35C4-474E-8432-A8AD2DEE5CF4}"
 EndProject
@@ -241,7 +241,7 @@ Global
 		{07FEBE27-2D29-41BA-AB02-511E0D6FD9E2} = {C779CFBB-B9C8-49FF-9B06-6190A7E664C4}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Applications\ClusterSync\ClusterSync.csproj
+		StartupItem = Applications\Demo\Demo.csproj
 		Policies = $0
 		$0.VersionControlPolicy = $1
 		$1.inheritsSet = Mono

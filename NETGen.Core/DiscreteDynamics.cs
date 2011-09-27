@@ -87,7 +87,12 @@ namespace NETGen.Core
 		{
 			if(file==null)
 			{
-				Logger.AddMessage(LogEntryType.Error, "Could not write time-series: 'null' given as filename");
+				Logger.AddMessage(LogEntryType.Error, "Could not write time-series: 'null' given as filename.");
+				return;
+			}
+			if(_dataColumns==null)
+			{
+				Logger.AddMessage(LogEntryType.Error, "Could not write time-series: datacolumns not initialized.");
 				return;
 			}
 			

@@ -24,6 +24,8 @@ namespace pyspgDemo
 		[Parameter(ParameterType.Output, "Some second output parameter")]
 		long result2;
 		
+		[Parameter(ParameterType.OutputFile, "The name of an output file to write data to")]
+		string output_file;
 		
 		public static void Main(string[] args) { Init(args); }
 		
@@ -37,6 +39,7 @@ namespace pyspgDemo
 			Logger.AddMessage(LogEntryType.AppMsg, "\t param1 \t= " + param1.ToString());
 			Logger.AddMessage(LogEntryType.AppMsg, "\t param2 \t= " + param2.ToString());
 			Logger.AddMessage(LogEntryType.AppMsg, "\t SomeChoice \t= " + SomeChoice.ToString());
+			Logger.AddMessage(LogEntryType.AppMsg, "\t output_file \t= " + output_file);
 			
 			result1 = 42d;
 			result2 = 42;

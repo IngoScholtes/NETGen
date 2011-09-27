@@ -25,7 +25,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="EpidemicSync.cs" />
+    <Compile Include="Kuramoto.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">

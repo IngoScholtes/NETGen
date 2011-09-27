@@ -85,9 +85,9 @@
       <Project>{E9546ABC-586C-4BAE-BE40-2DB84AFA7CFF}</Project>
       <Name>NETGen.NetworkModels.BarabasiAlbert</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NETGen.Dynamics\NETGen.Dynamics.Synchronization.Epidemic\NETGen.Dynamics.Synchronization.Epidemic.csproj">
+    <ProjectReference Include="..\NETGen.Dynamics\NETGen.Dynamics.Synchronization.Epidemic\NETGen.Dynamics.Synchronization.Kuramoto.csproj">
       <Project>{83540F86-4BD1-4FC3-9065-A5A838C66D50}</Project>
-      <Name>NETGen.Dynamics.Synchronization.Epidemic</Name>
+      <Name>NETGen.Dynamics.Synchronization.Kuramoto</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

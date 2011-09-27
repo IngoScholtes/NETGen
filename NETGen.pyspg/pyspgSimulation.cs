@@ -196,8 +196,6 @@ namespace NETGen.pyspg
 				if(output!="")
 					output += "\n";
 				
-				string label = "";
-				string textlabel = "";
 				output += outputfields[s].Name +":help = " + fieldAttributes[s].Comment;
 			}			
 			System.IO.File.WriteAllText(filename, output);

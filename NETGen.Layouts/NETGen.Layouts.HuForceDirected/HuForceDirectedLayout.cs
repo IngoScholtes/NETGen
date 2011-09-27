@@ -85,9 +85,9 @@ namespace NETGen.Layouts.HuForceDirected
     		while ((nnodes & (prop.SIMDWidth-1)) != 0) nnodes++;
     			nnodes--;
 			
-			float dtime = 0.025f;  float dthf = dtime * 0.5f;
-    		float epssq = 0.05f * 0.05f;
-    		float itolsq = 1.0f / (0.5f * 0.5f);
+			//float dtime = 0.025f;  float dthf = dtime * 0.5f;
+    		//float epssq = 0.05f * 0.05f;
+    		//float itolsq = 1.0f / (0.5f * 0.5f);
 			
 			CUDADriver.cuModuleGetFunction(ref func, mod, "dummy");
 			

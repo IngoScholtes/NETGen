@@ -1,28 +1,27 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.pyspg/pyspgSimulation.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/Demo/Demo.cs">
     <Files>
-      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="44" Column="2" />
-      <File FileName="NETGen.pyspg/pyspgSimulation.cs" Line="69" Column="63" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/EpidemicSync.cs" Line="35" Column="3" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="61" Column="40" />
+      <File FileName="Applications/Demo/Demo.cs" Line="65" Column="52" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/Kuramoto.cs" Line="172" Column="29" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
-            <Node name="ClusterPaper" expanded="True">
-              <Node name="ClusterSync" expanded="True" selected="True" />
-            </Node>
+            <Node name="ClusterPaper" expanded="True" />
             <Node name="CuttleFishPlayer" expanded="True" />
-            <Node name="Demo" expanded="True" />
+            <Node name="Demo" expanded="True" selected="True" />
             <Node name="GraphMLVisualizer" expanded="True" />
             <Node name="pyspgDemo" expanded="True" />
             <Node name="Scientometrics" expanded="True" />
             <Node name="TwitterRealTime" expanded="True" />
           </Node>
           <Node name="NETGen.Dynamics" expanded="True">
-            <Node name="NETGen.Dynamics.Synchronization.Epidemic" expanded="True" />
+            <Node name="NETGen.Dynamics.Synchronization.Kuramoto" expanded="True" />
+          </Node>
+          <Node name="NETGen.Layouts" expanded="True">
+            <Node name="NETGen.Layouts.HuForceDirected" expanded="True" />
           </Node>
           <Node name="NETGen.NetworkModels" expanded="True">
             <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
@@ -50,6 +49,7 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/ischoltes/Code/NETGen/NETGen.Layouts/NETGen.Layouts.HuForceDirected/HuForceDirectedLayout.cs" line="66" />
+      <Breakpoint file="/home/ischoltes/Code/NETGen/Applications/Demo/Demo.cs" line="65" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

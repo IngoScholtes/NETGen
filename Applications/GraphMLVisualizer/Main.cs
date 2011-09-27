@@ -27,14 +27,7 @@ namespace GraphMLVisualizer
 			
 			NetworkVisualizer.Start(n, new FruchtermanReingoldLayout(15), colorizer);
 			
-			NetworkVisualizer.Layout.DoLayoutAsync();
-			
-			Logger.AddMessage(LogEntryType.AppMsg, "Press key to start sync...");
-			Console.ReadKey();
-			
-			EpidemicSync sync = new EpidemicSync(n, colorizer);			
-			sync.RunInBackground();
-			
+			NetworkVisualizer.Layout.DoLayoutAsync();			
 		}
 	}
 }

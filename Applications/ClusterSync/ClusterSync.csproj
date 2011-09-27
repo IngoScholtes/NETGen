@@ -73,13 +73,13 @@
       <Project>{05738475-4CEA-425D-8775-7DD94A3611FD}</Project>
       <Name>NETGen.NetworkModels.Cluster</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NETGen.Dynamics\NETGen.Dynamics.Synchronization.Epidemic\NETGen.Dynamics.Synchronization.Epidemic.csproj">
-      <Project>{83540F86-4BD1-4FC3-9065-A5A838C66D50}</Project>
-      <Name>NETGen.Dynamics.Synchronization.Epidemic</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\NETGen.pyspg\NETGen.pyspg.csproj">
       <Project>{D48B4217-0FFE-4C33-8CFC-6EEDE62EFE98}</Project>
       <Name>NETGen.pyspg</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Dynamics\NETGen.Dynamics.Synchronization.Epidemic\NETGen.Dynamics.Synchronization.Kuramoto.csproj">
+      <Project>{83540F86-4BD1-4FC3-9065-A5A838C66D50}</Project>
+      <Name>NETGen.Dynamics.Synchronization.Kuramoto</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

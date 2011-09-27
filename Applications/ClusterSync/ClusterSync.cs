@@ -78,40 +78,27 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	{
 		// Setup the experiment by creating the network and the synchronization module
         ClusterNetwork net = new ClusterNetwork(nodes, edges, clusters, modularity_tgt);
-    	EpidemicSync sync = new EpidemicSync(net);
+    	EpidemicSync sync = new EpidemicSync(net, K);
 		
 		Dictionary<int,bool> pacemaker_mode = new Dictionary<int, bool>();
 		
-		// Assign randomly distributed distribution parameters to clusters
-		Normal avgs_normal = new Normal(300d, 100d);	
-					
-		foreach(int i in net.ClusterIDs) 
+		// Mixed distribution of natural frequencies
+		double global_avg = (2d * Math.PI) / 20d;
+		Normal group_avgs = new Normal( global_avg, global_avg/5d );
+		foreach(int i in net.ClusterIDs)
 		{
-			// draw the distribution parameters from the above distribution ...
-			double groupAvg = avgs_normal.Sample();
-			double groupStdDev = groupAvg/5d;
-			
-			// assign individual values
+			double group_avg = group_avgs.Sample();
+			Normal group_dist = new Normal(group_avg, group_avg / 5d );
 			foreach(Vertex v in net.GetNodesInCluster(i))
-			{
-				sync.PeriodMeans[v] = groupAvg;
-				sync.PeriodStdDevs[v] = groupStdDev;
-			}
+				sync.NaturalFrequencies[v] = group_dist.Sample();			
 			pacemaker_mode[i] = false;
-		}
+		}					    	
     	
-    	// Assign coupling strengths
-    	foreach(Edge e in net.Edges)
-    	{
-    		sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Source, e.Target)] = K;
-    		sync.CouplingStrengths[new Tuple<Vertex, Vertex>(e.Target, e.Source)] = K;
-    	}						    	
-    	
-    	// Set up code that will be called after each simulation step
+    	// Set up handler that will be called AFTER each simulation step
     	sync.OnStep+= new EpidemicSync.StepHandler( 
     	delegate(long timestep) 
 		{
-    		orderParam = sync.ComputeOrder(net.Vertices.ToArray());			
+    		orderParam = sync.GetOrder(net.Vertices.ToArray());			
 			
 			// Record order evolution
 			sync.AddDataPoint("GlobalOrder", orderParam);
@@ -125,23 +112,21 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 
 			foreach(int g in net.ClusterIDs)
 			{
-				double localOrder = sync.ComputeOrder(net.GetNodesInCluster(g));
-				
-				sync.AddDataPoint(string.Format("ClusterOrder_{0}", g), localOrder);
-				
+				double localOrder = sync.GetOrder(net.GetNodesInCluster(g));				
+				sync.AddDataPoint(string.Format("ClusterOrder_{0}", g), localOrder);				
 				if(localOrder>orderThres && !pacemaker_mode[g])
 				{
 					pacemaker_mode[g] = true;					
 					
-					// nodes with inter-cluster links are not influenced by nodes having only intra-cluster links
+					// Probabilistically switch border nodes to pacemaker mode
+					// Note: CouplingStrengths[... v, w ... ] is the strength by which v is influenced when coupling to w
 					foreach(Vertex v in net.GetNodesInCluster(g))
 					{
 						if(net.HasInterClusterConnection(v))
 							foreach(Vertex w in v.Neigbors)
-								if(!net.HasInterClusterConnection(w))
-									if (net.NextRandomDouble() <= pacemakerProb)
+								if(!net.HasInterClusterConnection(w) && net.NextRandomDouble() <= pacemakerProb)
 									{
-										Logger.AddMessage(LogEntryType.AppMsg, string.Format("Cluster {0} switched to pacemaker mode", g));
+										Logger.AddMessage(LogEntryType.AppMsg, string.Format("Vertex switched to pacemaker mode", g));
 										sync.CouplingStrengths[new Tuple<Vertex, Vertex>(v, w)] = 0d;
 									}
 					}
@@ -167,7 +152,7 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 		
 		// Set results     	
 	    time = (int) sync.SimulationStep;
-		orderParam = sync.ComputeOrder(net.Vertices.ToArray());
+		orderParam = sync.GetOrder(net.Vertices.ToArray());
 	    modularity_real = net.NewmanModularity;
 	}
 }
