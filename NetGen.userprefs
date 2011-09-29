@@ -1,18 +1,21 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Applications/Demo/Demo.cs">
     <Files>
-      <File FileName="Applications/Demo/Demo.cs" Line="65" Column="52" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/Kuramoto.cs" Line="172" Column="29" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/Kuramoto.cs" Line="68" Column="41" />
+      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="101" Column="69" />
+      <File FileName="Applications/Demo/Demo.cs" Line="114" Column="19" />
+      <File FileName="Applications/ClusterSpreading/ClusterSpreading.cs" Line="44" Column="25" />
+      <File FileName="Applications/ClusterSIR/ClusterSIR.cs" Line="44" Column="45" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
-            <Node name="ClusterPaper" expanded="True" />
-            <Node name="CuttleFishPlayer" expanded="True" />
+            <Node name="ClusterPaper" expanded="True">
+              <Node name="ClusterSync" expanded="True" />
+            </Node>
             <Node name="Demo" expanded="True" selected="True" />
-            <Node name="GraphMLVisualizer" expanded="True" />
             <Node name="pyspgDemo" expanded="True" />
             <Node name="Scientometrics" expanded="True" />
             <Node name="TwitterRealTime" expanded="True" />
@@ -28,6 +31,7 @@
           </Node>
           <Node name="NETGen.Core" expanded="True" />
           <Node name="NETGen.pyspg" expanded="True" />
+          <Node name="NETGen.Visualization" expanded="True" />
           <Node name="Tests" expanded="True" />
         </State>
       </Pad>
@@ -49,7 +53,6 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/ischoltes/Code/NETGen/NETGen.Layouts/NETGen.Layouts.HuForceDirected/HuForceDirectedLayout.cs" line="66" />
-      <Breakpoint file="/home/ischoltes/Code/NETGen/Applications/Demo/Demo.cs" line="65" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

@@ -121,6 +121,8 @@ namespace NETGen.Visualization
 			
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
+			GL.Enable(EnableCap.LineSmooth);
+			GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
 			GL.Ortho(0, Width, Height, 0, -1, 1);
 			GL.Viewport(0, 0, Width, Height);			
 		}

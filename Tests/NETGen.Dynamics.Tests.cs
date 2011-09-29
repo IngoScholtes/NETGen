@@ -16,7 +16,7 @@ namespace NETGen.Dynamics.Tests
 			Vertex a = n.CreateVertex();
 			Vertex b = n.CreateVertex();
 			n.CreateEdge(a, b);
-			EpidemicSync sync = new EpidemicSync(n, 2d);
+			Kuramoto sync = new Kuramoto(n, 2d);
 			sync.WriteTimeSeries(null);
 			sync.Stop();
 		}

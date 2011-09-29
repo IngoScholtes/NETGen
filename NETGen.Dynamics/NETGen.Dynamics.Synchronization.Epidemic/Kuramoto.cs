@@ -25,8 +25,7 @@ namespace NETGen.Dynamics.Synchronization
         public long time;
     }
 	
-	// TODO: Change to resemble the frequency perspective of the original Kuramoto model
-	public class EpidemicSync : DiscreteDynamics<SyncResults>
+	public class Kuramoto : DiscreteDynamics<SyncResults>
 	{
 		/// <summary>
 		/// The network for which the synchronization shall be run
@@ -49,6 +48,11 @@ namespace NETGen.Dynamics.Synchronization
 		private ConcurrentDictionary<Vertex, double> _phases;	
 		
 		/// <summary>
+		/// The phase change in every simulation step
+		/// </summary>
+		private ConcurrentDictionary<Vertex, double> _deltas;
+		
+		/// <summary>
 		/// The natural frequencies of oscillators
 		/// </summary>
 		public ConcurrentDictionary<Vertex, double> NaturalFrequencies;
@@ -69,9 +73,9 @@ namespace NETGen.Dynamics.Synchronization
         public bool DoubleDegreeWeight = false;
 		
 		/// <summary>
-		/// The probability with which a coupling takes place
+		/// The probability of a node coupling in each time step
 		/// </summary>
-        public double CouplingProbability = 1d;				
+        public double CouplingProbability = 1d;
 		
 		/// <summary>
 		/// Whether or not to compensate smaller coupling probability by a proportionate increase in coupling strength
@@ -95,7 +99,7 @@ namespace NETGen.Dynamics.Synchronization
 		/// <param name='selectNeighbor'>
 		/// A lambda expression that will be invoked whenever a neighbor is chosen to couple to. If null or not given, an unbiased random neighbor selection will be used.
 		/// </param>
-		public EpidemicSync(Network n, double K, NetworkColorizer colorizer = null, Func<Vertex, Vertex[]> couplingSelector = null)
+		public Kuramoto(Network n, double K, NetworkColorizer colorizer = null, Func<Vertex, Vertex[]> couplingSelector = null)
 		{
 			_network = n;
 			_colorizer = colorizer;
@@ -126,11 +130,11 @@ namespace NETGen.Dynamics.Synchronization
 			else
 				CouplingSelector = couplingSelector;
 		}
-		
-		
+				
 		protected override void Init()
 		{         			
 			_phases = new ConcurrentDictionary<Vertex, double>();
+			_deltas = new ConcurrentDictionary<Vertex, double>();
 			
             foreach (Vertex v in _network.Vertices) 
 			{
@@ -146,22 +150,30 @@ namespace NETGen.Dynamics.Synchronization
 			Logger.AddMessage(LogEntryType.Info, string.Format("Sychchronization module initialized. Initial global order = {0:0.000}", GetOrder(_network.Vertices.ToArray())));
 		}
 	
+		// TODO: Implement Runge-Kutta integration ... 
 		protected override void Step()
 		{
-			ConcurrentDictionary<Vertex, double> deltas = new ConcurrentDictionary<Vertex, double>();
+			if(_colorizer != null)
+			_colorizer.RecomputeColors(new Func<Edge, Color>(e => { return _colorizer.DefaultEdgeColor; } ));
 			
 			// Compute changes within this simulation step
             foreach(Vertex v in _network.Vertices)
             {
-				deltas[v] = NaturalFrequencies[v];
-				foreach(Vertex w in CouplingSelector(v))
-	                deltas[v] += GetCouplingStrength(v, w) *  Math.Sin(_phases[w] - _phases[v]);
+				_deltas[v] = NaturalFrequencies[v];
+				if( _network.NextRandomDouble() < CouplingProbability)
+					foreach(Vertex w in CouplingSelector(v))
+					{
+	                	double couplingStrength = GetCouplingStrength(v, w);
+						if(_colorizer!=null && couplingStrength > 0d)
+							_colorizer[v.GetEdgeToSuccessor(w)] = Color.Red;
+						_deltas[v] += couplingStrength * Math.Sin(_phases[w] - _phases[v]); 
+					}
 			}
 			
 			// Advance oscillator phases
 			foreach(Vertex v in _network.Vertices)
 			{
-				_phases[v] += deltas[v];
+				_phases[v] += _deltas[v];
 				if (_colorizer!=null)
 					_colorizer[v] = ColorFromPhase(_phases[v]);
 			}

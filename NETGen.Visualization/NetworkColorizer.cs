@@ -17,9 +17,9 @@ namespace NETGen.Visualization
         private ConcurrentDictionary<Vertex, Color> _customVertexColors;
         private ConcurrentDictionary<Edge, Color> _customEdgeColors;
 		
-		public Color DefaultVertexColor = Color.Red;
-		public Color DefaultEdgeColor = Color.White;
-		public Color DefaultBackgroundColor = Color.Black;
+		public Color DefaultVertexColor = Color.DarkSlateGray;
+		public Color DefaultEdgeColor = Color.Gray;
+		public Color DefaultBackgroundColor = Color.White;
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NETGen.Visualization.CustomColorIndexer"/> class.

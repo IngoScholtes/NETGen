@@ -27,10 +27,10 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	[Parameter(ParameterType.Input, "Number of nodes", 1000)]
 	int nodes;
 	
-	[Parameter(ParameterType.Input, "When to consider the network synchronized", 0.99d)]
+	[Parameter(ParameterType.Input, "When to consider the network synchronized", 0.95d)]
 	double orderThres;
 	
-	[Parameter(ParameterType.Input, "coupling strength", 2d)]
+	[Parameter(ParameterType.Input, "coupling strength", 5d)]
 	double K;
 	
 	[Parameter(ParameterType.Input, "Maximum number of steps to simulate", 10000)]
@@ -48,8 +48,20 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	[Parameter(ParameterType.Input, "Desired Newman modularity of the network", 0)]
 	double modularity_tgt;
 	
+	[Parameter(ParameterType.Input, "Mean of cluster mean frequencies", (2d * Math.PI) / 100d)]
+	double global_mean;
+		
+	[Parameter(ParameterType.Input, "Width factor for cluster mean frequency distribution", 1d/5d)]
+	double global_mean_width_factor;
+		
+	[Parameter(ParameterType.Input, "StdDev of node frequencies in cluster", 1d/5d)]
+	double cluster_width_factor;
+	
 	[Parameter(ParameterType.Output, "Final order")]
-	double orderParam;
+	double finalOrderParam;
+	
+	[Parameter(ParameterType.Output, "integrated order, normalized by simulation time")]
+	double normalizerIntegratedOrder;
 	
 	[Parameter(ParameterType.Output, "Initial Density")]
 	double initialDensity;
@@ -61,7 +73,7 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	double modularity_real;
 	
 	[Parameter(ParameterType.Output, "Time taken to synchronize")]
-	int time;
+	volatile int time;
 	
 	[Parameter(ParameterType.OutputFile, "Evolution of cluster order and global order")]
 	string dynamics;
@@ -78,48 +90,60 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	{
 		// Setup the experiment by creating the network and the synchronization module
         ClusterNetwork net = new ClusterNetwork(nodes, edges, clusters, modularity_tgt);
-    	EpidemicSync sync = new EpidemicSync(net, K);
+    	Kuramoto sync = new Kuramoto(net, K);
 		
+		// Couple to single random neighbor in each step
+		sync.CouplingSelector = new Func<Vertex, Vertex[]>( v => {
+			return new Vertex[] {v.RandomNeighbor};
+		});
+		
+		// Keeps track whether clusters have already switched to pacemaker mode
 		Dictionary<int,bool> pacemaker_mode = new Dictionary<int, bool>();
 		
 		// Mixed distribution of natural frequencies
-		double global_avg = (2d * Math.PI) / 20d;
-		Normal group_avgs = new Normal( global_avg, global_avg/5d );
+		Normal group_avgs = new Normal( global_mean, global_mean * global_mean_width_factor );
 		foreach(int i in net.ClusterIDs)
 		{
 			double group_avg = group_avgs.Sample();
-			Normal group_dist = new Normal(group_avg, group_avg / 5d );
+			Normal group_dist = new Normal( group_avg, group_avg * cluster_width_factor );
 			foreach(Vertex v in net.GetNodesInCluster(i))
 				sync.NaturalFrequencies[v] = group_dist.Sample();			
 			pacemaker_mode[i] = false;
 		}					    	
     	
     	// Set up handler that will be called AFTER each simulation step
-    	sync.OnStep+= new EpidemicSync.StepHandler( 
+    	sync.OnStep+= new Kuramoto.StepHandler(
     	delegate(long timestep) 
 		{
-    		orderParam = sync.GetOrder(net.Vertices.ToArray());			
+			// Compute global order parameter
+    		finalOrderParam = sync.GetOrder(net.Vertices.ToArray());	
+			
+			normalizerIntegratedOrder += finalOrderParam;
 			
 			// Record order evolution
-			sync.AddDataPoint("GlobalOrder", orderParam);
+			sync.AddDataPoint("GlobalOrder", finalOrderParam);
 			
-    		if (orderParam>= orderThres || sync.SimulationStep>timeThres)
+			// Stop simulation if full ordered state is reached or time exceeded
+    		if (finalOrderParam>= orderThres || sync.SimulationStep>timeThres)
     			sync.Stop(); 
 			
+			// Output will only been shown when pyspg module is started in debug mode
     		if(timestep %100 == 0)
-    			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time {0}, Order = {1:0.00}", timestep, orderParam));
+    			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time {0}, Order = {1:0.00}", timestep, finalOrderParam));
 			
-
+			// Compute order parameter of individual clusters
 			foreach(int g in net.ClusterIDs)
 			{
 				double localOrder = sync.GetOrder(net.GetNodesInCluster(g));				
 				sync.AddDataPoint(string.Format("ClusterOrder_{0}", g), localOrder);				
+				
+				// Switch to pacemaker mode if cluster order exceeds threshold
 				if(localOrder>orderThres && !pacemaker_mode[g])
 				{
-					pacemaker_mode[g] = true;					
+					pacemaker_mode[g] = true;
 					
 					// Probabilistically switch border nodes to pacemaker mode
-					// Note: CouplingStrengths[... v, w ... ] is the strength by which v is influenced when coupling to w
+					// Note: CouplingStrengths[... v, w ... ] is the strength by which phase advance of v is influenced when coupling to node w
 					foreach(Vertex v in net.GetNodesInCluster(g))
 					{
 						if(net.HasInterClusterConnection(v))
@@ -151,8 +175,9 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
     	sync.WriteTimeSeries(dynamics);
 		
 		// Set results     	
+		normalizerIntegratedOrder /= (double) sync.SimulationStep;
 	    time = (int) sync.SimulationStep;
-		orderParam = sync.GetOrder(net.Vertices.ToArray());
+		finalOrderParam = sync.GetOrder(net.Vertices.ToArray());
 	    modularity_real = net.NewmanModularity;
 	}
 }

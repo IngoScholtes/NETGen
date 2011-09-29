@@ -229,16 +229,17 @@ namespace NETGen.pyspg
 			
 			foreach(FieldInfo fi in simulationType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static))
 			{
-				if( (fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).Type == ParameterType.Input
-					|| (fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).Type == ParameterType.OutputFile)
+				object[] customAttributes = fi.GetCustomAttributes(typeof(ParameterAttribute), true); 
+				if(customAttributes.Length>0 && ((customAttributes[0] as ParameterAttribute).Type == ParameterType.Input
+					|| (customAttributes[0] as ParameterAttribute).Type == ParameterType.OutputFile))
 				{
 					inputfields[fi.Name] = fi;
-					fieldAttributes[fi.Name] = fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute;
+					fieldAttributes[fi.Name] = customAttributes[0] as ParameterAttribute;
 				}
-				if( (fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute).Type == ParameterType.Output)
+				if(customAttributes.Length>0 && (customAttributes[0] as ParameterAttribute).Type == ParameterType.Output)
 				{
 					outputfields[fi.Name] = fi;
-					fieldAttributes[fi.Name] = fi.GetCustomAttributes(typeof(ParameterAttribute), true)[0] as ParameterAttribute;
+					fieldAttributes[fi.Name] = customAttributes[0] as ParameterAttribute;
 				}
 			}
 			

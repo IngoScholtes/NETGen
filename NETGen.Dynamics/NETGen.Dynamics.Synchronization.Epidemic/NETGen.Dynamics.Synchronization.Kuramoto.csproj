@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>NETGen.Dynamics.Synchronization</RootNamespace>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <AssemblyName>NETGen.Dynamics.Synchronization.Epidemic</AssemblyName>
+    <AssemblyName>NETGen.Dynamics.Synchronization.Kuramoto</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>none</DebugType>
