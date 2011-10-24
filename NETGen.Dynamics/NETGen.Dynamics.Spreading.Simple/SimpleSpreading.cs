@@ -7,13 +7,8 @@ using NETGen.Visualization;
 
 namespace NETGen.Dynamics.Spreading
 {
-	public struct SpreadingResults
-    {
-        public double order;
-        public long time;
-    }
 	
-	public class SimpleSpreading : DiscreteDynamics<SpreadingResults>
+	public class SimpleSpreading : DiscreteDynamics
 	{
 		Network _network;
 		NetworkColorizer _colorizer;
@@ -34,7 +29,7 @@ namespace NETGen.Dynamics.Spreading
 			_infected.Add(_network.RandomVertex);
 		}
 		
-		protected override void Step ()
+		protected override void TimeStep (long time)
 		{
 			foreach (Vertex v in _infected.ToArray())
                 {
@@ -42,7 +37,7 @@ namespace NETGen.Dynamics.Spreading
 
                     if (neighbor != null && _infectionTime[neighbor] == int.MinValue)
                     {
-                        _infectionTime[neighbor] = SimulationStep;
+                        _infectionTime[neighbor] = SimulationTime;
                         _infected.Add(neighbor);
                     }
                 }
@@ -57,11 +52,7 @@ namespace NETGen.Dynamics.Spreading
 				});
 			}
 		}
-		
-		public override SpreadingResults Collect ()
-		{
-			return new SpreadingResults();
-		}
+
 	}
 }
 

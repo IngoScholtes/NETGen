@@ -30,11 +30,17 @@
     <Compile Include="Edge.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="Vertex.cs" />
-    <Compile Include="DiscreteDynamics.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="DiscreteDynamics.cs" />
+    <Compile Include="SImulationRunState.cs" />
+    <Compile Include="ContinuousDynamics.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
+    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MathNet.Numerics.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

@@ -7,8 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6FEFCC1D-67F4-401C-9ED4-C2F27FE64495}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>GraphMLVisualizer</RootNamespace>
-    <AssemblyName>GraphMLVisualizer</AssemblyName>
+    <AssemblyName>NETGenVisualizer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

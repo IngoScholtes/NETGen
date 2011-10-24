@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 #region Much appreciated third-party libraries
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra.Double;
 #endregion
 
 #region NETGen libraries
@@ -19,13 +20,8 @@ using NETGen.Visualization;
 
 namespace NETGen.Dynamics.Synchronization
 {
-	public struct SyncResults
-    {
-        public double order;
-        public long time;
-    }
 	
-	public class Kuramoto : DiscreteDynamics<SyncResults>
+	public class Kuramoto : ContinuousDynamics
 	{
 		/// <summary>
 		/// The network for which the synchronization shall be run
@@ -41,16 +37,6 @@ namespace NETGen.Dynamics.Synchronization
 		/// The average degree of the network
 		/// </summary>
 		double _avgDeg;	
-		
-		/// <summary>
-		/// The current phases of all oscillators
-		/// </summary>
-		private ConcurrentDictionary<Vertex, double> _phases;	
-		
-		/// <summary>
-		/// The phase change in every simulation step
-		/// </summary>
-		private ConcurrentDictionary<Vertex, double> _deltas;
 		
 		/// <summary>
 		/// The natural frequencies of oscillators
@@ -87,6 +73,8 @@ namespace NETGen.Dynamics.Synchronization
 		/// </summary>
 		public Func<Vertex, Vertex[]> CouplingSelector = null;
 		
+		Dictionary<Vertex, int> _mapping;
+		
 		/// <summary>
 		/// Initializes a new synchronization experiment
 		/// </summary>
@@ -99,11 +87,11 @@ namespace NETGen.Dynamics.Synchronization
 		/// <param name='selectNeighbor'>
 		/// A lambda expression that will be invoked whenever a neighbor is chosen to couple to. If null or not given, an unbiased random neighbor selection will be used.
 		/// </param>
-		public Kuramoto(Network n, double K, NetworkColorizer colorizer = null, Func<Vertex, Vertex[]> couplingSelector = null)
+		public Kuramoto(Network n, double K, NetworkColorizer colorizer = null, Func<Vertex, Vertex[]> couplingSelector = null) : base(0d, new DenseVector((int) n.VertexCount))
 		{
 			_network = n;
 			_colorizer = colorizer;
-						
+
 			CouplingStrengths = new Dictionary<Tuple<Vertex, Vertex>, double>();
 			NaturalFrequencies = new ConcurrentDictionary<Vertex, double>();
 			
@@ -119,64 +107,86 @@ namespace NETGen.Dynamics.Synchronization
 					CouplingStrengths[t2] = K;
 			}
 			
-			foreach(Vertex v in _network.Vertices)
-				NaturalFrequencies[v] = 0.1d;				
+			_mapping = new Dictionary<Vertex, int>();
 			
-			// if no neighbor selector is given, just couple to the nearest neighbors in the network
+			int i= 0;
+			foreach(Vertex v in _network.Vertices)
+			{
+				NaturalFrequencies[v] = 0.1d;
+				_mapping[v] = i++;
+			}
+			
+			// if no neighbor selector is given, just couple to all nearest neighbors
 			if(couplingSelector==null)
 				CouplingSelector = new Func<Vertex, Vertex[]>( v => {
 					return v.Neigbors.ToArray();
 				});
 			else
-				CouplingSelector = couplingSelector;
-		}
-				
-		protected override void Init()
-		{         			
-			_phases = new ConcurrentDictionary<Vertex, double>();
-			_deltas = new ConcurrentDictionary<Vertex, double>();
+				CouplingSelector = couplingSelector;				
 			
+			// Initialize phases, colors and average degree
             foreach (Vertex v in _network.Vertices) 
-			{
-				_avgDeg += v.Degree;
-				
-				// set a random initial phase 
-				_phases[v] = _network.NextRandomDouble() * Math.PI * 2d;				
+			{				
+				CurrentValues[_mapping[v]] = _network.NextRandomDouble() * Math.PI * 2d;
 				if(_colorizer != null)
-					_colorizer[v] = ColorFromPhase(_phases[v]);
+					_colorizer[v] = ColorFromPhase(CurrentValues[_mapping[v]]);
+				_avgDeg += v.Degree;
             }
 			_avgDeg /= (double) _network.VertexCount;
 			
 			Logger.AddMessage(LogEntryType.Info, string.Format("Sychchronization module initialized. Initial global order = {0:0.000}", GetOrder(_network.Vertices.ToArray())));
+			
+			TimeDelta = Math.PI / 100d;
+			
+			OnStep+= new StepHandler(recolor);
 		}
-	
-		// TODO: Implement Runge-Kutta integration ... 
-		protected override void Step()
+		
+		/// <summary>
+		/// Recolors the vertices
+		/// </summary>
+		/// <param name='time'>
+		/// Time.
+		/// </param>
+		void recolor(double time)
 		{
 			if(_colorizer != null)
-			_colorizer.RecomputeColors(new Func<Edge, Color>(e => { return _colorizer.DefaultEdgeColor; } ));
+			{
+				_colorizer.RecomputeColors(new Func<Edge, Color>(e => {  return _colorizer.DefaultEdgeColor; } ));
+				_colorizer.RecomputeColors(new Func<Vertex, Color>(v => {  return ColorFromPhase(CurrentValues[_mapping[v]]); } ));
+			}
+		}
+
+		/// <summary>
+		/// Describes the system dynamics by giving the instantaneous change at a given time and for a given current state
+		/// </summary>
+		/// <returns>
+		/// The delta.
+		/// </returns>
+		/// <param name='time'>
+		/// Time.
+		/// </param>
+		/// <param name='currentValues'>
+		/// Current values.
+		/// </param>
+		protected override DenseVector ComputeDelta(double time, DenseVector currentState)
+		{					
+			DenseVector delta = new DenseVector(currentState.Count);
 			
-			// Compute changes within this simulation step
-            foreach(Vertex v in _network.Vertices)
-            {
-				_deltas[v] = NaturalFrequencies[v];
+			foreach(Vertex v in _network.Vertices)
+			{
+				delta[_mapping[v]] = NaturalFrequencies[v];
 				if( _network.NextRandomDouble() < CouplingProbability)
+				{
 					foreach(Vertex w in CouplingSelector(v))
 					{
 	                	double couplingStrength = GetCouplingStrength(v, w);
 						if(_colorizer!=null && couplingStrength > 0d)
 							_colorizer[v.GetEdgeToSuccessor(w)] = Color.Red;
-						_deltas[v] += couplingStrength * Math.Sin(_phases[w] - _phases[v]); 
+						delta[_mapping[v]] += couplingStrength * Math.Sin(currentState[_mapping[w]] - currentState[_mapping[v]]);
 					}
+				}
 			}
-			
-			// Advance oscillator phases
-			foreach(Vertex v in _network.Vertices)
-			{
-				_phases[v] += _deltas[v];
-				if (_colorizer!=null)
-					_colorizer[v] = ColorFromPhase(_phases[v]);
-			}
+			return delta;
 		}
 		
 		private double GetCouplingStrength(Vertex v, Vertex w)
@@ -210,7 +220,7 @@ namespace NETGen.Dynamics.Synchronization
 		/// The order parameter between 0 and 1
 		/// </returns>
 		/// <param name='vertices'>
-		/// An array of vertices for ahich the order paramater shall be computed
+		/// An array of vertices for which the order paramater shall be computed
 		/// </param>
 		public double GetOrder(Vertex[] vertices)
 		{
@@ -219,8 +229,8 @@ namespace NETGen.Dynamics.Synchronization
 			double n = vertices.Length;
 			foreach(Vertex v in vertices)
 			{
-				sines += Math.Sin(_phases[v]);
-				cosines += Math.Cos(_phases[v]);
+				sines += Math.Sin(CurrentValues[_mapping[v]]);
+				cosines += Math.Cos(CurrentValues[_mapping[v]]);
 			}			
 			return Math.Sqrt((sines * sines + cosines * cosines) / (n * n));
 		}
@@ -235,14 +245,6 @@ namespace NETGen.Dynamics.Synchronization
             int color = (int)(Math.Sin(phase) * 127f + 128f);
             return Color.FromArgb(255 - color, color, 0);
         }        
-		
-		public override SyncResults Collect()
-		{
-			SyncResults res = new SyncResults();
-			res.order = GetOrder(_network.Vertices.ToArray());
-			res.time = SimulationStep;
-			return res;
-		}
 	}
 }
 

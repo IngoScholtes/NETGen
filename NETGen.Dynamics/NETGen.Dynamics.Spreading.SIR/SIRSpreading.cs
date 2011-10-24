@@ -7,13 +7,8 @@ using NETGen.Visualization;
 
 namespace NETGen.Dynamics.Spreading
 {
-	public struct SIRResults
-    {
-        public double order;
-        public long time;
-    }
 	
-	public class SIRSpreading : DiscreteDynamics<SIRResults>
+	public class SIRSpreading : DiscreteDynamics
 	{
 		public double k = 1d;
 		
@@ -50,7 +45,7 @@ namespace NETGen.Dynamics.Spreading
                 _infections[v] = false;
 		}
 		
-		protected override void Step ()
+		protected override void TimeStep (long time)
 		{
 			foreach (Vertex v in _active.ToArray())
             {
@@ -76,11 +71,6 @@ namespace NETGen.Dynamics.Spreading
 						return Color.Green;
 				});
 			}
-		}
-		
-		public override SIRResults Collect ()
-		{
-			return new SIRResults();
 		}
 	}
 }

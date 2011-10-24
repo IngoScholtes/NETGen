@@ -24,17 +24,17 @@ using NETGen.pyspg;
 
 public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 {	
-	[Parameter(ParameterType.Input, "Number of nodes", 1000)]
+	[Parameter(ParameterType.Input, "Number of nodes", 500)]
 	int nodes;
 	
 	[Parameter(ParameterType.Input, "When to consider the network synchronized", 0.95d)]
 	double orderThres;
 	
-	[Parameter(ParameterType.Input, "coupling strength", 5d)]
+	[Parameter(ParameterType.Input, "coupling strength", 10d)]
 	double K;
 	
-	[Parameter(ParameterType.Input, "Maximum number of steps to simulate", 10000)]
-	long timeThres;
+	[Parameter(ParameterType.Input, "Maximum time to simulate", 100d)]
+	double timeThres;
 	
 	[Parameter(ParameterType.Input, "Number of edges", 4000)]
 	int edges;
@@ -48,7 +48,7 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	[Parameter(ParameterType.Input, "Desired Newman modularity of the network", 0)]
 	double modularity_tgt;
 	
-	[Parameter(ParameterType.Input, "Mean of cluster mean frequencies", (2d * Math.PI) / 100d)]
+	[Parameter(ParameterType.Input, "Mean of cluster mean frequencies", 1d )]
 	double global_mean;
 		
 	[Parameter(ParameterType.Input, "Width factor for cluster mean frequency distribution", 1d/5d)]
@@ -57,6 +57,10 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	[Parameter(ParameterType.Input, "StdDev of node frequencies in cluster", 1d/5d)]
 	double cluster_width_factor;
 	
+	[Parameter(ParameterType.OutputFile, "Evolution of cluster order and global order")]
+	string dynamics;
+	
+#pragma warning disable 0414
 	[Parameter(ParameterType.Output, "Final order")]
 	double finalOrderParam;
 	
@@ -73,10 +77,8 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	double modularity_real;
 	
 	[Parameter(ParameterType.Output, "Time taken to synchronize")]
-	volatile int time;
-	
-	[Parameter(ParameterType.OutputFile, "Evolution of cluster order and global order")]
-	string dynamics;
+	double time;	
+#pragma warning restore 0414	
 	
 	public static void Main(string[] args)
     {	
@@ -89,7 +91,7 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
     public override void RunSimulation ()
 	{
 		// Setup the experiment by creating the network and the synchronization module
-        ClusterNetwork net = new ClusterNetwork(nodes, edges, clusters, modularity_tgt);
+        ClusterNetwork net = new ClusterNetwork(nodes, edges, clusters, modularity_tgt, true);
     	Kuramoto sync = new Kuramoto(net, K);
 		
 		// Couple to single random neighbor in each step
@@ -113,7 +115,7 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
     	
     	// Set up handler that will be called AFTER each simulation step
     	sync.OnStep+= new Kuramoto.StepHandler(
-    	delegate(long timestep) 
+    	delegate(double t) 
 		{
 			// Compute global order parameter
     		finalOrderParam = sync.GetOrder(net.Vertices.ToArray());	
@@ -124,12 +126,12 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 			sync.AddDataPoint("GlobalOrder", finalOrderParam);
 			
 			// Stop simulation if full ordered state is reached or time exceeded
-    		if (finalOrderParam>= orderThres || sync.SimulationStep>timeThres)
+    		if (finalOrderParam>= orderThres || t >timeThres)
     			sync.Stop(); 
 			
 			// Output will only been shown when pyspg module is started in debug mode
-    		if(timestep %100 == 0)
-    			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time {0}, Order = {1:0.00}", timestep, finalOrderParam));
+    		//if(t % (sync.TimeDelta * 100d) == 0)
+    			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time {0}, Order = {1:0.00}", t, finalOrderParam));
 			
 			// Compute order parameter of individual clusters
 			foreach(int g in net.ClusterIDs)
@@ -161,7 +163,7 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 		// compute coupling density in the initial situation
 		initialDensity = 0d;
 		foreach(var t in sync.CouplingStrengths.Keys)
-			initialDensity += sync.CouplingStrengths[t];
+			initialDensity += sync.CouplingStrengths[t];		
     	
     	// Synchronously run the experiment (blocks execution until experiment is finished)
     	sync.Run();
@@ -175,8 +177,8 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
     	sync.WriteTimeSeries(dynamics);
 		
 		// Set results     	
-		normalizerIntegratedOrder /= (double) sync.SimulationStep;
-	    time = (int) sync.SimulationStep;
+		normalizerIntegratedOrder /= sync.Time;
+	    time = sync.Time;
 		finalOrderParam = sync.GetOrder(net.Vertices.ToArray());
 	    modularity_real = net.NewmanModularity;
 	}

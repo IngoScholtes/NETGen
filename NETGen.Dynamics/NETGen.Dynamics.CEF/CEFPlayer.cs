@@ -7,7 +7,7 @@ using NETGen.Visualization;
 
 namespace NETGen.Dynamics.CEF
 {
-	public class CEFPlayer : DiscreteDynamics<long>
+	public class CEFPlayer : DiscreteDynamics
 	{
 		string filename = null;
 		string[] lines = null;
@@ -37,12 +37,7 @@ namespace NETGen.Dynamics.CEF
 			Logger.AddMessage(LogEntryType.SimMsg, "Finishing playing CEF-File.");
 		}
 		
-		public override long Collect ()
-		{
-			return 0;
-		}
-		
-		protected override void Step()
+		protected override void TimeStep(long time)
 		{
 			bool in_step = true;
 			while(in_step && filepos < lines.Length)

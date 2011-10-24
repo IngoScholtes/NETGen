@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Threading.Tasks;
 #endregion
 
 #region Much appreciated thirs party libraries
@@ -25,23 +26,22 @@ class Demo
 	static string resultfile = null;
 	static Dictionary<int, double> _clusterOrder = new Dictionary<int, double>();
 	
-	static int nodes = 1000; 
-	static int edges = 5000;
-	static int clusters = 20;	
-	static double K = 3d;
+	static int nodes = 500; 
+	static int edges = 4000;
+	static int clusters = 10;
+	static double K = 10d;
 	
 	// Keeps track whether clusters have already switched to pacemaker mode
 	static Dictionary<int,bool> pacemaker_mode = new Dictionary<int, bool>();
-	
-	
+		
     static void Main(string[] args)
     {
 		try 
 		{
 			// The resultfile is given as command line argument
-			nodes = Int32.Parse(args[0]);	
-			edges = Int32.Parse(args[1]);
-			clusters = Int32.Parse(args[2]);
+			//nodes = Int32.Parse(args[0]);	
+			//edges = Int32.Parse(args[1]);
+			//clusters = Int32.Parse(args[2]);
 			resultfile = args[3];
 		} catch {
 			Console.WriteLine("Usage: mono Demo.exe [nodes] [edges] [clusters] [resultfile]");
@@ -55,21 +55,29 @@ class Demo
                     
 		// Run the real-time visualization
 		NetworkColorizer colorizer = new NetworkColorizer();
-		NetworkVisualizer.Start(network, new NETGen.Layouts.FruchtermanReingold.FruchtermanReingoldLayout(10), colorizer);
+		NetworkVisualizer.Start(network, new NETGen.Layouts.FruchtermanReingold.FruchtermanReingoldLayout(15), colorizer);
 		NetworkVisualizer.Layout.DoLayoutAsync();
 		
 		// Distribution of natural frequencies
-		double mean_frequency = (2d * Math.PI) / 20d;
+		double mean_frequency = 1d;
 		Normal normal = new Normal(mean_frequency, mean_frequency/5d);
 		
-		sync = new Kuramoto(network, 
+		sync = new Kuramoto(	network, 
 								K, 
-								colorizer, 
-								new Func<Vertex, Vertex[]>(v => { return new Vertex[] {v.RandomNeighbor};})
+								colorizer,
+								new Func<Vertex, Vertex[]>(v => { return new Vertex[] {v.RandomNeighbor}; })
 								);
 		
+		double min  = double.MaxValue;
+		double max = double.MinValue;
+		
 		foreach(Vertex v in network.Vertices)
+		{
 			sync.NaturalFrequencies[v] = normal.Sample();
+			max = Math.Max(max, sync.NaturalFrequencies[v]);
+			min = Math.Min(min, sync.NaturalFrequencies[v]);
+		}
+		Console.WriteLine(max-min);
 		
 		foreach(int g in network.ClusterIDs)
 			pacemaker_mode[g] = false;
@@ -88,8 +96,10 @@ class Demo
 			sync.WriteTimeSeries(resultfile);
     }		
 	
-	private static void recordOrder(long time)
+	private static void recordOrder(double time)
 	{		
+		
+		
 		// Compute and record global order parameter
 		double globalOrder = sync.GetOrder(network.Vertices.ToArray());
 		sync.AddDataPoint("order_global", globalOrder);
@@ -122,10 +132,10 @@ class Demo
 								}
 				}
 			}
+			
 		}
 		avgLocalOrder /= (double) network.ClusterIDs.Length;
 		
-		if(time %100 == 0)
-			Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time = {000000}, Avg. Cluster Order = {1:0.00}, Global Order = {2:0.00}", time, avgLocalOrder, globalOrder));
+		Logger.AddMessage(LogEntryType.SimMsg, string.Format("Time = {000000}, Avg. Cluster Order = {1:0.00}, Global Order = {2:0.00}", time, avgLocalOrder, globalOrder));
 	}
 }

@@ -41,7 +41,7 @@ namespace CuttleFishPlayer
 			NETGen.Dynamics.CEF.CEFPlayer player = new NETGen.Dynamics.CEF.CEFPlayer(args[1], n, colorizer);
 			
 			// On each evolution step, recompute layout and save current image
-			player.OnStep+= new DiscreteDynamics<long>.StepHandler( delegate(long time) {
+			player.OnStep+= new DiscreteDynamics.StepHandler( delegate(long time) {
 				NetworkVisualizer.Layout.DoLayout();
 				NetworkVisualizer.SaveCurrentImage(string.Format("frame_{0000}.bmp", time));
 				Logger.AddMessage(LogEntryType.AppMsg, string.Format("Time {0000}: {1} Nodes, {2} Edges", time, n.VertexCount, n.EdgeCount));

@@ -201,7 +201,7 @@ namespace NETGen.Core
 			// Then process them in parallel
             System.Threading.Tasks.Parallel.ForEach(lines, s =>
             {
-                string[] vertices = s.Split(' ', '\t', ',');
+                string[] vertices = s.Split(' ', '\t');
                 if(vertices.Length==2)
                 {
                     Vertex v1 = net.SearchVertex(vertices[0]);
@@ -219,7 +219,14 @@ namespace NETGen.Core
                 }
             });
             return net;
-        }       
+        } 
+		
+		public static void SaveToEdgeFile(Network n, string path)
+        {
+			System.IO.File.CreateText(path);
+			foreach(Edge e in n.Edges)
+				System.IO.File.AppendAllText(path, e.Source.Label + " " + e.Target.Label + "\n");
+		}
 		
 		static string ExtractNodeLabel (string s)
 		{

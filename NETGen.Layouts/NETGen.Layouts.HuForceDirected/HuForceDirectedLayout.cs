@@ -19,12 +19,9 @@ namespace NETGen.Layouts.HuForceDirected
 		CUmodule mod;
 		CUDeviceProperties prop;
 		
-		int timesteps; 
 		
 		public HuForceDirectedLayout (int steps)
-		{
-			
-			timesteps = steps;
+		{			
 #if !DEBUG
 			try
 			{
@@ -91,7 +88,7 @@ namespace NETGen.Layouts.HuForceDirected
 			
 			CUDADriver.cuModuleGetFunction(ref func, mod, "dummy");
 			
-			Float4[] data = new Float4[100];
+			// Float4[] data = new Float4[100];
 			CUdeviceptr ptr = new CUdeviceptr();
 			//CUDADriver.cuMemAlloc(ref ptr, (uint) 100 * System.Runtime.InteropServices.Marshal.SizeOf(Float4));
 			CUDADriver.cuParamSeti(func, 0, (uint) ptr.Pointer);
