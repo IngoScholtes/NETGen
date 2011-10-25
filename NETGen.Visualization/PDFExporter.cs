@@ -39,32 +39,24 @@ namespace NETGen.Visualization
 		/// Custom colors that change colors of vertices and edges individually
 		/// </param>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void CreatePDF(string path, Network n, PresentationSettings presentationSettings, ILayoutProvider layout)
-        {
-            if (presentationSettings ==null)
-                presentationSettings = new Visualization.PresentationSettings(2000d, 1000d, 0d);
+        public static void CreatePDF(string path, Network n, LayoutProvider layout, NetworkColorizer colorizer)
+        {        
             PdfSharp.Pdf.PdfDocument doc = new PdfDocument();
             doc.Info.Title = "Network";
-            doc.Info.Subject = "Created by NETGen, the cross-platform network simulation framework";
+            doc.Info.Subject = "Created by NETGen";
 
             PdfPage page = doc.AddPage();
             page.Size = PageSize.A4;
-            page.Orientation = PageOrientation.Landscape;		
-			
-			PresentationSettings newSettings = presentationSettings.Clone();
-			
-            newSettings.WorldWidth = (int) page.Width.Point;			
-            newSettings.WorldHeight = (int) page.Height.Point;
-			newSettings.VertexSize *= (int) (newSettings.WorldWidth/presentationSettings.WorldWidth);
+            page.Orientation = PageOrientation.Landscape;           
 
 			// Draw the network to the xgraphics object
-            Draw(XGraphics.FromPdfPage(page), n, presentationSettings, layout);
+            Draw(XGraphics.FromPdfPage(page), n, layout, colorizer);
 
             // Save the s_document...
 			doc.Save(path);
         }
 
-        private static void Draw(XGraphics g, Network n, PresentationSettings presentationSettings, ILayoutProvider layout)
+        private static void Draw(XGraphics g, Network n, LayoutProvider layout, NetworkColorizer colorizer)
         {
             lock (n)
             {
@@ -73,37 +65,29 @@ namespace NETGen.Visualization
                 g.SmoothingMode = PdfSharp.Drawing.XSmoothingMode.HighQuality;
                 g.Clear(Color.White);
                 foreach (Edge e in n.Edges)
-                        DrawEdge(g, e, presentationSettings, layout);                
+                        DrawEdge(g, e, layout, colorizer);
                 foreach (Vertex v in n.Vertices)
-                        DrawVertex(g, v, presentationSettings, layout);
+                        DrawVertex(g, v, layout, colorizer);
             }
 
         }
 
-        private static void DrawVertex(XGraphics g, Vertex v, PresentationSettings presentationSettings, ILayoutProvider layout)
+        private static void DrawVertex(XGraphics g, Vertex v, LayoutProvider layout, NetworkColorizer colorizer)
         {
             Vector3 p = layout.GetPositionOfNode(v);
 
             if (!double.IsNaN(p.X) &&
                !double.IsNaN(p.Y) &&
                !double.IsNaN(p.Z))
-                g.DrawEllipse(presentationSettings.CustomColors.HasCustomColor(v) ? presentationSettings.CustomColors.GetVertexBrush(v) : presentationSettings.DefaultVertexBrush,
-                   presentationSettings.ScaleX(p.X) - presentationSettings.VertexSize / 2,
-                   presentationSettings.ScaleY(p.Y) - presentationSettings.VertexSize / 2,
-                   presentationSettings.VertexSize,
-                   presentationSettings.VertexSize);
+                g.DrawEllipse(new SolidBrush(colorizer[v]), p.X - 2, p.Y - 2, 4, 4);
         }
 
-        private static void DrawEdge(XGraphics g, Edge e, PresentationSettings presentationSettings, ILayoutProvider layout)
+        private static void DrawEdge(XGraphics g, Edge e, LayoutProvider layout, NetworkColorizer colorizer)
         {
             Vector3 p1 = layout.GetPositionOfNode(e.Source);
             Vector3 p2 = layout.GetPositionOfNode(e.Target);
 
-            g.DrawLine(presentationSettings.CustomColors.HasCustomColor(e) ? presentationSettings.CustomColors.GetEdgePen(e) : presentationSettings.DefaultEdgePen,
-                    presentationSettings.ScaleX(p1.X),
-                    presentationSettings.ScaleY(p1.Y),
-                    presentationSettings.ScaleX(p2.X),
-                    presentationSettings.ScaleY(p2.Y));
+            g.DrawLine(new Pen(colorizer[e], 0.1f), p1.X, p1.Y, p2.X, p2.Y);
         }       
     }
 }

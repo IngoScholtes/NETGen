@@ -9,6 +9,7 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>NETGenVisualizer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>NETGenVisualizer</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

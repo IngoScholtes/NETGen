@@ -63,6 +63,7 @@
     <Compile Include="Vector3.cs" />
     <Compile Include="NetworkVisualizer.cs" />
     <Compile Include="NetworkColorizer.cs" />
+    <Compile Include="PDFExporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NETGen.Core\NETGen.Core.csproj">

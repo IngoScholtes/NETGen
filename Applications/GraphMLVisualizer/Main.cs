@@ -49,6 +49,8 @@ namespace GraphVisualizer
 						Console.WriteLine("Not found.");
 				}
 			} while (command!="exit");
+			
+			PDFExporter.CreatePDF("test.pdf", n, NetworkVisualizer.Layout, colorizer);
 		}
 	}
 }

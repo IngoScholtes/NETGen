@@ -1,18 +1,19 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.Visualization/NetworkVisualizer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/Demo/Demo.cs">
     <Files>
       <File FileName="NETGen.Core/Network.cs" Line="204" Column="54" />
-      <File FileName="Applications/GraphMLVisualizer/Main.cs" Line="32" Column="59" />
-      <File FileName="NETGen.Visualization/NetworkColorizer.cs" Line="22" Column="53" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="236" Column="34" />
+      <File FileName="Applications/GraphMLVisualizer/Main.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Visualization/NetworkColorizer.cs" Line="1" Column="1" />
+      <File FileName="Applications/Demo/Demo.cs" Line="109" Column="49" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
             <Node name="Demo" expanded="True" />
-            <Node name="MSAS_Parser" expanded="True">
+            <Node name="MSAS_Parser">
               <Node name="WebReferences">
                 <Option id="ShowVersionControlOverlays" value="True" />
                 <Option id="ShowAllFiles" value="True" />
