@@ -76,10 +76,12 @@ namespace NETGen.Visualization
         {
             Vector3 p = layout.GetPositionOfNode(v);
 
+            double size = Math.Min(2f, Math.Max(0.05d, Math.Log10(v.Degree)));
+
             if (!double.IsNaN(p.X) &&
                !double.IsNaN(p.Y) &&
                !double.IsNaN(p.Z))
-                g.DrawEllipse(new SolidBrush(colorizer[v]), p.X - 2, p.Y - 2, 4, 4);
+                g.DrawEllipse(new SolidBrush(colorizer[v]), p.X - size/2d, p.Y - size/2d, size, size);
         }
 
         private static void DrawEdge(XGraphics g, Edge e, LayoutProvider layout, NetworkColorizer colorizer)
@@ -87,7 +89,7 @@ namespace NETGen.Visualization
             Vector3 p1 = layout.GetPositionOfNode(e.Source);
             Vector3 p2 = layout.GetPositionOfNode(e.Target);
 
-            g.DrawLine(new Pen(colorizer[e], 0.1f), p1.X, p1.Y, p2.X, p2.Y);
+            g.DrawLine(new Pen(colorizer[e], 0.05f), p1.X, p1.Y, p2.X, p2.Y);
         }       
     }
 }
