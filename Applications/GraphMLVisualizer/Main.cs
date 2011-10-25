@@ -33,7 +33,7 @@ namespace GraphVisualizer
 			foreach(string name in highlight_names)
 				colorizer[n.SearchVertex(name)] = Color.Orange;
 			
-			NetworkVisualizer.Start(n, new FruchtermanReingoldLayout(10), colorizer);
+			NetworkVisualizer.Start(n, new FruchtermanReingoldLayout(15), colorizer);
 			
 			NetworkVisualizer.Layout.DoLayoutAsync();
 			
