@@ -1,35 +1,38 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/Demo/Demo.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.Visualization/NetworkVisualizer.cs">
     <Files>
-      <File FileName="NETGen.Core/Network.cs" Line="204" Column="54" />
-      <File FileName="Applications/GraphMLVisualizer/Main.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Visualization/NetworkColorizer.cs" Line="1" Column="1" />
-      <File FileName="Applications/Demo/Demo.cs" Line="109" Column="49" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Core/Network.cs" Line="134" Column="75" />
+      <File FileName="Applications/GraphMLVisualizer/VisualizerControl.cs" Line="51" Column="17" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="298" Column="30" />
+      <File FileName="NETGen.Core/Edge.cs" Line="60" Column="41" />
+      <File FileName="Applications/GraphMLVisualizer/Main.cs" Line="19" Column="19" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/FruchtermanReingoldLayout.cs" Line="43" Column="41" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.Radial/RadialLayout.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.Random/RandomLayout.cs" Line="22" Column="4" />
+      <File FileName="Applications/CuttleFishCXFPlayer/Main.cs" Line="29" Column="44" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
-            <Node name="Demo" expanded="True" />
+            <Node name="CuttleFishPlayer" expanded="True" />
             <Node name="MSAS_Parser">
               <Node name="WebReferences">
                 <Option id="ShowVersionControlOverlays" value="True" />
                 <Option id="ShowAllFiles" value="True" />
               </Node>
             </Node>
-            <Node name="NETGenVisualizer" expanded="True" selected="True" />
+            <Node name="NETGenGUI" expanded="True" selected="True" />
           </Node>
           <Node name="NETGen.Layouts" expanded="True">
             <Node name="NETGen.Layouts.FruchtermanReingold" expanded="True" />
+            <Node name="NETGen.Layouts.Radial" expanded="True" />
+            <Node name="NETGen.Layouts.Random" expanded="True" />
           </Node>
           <Node name="NETGen.NetworkModels" expanded="True" />
           <Node name="NETGen.Core" expanded="True" />
           <Node name="NETGen.pyspg" expanded="True" />
-          <Node name="NETGen.Visualization" expanded="True">
-            <Node name="References" expanded="True" />
-          </Node>
           <Node name="Tests" expanded="True" />
         </State>
       </Pad>

@@ -202,10 +202,10 @@ namespace NETGen.Core
             System.Threading.Tasks.Parallel.ForEach(lines, s =>
             {
                 string[] vertices = s.Split(' ', '\t');
-                if(vertices.Length==2)
+                if(vertices.Length>=2)
                 {
                     Vertex v1 = net.SearchVertex(vertices[0]);
-                    Vertex v2 = net.SearchVertex(vertices[1]);
+                    Vertex v2 = net.SearchVertex(vertices[1]);					
 					
 					// this needs to be atomic 
 					lock(net)
@@ -215,7 +215,16 @@ namespace NETGen.Core
 	                    if (v2 == null)
 	                        v2 = net.CreateVertex(vertices[1]);
 					}
-                    net.CreateEdge(v1, v2, EdgeType.Undirected);
+                    Edge e = net.CreateEdge(v1, v2, EdgeType.Undirected);
+					if (vertices.Length==3) {
+						try {
+							e.Weight = float.Parse(vertices[2]);
+						}
+						catch
+						{
+							Logger.AddMessage(LogEntryType.Warning, "Could not parse edge weight.");
+						}
+					}
                 }
             });
             return net;

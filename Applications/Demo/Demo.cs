@@ -97,9 +97,7 @@ class Demo
     }		
 	
 	private static void recordOrder(double time)
-	{		
-		
-		
+	{
 		// Compute and record global order parameter
 		double globalOrder = sync.GetOrder(network.Vertices.ToArray());
 		sync.AddDataPoint("order_global", globalOrder);

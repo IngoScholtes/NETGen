@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>NETGenVisualizer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <RootNamespace>NETGenVisualizer</RootNamespace>
+    <RootNamespace>NETGenGUI</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,10 +36,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="Mono.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="VisualizerControl.cs" />
+    <Compile Include="gtk-gui\NETGenVisualizer.VisualizerControl.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -59,5 +67,22 @@
       <Project>{83540F86-4BD1-4FC3-9065-A5A838C66D50}</Project>
       <Name>NETGen.Dynamics.Synchronization.Kuramoto</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Radial\NETGen.Layouts.Radial.csproj">
+      <Project>{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9}</Project>
+      <Name>NETGen.Layouts.Radial</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Random\NETGen.Layouts.Random.csproj">
+      <Project>{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}</Project>
+      <Name>NETGen.Layouts.Random</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Dynamics\NETGen.Dynamics.CEF\NETGen.Dynamics.CEF.csproj">
+      <Project>{692B7732-D46B-4959-AB6D-B149F191FA3E}</Project>
+      <Name>NETGen.Dynamics.CEF</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

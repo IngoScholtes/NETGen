@@ -58,6 +58,8 @@ namespace NETGen.Core
         /// Can be used to classify edges
         /// </summary>
         public int Label { get; set; }		
+		
+		public float Weight {get; set; }
 
         /// <summary>
         /// Creates a new edge between source and target. The edge is not registered with the source and 
@@ -75,6 +77,7 @@ namespace NETGen.Core
             B = b;
             Network = graph;
             EdgeType = type;
+			Weight = 1f;
         }   
 
         /// <summary>
@@ -92,6 +95,7 @@ namespace NETGen.Core
             B = b;
             Network = graph;
             EdgeType = type;
+			Weight = 1f;
         }   
 
 
@@ -109,6 +113,7 @@ namespace NETGen.Core
             B = b;
             Network = graph;
             EdgeType = EdgeType.Undirected;
+			Weight = 1f;
         }
 
         /// <summary>

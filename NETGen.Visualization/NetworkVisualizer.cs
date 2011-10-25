@@ -42,7 +42,7 @@ namespace NETGen.Visualization
 		
 		private Network _network;		
 		private NetworkColorizer _colorizer;		
-		public static LayoutProvider Layout;
+		private static LayoutProvider _layout;
 		private static Bitmap _screenshot = null;
 		private bool screenshot = false;
 		
@@ -63,9 +63,19 @@ namespace NETGen.Visualization
 		
 		public static Vertex SelectedVertex = null;
 		
+		public static Func<Vertex, float> ComputeNodeSize;
+		public static Func<Edge, float> ComputeEdgeWidth;
+		
 		double[] matView = new double[16];
 		double[] matProj = new double[16];
 		int[] viewport = new int[4];
+		
+		public static LayoutProvider Layout { 
+			get { return _layout; } 
+			set { value.Init(Instance.Width, Instance.Height, Instance._network);				
+				 _layout = value;
+			}
+		}
 
  
 		internal NetworkVisualizer(Network network, LayoutProvider layout, NetworkColorizer colorizer, int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "NETGen Display")
@@ -76,10 +86,17 @@ namespace NETGen.Visualization
 			Mouse.Move += new EventHandler<MouseMoveEventArgs>(Mouse_Move);		
 			Mouse.WheelChanged += new EventHandler<MouseWheelEventArgs>(Mouse_WheelChanged);	
 			
-			Layout = layout;			
+			ComputeNodeSize = new Func<Vertex, float>(v => {
+				return 2f;
+			});
+			
+			ComputeEdgeWidth = new Func<Edge, float>( e => {
+				return 0.05f;
+			});
 			_network = network;
 			
-			Layout.Init(Width, Height, _network); 
+			_layout = layout;
+			_layout.Init(Width, Height, network);
 			
 			if (colorizer == null)
 				_colorizer = new NetworkColorizer();
@@ -105,7 +122,7 @@ namespace NETGen.Visualization
 		}
 		
 		void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
-		{
+		{			
 			if (e.Button == MouseButton.Left)
 			{
 				_panning = false;
@@ -116,9 +133,10 @@ namespace NETGen.Visualization
 			}
 			else if (e.Button == MouseButton.Right)
 			{
-				SelectedVertex = GetVertexFromPosition(e.Position);			
+				
+				SelectedVertex = GetVertexFromPosition(e.Position);						
 				_drawMarker = false;
-			}
+			}		
 		}
 		
 		[MethodImpl(MethodImplOptions.Synchronized)]
@@ -238,11 +256,18 @@ namespace NETGen.Visualization
 			
 			// Draw the edges
 			foreach(Edge edge in _network.Edges)
-				DrawEdge(edge, _colorizer[edge]);
+				DrawEdge(edge, _colorizer[edge], ComputeEdgeWidth(edge));
+			
+			if(SelectedVertex != null)
+				foreach(Edge edge in SelectedVertex.Edges)
+					DrawEdge(edge, Color.Red, ComputeEdgeWidth(edge), true);
 			
 			// Draw the vertices
 			foreach(Vertex v in _network.Vertices)
-				DrawVertex(v, _colorizer[v], 10, Math.Min(2f, Math.Max(0.05d, Math.Log10(v.Degree))));
+				DrawVertex(v, _colorizer[v], 10, ComputeNodeSize(v));
+			
+			if(SelectedVertex != null)
+				DrawVertex(SelectedVertex, Color.Red, 10, ComputeNodeSize(SelectedVertex), true);
 			
 			if(_drawMarker)
 				DrawMarker(Color.Red, 10, 2);
@@ -263,13 +288,14 @@ namespace NETGen.Visualization
 		/// <param name='c'>
 		/// The color to use for the edge
 		/// </param>
-		void DrawEdge(Edge e, Color c)
+		void DrawEdge(Edge e, Color c, float width, bool drawselected = false)
 		{
-			if ( SelectedVertex!=null && (e.Source == SelectedVertex || e.Target == SelectedVertex))
-				GL.Color3(Color.Red);
-			else
-				GL.Color3(c);
-			GL.Begin(BeginMode.Lines);			
+			if ( !drawselected && SelectedVertex!=null && (e.Source == SelectedVertex || e.Target == SelectedVertex))
+				return;
+			
+			GL.Color3(c);
+			GL.LineWidth(width);
+			GL.Begin(BeginMode.Lines);
 			
 			GL.Vertex2(Layout.GetPositionOfNode(e.Source).X, Layout.GetPositionOfNode(e.Source).Y);
 			GL.Vertex2(Layout.GetPositionOfNode(e.Target).X, Layout.GetPositionOfNode(e.Target).Y);
@@ -303,12 +329,12 @@ namespace NETGen.Visualization
 		/// <param name='segments'>
 		/// The number of triangle segments to use. A higher number will look more prety but will take more time to render
 		/// </param>
-		void DrawVertex(Vertex v, Color c, int segments, double radius)
+		void DrawVertex(Vertex v, Color c, int segments, double radius, bool drawselected = false)
         {
-			if(SelectedVertex !=null && v == SelectedVertex)
-				GL.Color3(Color.Red);
-			else
-            	GL.Color3(c);
+			if(!drawselected && SelectedVertex !=null && v == SelectedVertex)
+				return;
+			
+        	GL.Color3(c);
             GL.Begin(BeginMode.TriangleFan);
 
             for (int i = 0; i < 360; i+=360/segments)

@@ -1,0 +1,354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+    <target-gtk-version>2.12</target-gtk-version>
+  </configuration>
+  <import>
+    <widget-library name="../bin/Release/NETGenVisualizer.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Window" id="NETGenVisualizer.VisualizerControl" design-size="684 365">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">VisualizerControl</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <child>
+      <widget class="Gtk.Fixed" id="fixed1">
+        <property name="MemberName" />
+        <property name="HasWindow">False</property>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Network File</property>
+          </widget>
+          <packing>
+            <property name="X">9</property>
+            <property name="Y">11</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.FileChooserButton" id="fileChooserNetworkFile">
+            <property name="MemberName" />
+            <property name="WidthRequest">120</property>
+            <property name="ShowHidden">True</property>
+          </widget>
+          <packing>
+            <property name="X">98</property>
+            <property name="Y">3</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label5">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Node Size</property>
+          </widget>
+          <packing>
+            <property name="X">8</property>
+            <property name="Y">104</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label6">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Edge Width</property>
+          </widget>
+          <packing>
+            <property name="X">8</property>
+            <property name="Y">133</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="entryEdgeWidthExpression">
+            <property name="MemberName" />
+            <property name="WidthRequest">300</property>
+            <property name="CanFocus">True</property>
+            <property name="Text" translatable="yes">0.1f</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">96</property>
+            <property name="Y">129</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label7">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Cuttlefish cef</property>
+          </widget>
+          <packing>
+            <property name="X">7</property>
+            <property name="Y">164</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.FileChooserButton" id="fileChooserCEFFile">
+            <property name="MemberName" />
+            <property name="WidthRequest">120</property>
+            <property name="ShowHidden">True</property>
+          </widget>
+          <packing>
+            <property name="X">94</property>
+            <property name="Y">156</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label8">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Search Node</property>
+          </widget>
+          <packing>
+            <property name="X">7</property>
+            <property name="Y">192</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="entrySearchNode">
+            <property name="MemberName" />
+            <property name="WidthRequest">300</property>
+            <property name="CanFocus">True</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">95</property>
+            <property name="Y">187</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label9">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Highlight ... </property>
+          </widget>
+          <packing>
+            <property name="X">6</property>
+            <property name="Y">219</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.FileChooserButton" id="fileChooserHighlightNodes">
+            <property name="MemberName" />
+            <property name="WidthRequest">120</property>
+          </widget>
+          <packing>
+            <property name="X">95</property>
+            <property name="Y">213</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.FileChooserButton" id="fileChooserExportPDF">
+            <property name="MemberName" />
+            <property name="WidthRequest">120</property>
+            <property name="Title" translatable="yes">Export PDF File ... </property>
+          </widget>
+          <packing>
+            <property name="X">94</property>
+            <property name="Y">245</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label10">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Export PDF</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">248</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.FileChooserButton" id="fileChooserExportBitmap">
+            <property name="MemberName" />
+            <property name="WidthRequest">120</property>
+          </widget>
+          <packing>
+            <property name="X">93</property>
+            <property name="Y">276</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label11">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Export Bitmap</property>
+          </widget>
+          <packing>
+            <property name="X">4</property>
+            <property name="Y">281</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="entryNodeSizeExpression">
+            <property name="MemberName" />
+            <property name="WidthRequest">300</property>
+            <property name="CanFocus">True</property>
+            <property name="Text" translatable="yes">2f</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">97</property>
+            <property name="Y">100</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="btnApplyNodeSize">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Apply</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">404</property>
+            <property name="Y">96</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="btnApplyEdgeWidth">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Apply</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">402</property>
+            <property name="Y">127</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="btnSearch">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Search</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">402</property>
+            <property name="Y">185</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="btnRunCEF">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Run ...</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">220</property>
+            <property name="Y">156</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.FileChooserButton" id="fileChooserCEFFrames">
+            <property name="MemberName" />
+            <property name="WidthRequest">120</property>
+            <property name="ShowHidden">True</property>
+          </widget>
+          <packing>
+            <property name="X">283</property>
+            <property name="Y">155</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label3">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Node Color</property>
+          </widget>
+          <packing>
+            <property name="X">7</property>
+            <property name="Y">72</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.ColorButton" id="btnChoseDefaultNodeColor">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Events">ButtonMotionMask, ButtonPressMask, ButtonReleaseMask</property>
+            <property name="Alpha">-1</property>
+          </widget>
+          <packing>
+            <property name="X">95</property>
+            <property name="Y">62</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.ColorButton" id="btnChoseEdgeColor">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Events">ButtonMotionMask, ButtonPressMask, ButtonReleaseMask</property>
+            <property name="Alpha">-1</property>
+          </widget>
+          <packing>
+            <property name="X">272</property>
+            <property name="Y">60</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label4">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Edge Color</property>
+          </widget>
+          <packing>
+            <property name="X">193</property>
+            <property name="Y">65</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="entry4">
+            <property name="MemberName" />
+            <property name="WidthRequest">300</property>
+            <property name="CanFocus">True</property>
+            <property name="Text" translatable="yes">FruchtermanReingoldLayout(5)</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">5</property>
+            <property name="Y">34</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="btnComputeLayout">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Apply</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">309</property>
+            <property name="Y">33</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.ColorButton" id="btnChoseHighlightNodeColor">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Events">ButtonMotionMask, ButtonPressMask, ButtonReleaseMask</property>
+            <property name="Alpha">-1</property>
+          </widget>
+          <packing>
+            <property name="X">220</property>
+            <property name="Y">212</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="btnResetHighlights">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Reset</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">281</property>
+            <property name="Y">215</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>
