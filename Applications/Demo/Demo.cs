@@ -102,7 +102,7 @@ class Demo
 		double globalOrder = sync.GetOrder(network.Vertices.ToArray());
 		sync.AddDataPoint("order_global", globalOrder);
 		
-		double avgLocalOrder = 0d;
+		double avgLocalOrder = 0d;		
 		
 		// Compute and record cluster order parameters
 		foreach(int g in network.ClusterIDs)

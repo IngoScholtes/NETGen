@@ -1,39 +1,44 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="NETGen.Visualization/NetworkVisualizer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/Demo/Demo.cs">
     <Files>
-      <File FileName="NETGen.Core/Network.cs" Line="134" Column="75" />
-      <File FileName="Applications/GraphMLVisualizer/VisualizerControl.cs" Line="51" Column="17" />
-      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="298" Column="30" />
-      <File FileName="NETGen.Core/Edge.cs" Line="60" Column="41" />
-      <File FileName="Applications/GraphMLVisualizer/Main.cs" Line="19" Column="19" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/FruchtermanReingoldLayout.cs" Line="43" Column="41" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.Radial/RadialLayout.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Layouts/NETGen.Layouts.Random/RandomLayout.cs" Line="22" Column="4" />
-      <File FileName="Applications/CuttleFishCXFPlayer/Main.cs" Line="29" Column="44" />
+      <File FileName="Applications/ConsensusHierarchy/Main.cs" Line="123" Column="32" />
+      <File FileName="Applications/ConsensusHierarchy/TemperatureWindow.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Layouts/NETGen.Layouts.FruchtermanReingold/FruchtermanReingoldLayout.cs" Line="1" Column="1" />
+      <File FileName="NETGen.Visualization/ILayoutProvider.cs" Line="1" Column="1" />
+      <File FileName="Applications/Demo/Demo.cs" Line="56" Column="37" />
+      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/Kuramoto.cs" Line="122" Column="34" />
+      <File FileName="Applications/pyspgDemo/ExampleSimulation.cs" Line="22" Column="52" />
+      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="47" Column="2" />
+      <File FileName="NETGen.Core/ContinuousDynamics.cs" Line="41" Column="38" />
+      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
-            <Node name="CuttleFishPlayer" expanded="True" />
+            <Node name="ClusterPaper" expanded="True" />
+            <Node name="Demo" expanded="True">
+              <Node name="Demo.cs" selected="True" />
+            </Node>
             <Node name="MSAS_Parser">
               <Node name="WebReferences">
                 <Option id="ShowVersionControlOverlays" value="True" />
                 <Option id="ShowAllFiles" value="True" />
               </Node>
             </Node>
-            <Node name="NETGenGUI" expanded="True" selected="True" />
+          </Node>
+          <Node name="NETGen.Dynamics" expanded="True">
+            <Node name="NETGen.Dynamics.Synchronization.Kuramoto" expanded="True" />
           </Node>
           <Node name="NETGen.Layouts" expanded="True">
             <Node name="NETGen.Layouts.FruchtermanReingold" expanded="True" />
-            <Node name="NETGen.Layouts.Radial" expanded="True" />
-            <Node name="NETGen.Layouts.Random" expanded="True" />
           </Node>
-          <Node name="NETGen.NetworkModels" expanded="True" />
+          <Node name="NETGen.NetworkModels" expanded="True">
+            <Node name="NETGen.NetworkModels.Tree" expanded="True" />
+          </Node>
           <Node name="NETGen.Core" expanded="True" />
-          <Node name="NETGen.pyspg" expanded="True" />
-          <Node name="Tests" expanded="True" />
+          <Node name="NETGen.Visualization" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
@@ -42,6 +47,13 @@
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
           <Value>authors</Value>
+          <Value>avg</Value>
+          <Value>hierarchy.Vertices.ToArray()</Value>
+          <Value>v</Value>
+          <Value>error_new</Value>
+          <Value>error_old</Value>
+          <Value>accept_prob</Value>
+          <Value>temp</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">

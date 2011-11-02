@@ -5,7 +5,7 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../bin/Release/NETGenVisualizer.exe" internal="true" />
+    <widget-library name="../bin/Debug/NETGenVisualizer.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="NETGenVisualizer.VisualizerControl" design-size="684 365">
     <property name="MemberName" />

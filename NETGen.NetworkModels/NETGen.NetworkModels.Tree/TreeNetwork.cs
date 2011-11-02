@@ -12,6 +12,8 @@ namespace NETGen.NetworkModels.Tree
 	/// </summary>
     public class TreeNetwork : Network
     {
+	
+		public Vertex RootVertex {get; private set; }
 		
 		/// <summary>
 		/// Creates a simple and fully populated k-nary tree network
@@ -22,13 +24,13 @@ namespace NETGen.NetworkModels.Tree
 		/// <param name='depth'>
 		/// The depth of the tree
 		/// </param>
-        public TreeNetwork(int k, int depth)
+        public TreeNetwork(int k, int depth, bool directed = false)
         {
-            Vertex root = CreateVertex();
-            BuildTree(root, k, depth);
+            RootVertex = CreateVertex();
+            BuildTree(RootVertex, k, depth, directed);
         }
 
-        private void BuildTree(Vertex root, int k, int depth)
+        private void BuildTree(Vertex root, int k, int depth, bool directed)
 		{
 			if(depth == 0)
 				return;
@@ -36,8 +38,8 @@ namespace NETGen.NetworkModels.Tree
 			for (int i=0; i<k; i++)
 			{
 				Vertex w = CreateVertex();
-				CreateEdge(root, w);
-                BuildTree(w, k, depth - 1); 		
+				CreateEdge(root, w, directed?EdgeType.DirectedAB:EdgeType.Undirected);
+                BuildTree(w, k, depth - 1, directed); 		
 			}                 
 		}
     }

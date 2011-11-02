@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9CD68BAF-E3BA-45D3-BCC6-F97653EB5DDB}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>ConsensusHierarchy</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>ConsensusHierarchy</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="TemperatureWindow.cs" />
+    <Compile Include="gtk-gui\ConsensusHierarchy.TemperatureWindow.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">
+      <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
+      <Name>NETGen.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.FruchtermanReingold\NETGen.Layouts.FruchtermanReingold.csproj">
+      <Project>{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}</Project>
+      <Name>NETGen.Layouts.FruchtermanReingold</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Positioned\NETGen.Layouts.Positioned.csproj">
+      <Project>{BC0350FF-A9F3-4801-843B-E7EDFB298F4F}</Project>
+      <Name>NETGen.Layouts.Positioned</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Radial\NETGen.Layouts.Radial.csproj">
+      <Project>{CDC38417-7B6D-4A57-A8D6-51248BB2DAF9}</Project>
+      <Name>NETGen.Layouts.Radial</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.Random\NETGen.Layouts.Random.csproj">
+      <Project>{09B349D0-B8B6-4F4F-BFF8-B6AE2BE17F41}</Project>
+      <Name>NETGen.Layouts.Random</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.NetworkModels\NETGen.NetworkModels.Tree\NETGen.NetworkModels.Tree.csproj">
+      <Project>{73A4A13B-B39A-4635-8AAF-F093BD699437}</Project>
+      <Name>NETGen.NetworkModels.Tree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Visualization\NETGen.Visualization.csproj">
+      <Project>{FB24B173-DEFF-49D9-B232-561887EC652C}</Project>
+      <Name>NETGen.Visualization</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

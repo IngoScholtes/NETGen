@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+    <target-gtk-version>2.12</target-gtk-version>
+  </configuration>
+  <import>
+    <widget-library name="../bin/Debug/ConsensusHierarchy.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Window" id="ConsensusHierarchy.TemperatureWindow" design-size="365 52">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">TemperatureWindow</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <child>
+      <widget class="Gtk.Fixed" id="fixed1">
+        <property name="MemberName" />
+        <property name="HasWindow">False</property>
+        <child>
+          <widget class="Gtk.HScale" id="hscale1">
+            <property name="MemberName" />
+            <property name="WidthRequest">350</property>
+            <property name="CanFocus">True</property>
+            <property name="Lower">0.0001</property>
+            <property name="Upper">2</property>
+            <property name="PageIncrement">10</property>
+            <property name="StepIncrement">0.5</property>
+            <property name="Value">0.006</property>
+            <property name="DrawValue">True</property>
+            <property name="Digits">5</property>
+            <property name="ValuePos">Top</property>
+          </widget>
+          <packing>
+            <property name="X">2</property>
+            <property name="Y">4</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>

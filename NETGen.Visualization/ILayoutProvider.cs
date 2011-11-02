@@ -34,6 +34,9 @@ namespace NETGen.Visualization
 			Network = network;
 		}
 		
+		public virtual void TouchVertex(NETGen.Core.Vertex v){}
+		public virtual void TouchEdge(NETGen.Core.Edge e){}
+		
 		/// <summary>
 		/// Computes all vertex positions of a network. This will be called whenever a layout has to be computed for the first time or whenever the recomputation of the layout is forced.
 		/// </summary>

@@ -45,12 +45,26 @@ namespace NETGen.Layouts.FruchtermanReingold
 				_vertexPositions[v] = new Vector3(network.NextRandomDouble() * width, network.NextRandomDouble() * height, 1d);
 				_newVertices.Add(v);
 			}
-			
+			/*
 			// Add vertex to _newVertices whenever one is added to the network
 			network.OnVertexAdded+=new Network.VertexUpdateHandler( delegate(Vertex v) {
 				_vertexPositions[v] = new Vector3(network.NextRandomDouble() * width, network.NextRandomDouble() * height, 1d);
 				_newVertices.Add(v);
-			});
+			});			
+			*/
+		}
+		
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public override void TouchVertex(Vertex v)
+		{
+			_newVertices.Add(v);
+		}
+		
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public override void TouchEdge (Edge e)
+		{
+			_newVertices.Add(e.Source);
+			_newVertices.Add(e.Target);
 		}
 
         /// <summary>
