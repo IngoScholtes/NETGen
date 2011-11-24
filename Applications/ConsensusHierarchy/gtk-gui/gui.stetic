@@ -5,7 +5,7 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../bin/Debug/ConsensusHierarchy.exe" internal="true" />
+    <widget-library name="../bin/Release/ConsensusHierarchy.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="ConsensusHierarchy.TemperatureWindow" design-size="365 52">
     <property name="MemberName" />

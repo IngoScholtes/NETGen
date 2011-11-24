@@ -79,6 +79,10 @@
       <Project>{692B7732-D46B-4959-AB6D-B149F191FA3E}</Project>
       <Name>NETGen.Dynamics.CEF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.NetworkModels\NETGen.NetworkModels.ErdoesRenyi\NETGen.NetworkModels.ErdoesRenyi.csproj">
+      <Project>{07D1D82A-049E-4BC9-A8E5-478F4D1F011A}</Project>
+      <Name>NETGen.NetworkModels.ErdoesRenyi</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">

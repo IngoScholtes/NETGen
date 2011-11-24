@@ -20,6 +20,9 @@ namespace NETGen.Visualization
     public class PDFExporter
     {
 		
+		public static Func<Vertex, float> ComputeNodeSize = new Func<Vertex, float>(delegate(Vertex v) { return 2f;});
+		public static Func<Edge, float> ComputeEdgeWidth = new Func<Edge, float>(delegate(Edge e) { return 0.05f;});
+		
 		/// <summary>
 		/// Creates a PDF from a network visualization
 		/// </summary>
@@ -39,7 +42,7 @@ namespace NETGen.Visualization
 		/// Custom colors that change colors of vertices and edges individually
 		/// </param>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void CreatePDF(string path, Network n, LayoutProvider layout, NetworkColorizer colorizer)
+        public static void CreatePDF(string path, Network n, LayoutProvider layout, NetworkColorizer colorizer = null)
         {        
             PdfSharp.Pdf.PdfDocument doc = new PdfDocument();
             doc.Info.Title = "Network";
@@ -48,10 +51,13 @@ namespace NETGen.Visualization
             PdfPage page = doc.AddPage();
             page.Size = PageSize.A4;
             page.Orientation = PageOrientation.Landscape;           
-
+			
+			if (colorizer != null)
 			// Draw the network to the xgraphics object
-            Draw(XGraphics.FromPdfPage(page), n, layout, colorizer);
-
+            	Draw(XGraphics.FromPdfPage(page), n, layout, colorizer);
+			else 
+				Draw(XGraphics.FromPdfPage(page), n, layout, new NetworkColorizer());
+			
             // Save the s_document...
 			doc.Save(path);
         }
@@ -76,7 +82,7 @@ namespace NETGen.Visualization
         {
             Vector3 p = layout.GetPositionOfNode(v);
 
-            double size = Math.Min(2f, Math.Max(0.05d, Math.Log10(v.Degree)));
+            double size = ComputeNodeSize(v);			
 
             if (!double.IsNaN(p.X) &&
                !double.IsNaN(p.Y) &&
@@ -88,8 +94,10 @@ namespace NETGen.Visualization
         {
             Vector3 p1 = layout.GetPositionOfNode(e.Source);
             Vector3 p2 = layout.GetPositionOfNode(e.Target);
+			
+			float width = ComputeEdgeWidth(e);
 
-            g.DrawLine(new Pen(colorizer[e], 0.05f), p1.X, p1.Y, p2.X, p2.Y);
+            g.DrawLine(new Pen(colorizer[e], width), p1.X, p1.Y, p2.X, p2.Y);
         }       
     }
 }

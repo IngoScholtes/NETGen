@@ -127,7 +127,70 @@ namespace NETGen.NetworkModels.Cluster
 			}
 			
 			Logger.AddMessage(LogEntryType.Info, string.Format("Created cluster network with N = {0}, M = {1}, Q = {2:0.00}", VertexCount, EdgeCount, NewmanModularity));
-        }        
+        }     
+		
+		private ClusterNetwork()
+		{
+			_clusters = new Dictionary<int, List<Vertex>>();
+            _clusterAssignment = new Dictionary<Vertex, int>();
+			
+			IntraClusterEdges = new List<Edge>();
+			InterClusterEdges = new List<Edge>();
+
+            InterClusterEdgeNumber = 0;
+            IntraClusterEdgeNumber = 0;
+		}
+		
+		/// <summary>
+		/// Loads a network with known module structure
+		/// </summary>
+		/// <param name='file'>
+		/// The name of the edgelist file with line format "source,target,source_module,target_module"
+		/// </param>
+		public static ClusterNetwork LoadNetwork(string file, bool directed = false)
+		{			
+			ClusterNetwork n = new ClusterNetwork();
+			string[] lines = System.IO.File.ReadAllLines(file);
+			Dictionary<string, int> moduleMapping = new Dictionary<string, int>();
+			foreach(string e in lines)
+			{
+				string[] components = e.Split(',');
+				Vertex v = null;
+				Vertex w = null;
+				// Create vertex v and assign module
+				if (!n.ContainsVertex(components[0]))
+				{
+					v = n.CreateVertex(components[0]);
+					if(!moduleMapping.ContainsKey(components[2]))
+						moduleMapping[components[2]] = moduleMapping.Count;
+					n._clusterAssignment[v] = moduleMapping[components[2]];
+					if(!n._clusters.ContainsKey(n._clusterAssignment[v]))
+						n._clusters[n._clusterAssignment[v]] = new List<Vertex>();
+					n._clusters[n._clusterAssignment[v]].Add(v);
+				}
+				else
+					v = n.SearchVertex(components[0]);
+
+				if (!n.ContainsVertex(components[1]))
+				{
+					w = n.CreateVertex(components[1]);
+					if(!moduleMapping.ContainsKey(components[3]))
+						moduleMapping[components[3]] = moduleMapping.Count;
+					n._clusterAssignment[w] = moduleMapping[components[3]];
+					if(!n._clusters.ContainsKey(n._clusterAssignment[w]))
+						n._clusters[n._clusterAssignment[w]] = new List<Vertex>();
+					n._clusters[n._clusterAssignment[w]].Add(w);
+				}
+				else
+					w = n.SearchVertex(components[1]);
+				Edge edge = n.CreateEdge(v, w, directed?EdgeType.DirectedAB:EdgeType.Undirected);
+				if(n._clusterAssignment[v]!=n._clusterAssignment[w])
+					n.InterClusterEdges.Add(edge);
+				else
+					n.IntraClusterEdges.Add(edge);
+			}
+			return n;
+		}
 		
 		/// <summary>
 		/// Returns whether a node has a link into another cluster

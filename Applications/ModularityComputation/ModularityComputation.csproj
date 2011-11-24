@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{438DD608-221E-4ABA-8291-A7528F16E461}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ModularityComputation</RootNamespace>
+    <AssemblyName>ModularityComputation</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\NETGen.NetworkModels\NETGen.NetworkModels.ClusterNetwork\NETGen.NetworkModels.Cluster.csproj">
+      <Project>{05738475-4CEA-425D-8775-7DD94A3611FD}</Project>
+      <Name>NETGen.NetworkModels.Cluster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Core\NETGen.Core.csproj">
+      <Project>{41C5EEF7-BC26-4340-A0B6-90019545B0A4}</Project>
+      <Name>NETGen.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Layouts\NETGen.Layouts.FruchtermanReingold\NETGen.Layouts.FruchtermanReingold.csproj">
+      <Project>{6FFBC24D-9B25-4B99-9950-5DA580AA7E74}</Project>
+      <Name>NETGen.Layouts.FruchtermanReingold</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.Visualization\NETGen.Visualization.csproj">
+      <Project>{FB24B173-DEFF-49D9-B232-561887EC652C}</Project>
+      <Name>NETGen.Visualization</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
