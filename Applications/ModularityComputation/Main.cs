@@ -11,13 +11,20 @@ namespace ModularityComputation
 		{
 			if(args.Length<1)
 			{
-				Console.WriteLine("Usage: ModularityComputation [network_file] [visualize=false]");
+				Console.WriteLine("Usage: ModularityComputation [network_file] [directed=false] [count_eii=true] [visualize=false]");
 				return;
 			}
-			ClusterNetwork n = ClusterNetwork.LoadNetwork(args[0]);
-			Console.WriteLine("Q = {0:0.000}", n.NewmanModularity);
+			bool directed = false;
+			if(args.Length>=2)
+				directed = Boolean.Parse(args[1]);
+			ClusterNetwork n = ClusterNetwork.LoadNetwork(args[0], directed);			
 			
-			if(args.Length==2 && args[1] == "true")
+			if(args.Length>=3 && Boolean.Parse(args[2]) == true)
+				Console.WriteLine("Q = {0:0.000}", n.NewmanModularity);
+			else
+				Console.WriteLine("Q = {0:0.000}", n.NewmanModularityWithoutEii);
+			
+			if(args.Length>3 && Boolean.Parse(args[3]) == true)
 			{			
 				NETGen.Visualization.NetworkVisualizer.Start(n, new NETGen.Layouts.FruchtermanReingold.FruchtermanReingoldLayout(10), new NETGen.Visualization.NetworkColorizer(), 800,600);			
 				NETGen.Visualization.NetworkVisualizer.Layout.DoLayout();

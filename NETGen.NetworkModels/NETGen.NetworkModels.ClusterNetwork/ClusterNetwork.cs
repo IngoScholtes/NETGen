@@ -365,6 +365,51 @@ namespace NETGen.NetworkModels.Cluster
              }
             
         }
+		
+		public double NewmanModularityWithoutEii
+         {
+             get
+             {
+                double Q = 0d;
+				
+				int max_id = int.MinValue;
+				
+				foreach(int i in ClusterIDs)
+					max_id = Math.Max(i, max_id);
+
+                 // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
+                 double[,] e = new double[max_id+1, max_id+1];
+
+                 // entry a[i] contains the fraction of edges that connect to community i
+                 double[] a = new double[max_id+1];
+
+                 double edges = EdgeCount;
+
+                 foreach (int i in ClusterIDs)
+                     foreach (int j in ClusterIDs)
+                     {
+                         Vertex[] members = GetNodesInCluster(j);
+                         double count_ij = 0d;
+                         foreach (Vertex v in members)
+                             foreach (Vertex w in v.Neigbors)
+                                 if (GetClusterForNode(w) == i)
+                                     count_ij++;
+                         e[i, j] = count_ij / (2d*edges);
+                     }
+
+                 foreach (int i in ClusterIDs)
+                 {
+                     a[i] = 0;
+                     foreach (int j in ClusterIDs)
+						if(i!=j)
+                         	a[i] += e[i, j];
+                 }
+                 foreach (int i in ClusterIDs)
+                     Q += e[i, i] - Math.Pow(a[i], 2d);
+                 return Q;
+             }
+            
+        }
 
     }
 }
