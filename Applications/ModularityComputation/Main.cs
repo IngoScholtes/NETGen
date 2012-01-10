@@ -23,9 +23,9 @@ namespace ModularityComputation
 				n.ReduceToLargestConnectedComponent();
 			
 			if(args.Length>=3 && Boolean.Parse(args[2]) == true)
-				Console.WriteLine("Q = {0:0.000000}", n.NewmanModularity);
+				Console.WriteLine("Q = {0:0.0000000}", n.NewmanModularity);
 			else
-				Console.WriteLine("Q = {0:0.000000}", n.NewmanModularityWithoutEii);
+				Console.WriteLine("Q = {0:0.0000000}", n.NewmanModularityWithoutEii);
 			
 			if(args.Length>3 && Boolean.Parse(args[3]) == true)
 			{
