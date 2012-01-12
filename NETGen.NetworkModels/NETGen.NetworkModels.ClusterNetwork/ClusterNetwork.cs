@@ -379,7 +379,8 @@ namespace NETGen.NetworkModels.Cluster
                         }	
 				
 			
-					return Q/(1-sumF);
+					if((1-sumF)==0) return 0;
+				    else return Q/(1-sumF);
              }
             
         }
@@ -436,7 +437,8 @@ double sumF = 0.0;
                         }	
 				
 			
-					return Q/(1-sumF);
+					if((1-sumF)==0) return 0;
+				    else return Q/(1-sumF);
                  
              
 			}
@@ -497,7 +499,8 @@ double sumF = 0.0;
                         }	
 				
 			
-					return Q/(1-sumF);
+					if((1-sumF)==0) return 0;
+				    else return Q/(1-sumF);
              }
             
         }
@@ -547,8 +550,8 @@ double sumF = 0.0;
 	                     Q += e[i, i] - Math.Pow(a[i], 2d);
                         }	
 				
-			
-					return Q/(1-sumF);
+			        if((1-sumF)==0) return 0;
+				    else return Q/(1-sumF);
              }
             
         }
