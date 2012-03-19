@@ -22,7 +22,9 @@ namespace ModularizationModel
 		double result;
 		#pragma	warning restore 0414
 		
-		NETGen.Core.Network network;
+		NETGen.Core.Network simulated_network;
+		
+		NETGen.Core.Network real_network;
 		
 		Dictionary<Vertex,int> module_assignments = new Dictionary<Vertex, int>();
 		
@@ -33,7 +35,7 @@ namespace ModularizationModel
 		void Change()
 		{		
 			// chose a random class ...
-			Vertex v = network.RandomVertex;			
+			Vertex v = simulated_network.RandomVertex;			
 			
 			Dictionary<int, int> ModuleDependencies = new Dictionary<int, int>();		
 		
