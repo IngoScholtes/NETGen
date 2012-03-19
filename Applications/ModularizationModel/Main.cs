@@ -69,9 +69,11 @@ namespace ModularizationModel
 		
 		public override void RunSimulation ()
 		{
-			network = Network.LoadFromEdgeFile("network.edges");
+			real_network = Network.LoadFromEdgeFile("network.edges");
 			
-			foreach(Vertex v in network.Vertices)
+			simulated_network = Network.LoadFromEdgeFile("network.edges");
+			
+			foreach(Vertex v in simulated_network.Vertices)
 				module_assignments[v] = r.Next(0, N);
 			
 			int time = 0;
