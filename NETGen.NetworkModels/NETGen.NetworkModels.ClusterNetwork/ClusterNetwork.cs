@@ -315,13 +315,33 @@ namespace NETGen.NetworkModels.Cluster
 		/// </param>
         public Dictionary<Vertex,int> ResetClusters(Dictionary<Vertex,int> module_assignment)
         {
-            int N=_clusters.Count;
+			Dictionary<int, int> moduleMapping = new Dictionary<int, int>();
 			
-			for(int i=0; i<N; i++)
+			int new_module=0;
+			foreach(Vertex v in module_assignment.Keys)
 			{
-				_clusters[i].Clear();
+					if(!moduleMapping.ContainsKey(module_assignment[v]))
+						moduleMapping[module_assignment[v]]=new_module++;
+					
+					module_assignment[v]=moduleMapping[module_assignment[v]];
+					SetClusterForNode(v, moduleMapping[module_assignment[v]]);
 			}
 			
+			moduleMapping.Clear();
+			
+						
+			int N=GetClustersCount;
+						
+			for(int i=0; i<N; i++) 
+				_clusters[i].Clear();
+			_clusters.Clear();
+			
+			foreach(Vertex v in module_assignment.Keys)
+			{
+				if(!_clusters.ContainsKey(module_assignment[v]))
+						_clusters[module_assignment[v]] = new List<Vertex>();
+				_clusters[module_assignment[v]].Add(v);
+			}
 			
 			return module_assignment;
 		}
