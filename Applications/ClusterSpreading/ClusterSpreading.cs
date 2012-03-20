@@ -40,7 +40,7 @@ public class ClusterSpreading
                     {
                         ClusterNetwork net = new ClusterNetwork(Properties.Settings.Default.Nodes, Properties.Settings.Default.Edges, Properties.Settings.Default.Clusters, mod);
 
-                        Console.WriteLine("Run {0}, created cluster network with modularity={1:0.00}", j, (net as ClusterNetwork).NewmanModularity);     
+                        Console.WriteLine("Run {0}, created cluster network with modularity={1:0.00}", j, (net as ClusterNetwork).NewmanModularityUndirected);     
                         /// TODO: Run experiment
                     });
                     line = string.Format(new CultureInfo("en-US").NumberFormat, "{0:0.000} {1:0.000} {2:0.000} {3:0.000} \t", MathNet.Numerics.Statistics.Statistics.Mean(modularity.ToArray()), bias, MathNet.Numerics.Statistics.Statistics.Mean(results.ToArray()), MathNet.Numerics.Statistics.Statistics.StandardDeviation(results.ToArray()));

@@ -277,6 +277,20 @@ namespace NETGen.NetworkModels.Cluster
         }
 		
 		/// <summary>
+		/// Gets a count of cluster IDs
+		/// </summary>
+		/// <value>
+		/// The count of cluster Ids.
+		/// </value>
+        public int GetClustersCount
+        {
+            get
+            {
+                return _clusters.Keys.ToArray().Count();
+            }
+        }
+		
+		/// <summary>
 		/// Gets the cluster ID for a particular node.
 		/// </summary>
 		/// <returns>
@@ -288,6 +302,42 @@ namespace NETGen.NetworkModels.Cluster
         public int GetClusterForNode(Vertex v)
         {
             return _clusterAssignment[v];
+        }
+		
+		/// <summary>
+		/// Resets the cluster IDs.
+		/// </summary>
+		/// <returns>
+		/// Clean the list of clusters and respective nodes assigned to it. 
+		/// </returns>
+		/// <param name='m'>
+		/// The dictionary for vertices and respective modules. 
+		/// </param>
+        public Dictionary<Vertex,int> ResetClusters(Dictionary<Vertex,int> module_assignment)
+        {
+            int N=_clusters.Count;
+			
+			for(int i=0; i<N; i++)
+			{
+				_clusters[i].Clear();
+			}
+			
+			
+			return module_assignment;
+		}
+		
+		/// <summary>
+		/// Sets the cluster ID for a particular node.
+		/// </summary>
+		/// <returns>
+		/// The ID of the cluster this node is member of 
+		/// </returns>
+		/// <param name='v'>
+		/// The node for which the cluster ID shall be returned
+		/// </param>
+        public int SetClusterForNode(Vertex v, int c)
+        {
+            return _clusterAssignment[v]=c;
         }
 		
 		/// <summary>

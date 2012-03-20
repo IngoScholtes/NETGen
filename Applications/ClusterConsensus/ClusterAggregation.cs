@@ -43,7 +43,7 @@ class Program
                 {
                    	ClusterNetwork net = new ClusterNetwork(Properties.Settings.Default.Nodes, Properties.Settings.Default.Edges, Properties.Settings.Default.Clusters, mod);
 
-                    Console.WriteLine("Run {0}, created cluster network with modularity={2:0.00}", j, (net as ClusterNetwork).NewmanModularity);
+                    Console.WriteLine("Run {0}, created cluster network with modularity={2:0.00}", j, (net as ClusterNetwork).NewmanModularityUndirected);
                     res = RunAggregation(net, bias);
                     results.Add(res.FinalVariance);
                     modularity.Add(res.Modularity);
@@ -67,7 +67,7 @@ class Program
 
         AggregationResult result = new AggregationResult();
 
-        result.Modularity = net.NewmanModularity;          
+        result.Modularity = net.NewmanModularityUndirected;          
 
         double average = 0d;
 

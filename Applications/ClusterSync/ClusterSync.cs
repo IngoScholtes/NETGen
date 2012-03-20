@@ -180,6 +180,6 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 		normalizerIntegratedOrder /= sync.Time;
 	    time = sync.Time;
 		finalOrderParam = sync.GetOrder(net.Vertices.ToArray());
-	    modularity_real = net.NewmanModularity;
+	    modularity_real = net.NewmanModularityUndirected;
 	}
 }

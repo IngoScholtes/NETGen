@@ -46,5 +46,9 @@
       <Project>{D48B4217-0FFE-4C33-8CFC-6EEDE62EFE98}</Project>
       <Name>NETGen.pyspg</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NETGen.NetworkModels\NETGen.NetworkModels.ClusterNetwork\NETGen.NetworkModels.Cluster.csproj">
+      <Project>{05738475-4CEA-425D-8775-7DD94A3611FD}</Project>
+      <Name>NETGen.NetworkModels.Cluster</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
