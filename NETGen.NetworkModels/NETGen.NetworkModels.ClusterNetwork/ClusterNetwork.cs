@@ -126,7 +126,7 @@ namespace NETGen.NetworkModels.Cluster
 					}
 			}
 			///Qd desired, Qf final
-			Logger.AddMessage(LogEntryType.Info, string.Format("Created cluster network with N = {0}, M = {1}, Qd = {2:0.000}, Qf = {3:0.000}", VertexCount, EdgeCount, modularity, NewmanModularityU));
+			Logger.AddMessage(LogEntryType.Info, string.Format("Created cluster network with N = {0}, M = {1}, Qd = {2:0.000}, Qf = {3:0.000}", VertexCount, EdgeCount, modularity, NewmanModularityUndirected));
         }     
 		
 		private ClusterNetwork()
@@ -319,12 +319,12 @@ namespace NETGen.NetworkModels.Cluster
         }
 		
 		/// <summary>
-		/// Returns the modularity Q of the network, as defined by Mark Newman et al. 
+		/// Returns the modularity Q of a directed network, as defined by Mark Newman et al. 
 		/// </summary>
 		/// <value>
 		/// The modularity of the network between -1 and 1
 		/// </value>
-         public double NewmanModularityDqws
+         public double NewmanModularityDirected
          {
              get
              {
@@ -345,53 +345,61 @@ namespace NETGen.NetworkModels.Cluster
                  double[] b = new double[max_id+1];
 
                  double edges = EdgeCount;
-
+				
+				 foreach (int i in ClusterIDs)
+                 	foreach (int j in ClusterIDs)
+                    	{
+                        	e[i,j] = 0d;
+                     	}
+				
+				 foreach(Edge edge in InterClusterEdges)
+					{
+						e[GetClusterForNode(edge.Source), GetClusterForNode(edge.Target)]++;	
+					}
+				
+				 foreach(Edge edge in IntraClusterEdges)
+					{
+						e[GetClusterForNode(edge.Source), GetClusterForNode(edge.Target)]++;	
+					}
+				
                  foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
+                    foreach (int j in ClusterIDs)
                      {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
+                         e[i,j] /= edges;
                      }
                
-					foreach (int i in ClusterIDs)
+				 foreach (int i in ClusterIDs)
 	                 {
 	                     a[i] = 0;
 	                     foreach (int j in ClusterIDs)
 	                         a[i] += e[i, j];
 	                 }
 						
-					foreach (int j in ClusterIDs)
+				 foreach (int j in ClusterIDs)
 	                 {
 	                     b[j] = 0;
 	                     foreach (int i in ClusterIDs)
 	                         b[j] += e[i, j];
 	                 }
-			double sumF = 0.0;	
-	                foreach (int i in ClusterIDs)
-			{	
-			     sumF=sumF+	a[i]*b[i];
-	                     Q += e[i, i] - a[i]*b[i];
-                        }	
+				 
+				 double sumF = 0.0;	
+	             foreach (int i in ClusterIDs)
+					 {	
+			     		sumF += a[i]*b[i];
+	                    Q    += e[i, i]-a[i]*b[i];
+                     }	
 				
-			
-					if((1-sumF)==0) return 0;
-				    else return Q/(1-sumF);
-             }
-            
+			     if((1-sumF)==0) return 0;
+				 else return Q/(1-sumF);
+             }  
         }
-		
 		/// <summary>
-		/// Returns the modularity Q of the network, as defined by Mark Newman et al. 
+		/// Returns the modularity Q of a undirected network, as defined by Mark Newman et al. 
 		/// </summary>
 		/// <value>
 		/// The modularity of the network between -1 and 1
 		/// </value>
-         public double NewmanModularityUqws
+         public double NewmanModularityUndirected
          {
              get
              {
@@ -408,366 +416,48 @@ namespace NETGen.NetworkModels.Cluster
                  // entry a[i] contains the fraction of edges that connect to community i COLUMN
                  double[] a = new double[max_id+1];
 				
+				 double edges = EdgeCount;
 				
-                 double edges = EdgeCount;
-
+				 foreach (int i in ClusterIDs)
+                 	foreach (int j in ClusterIDs)
+                    	{
+                        	e[i,j] = 0d;
+                     	}
+				
+				 foreach(Edge edge in InterClusterEdges)
+					{
+						e[GetClusterForNode(edge.Source), GetClusterForNode(edge.Target)]++;
+						e[GetClusterForNode(edge.Target), GetClusterForNode(edge.Source)]++;
+					}
+				
+				 foreach(Edge edge in IntraClusterEdges)
+					{
+						e[GetClusterForNode(edge.Source), GetClusterForNode(edge.Target)]+=2;	
+					}
+				
                  foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
+                    foreach (int j in ClusterIDs)
                      {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
+                         e[i,j] /= 2d*edges;
                      }
                
-                 foreach (int i in ClusterIDs)
-                 {
-                     a[i] = 0;
-                     foreach (int j in ClusterIDs)
-                         a[i] += e[i, j];
-                 }
-double sumF = 0.0;	
-	                foreach (int i in ClusterIDs)
-			{	
-			     sumF=sumF+	Math.Pow(a[i], 2d);
-	                     Q += e[i, i] - Math.Pow(a[i], 2d);
-                        }	
-				
-			
-					if((1-sumF)==0) return 0;
-				    else return Q/(1-sumF);
-                 
-             
-			}
-        }
-		
-		public double NewmanModularityWithoutEiiDqws
-         {
-             get
-             {
-                double Q = 0d;
-				
-				int max_id = int.MinValue;
-				
-				foreach(int i in ClusterIDs)
-					max_id = Math.Max(i, max_id);
-
-                 // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
-                 double[,] e = new double[max_id+1, max_id+1];
-
-                 // entry a[i] contains the fraction of edges that connect to community i
-                 double[] a = new double[max_id+1];
-				
-				 // entry b[i] contains the fraction of edges that connect to community i ROW
-                 double[] b = new double[max_id+1];
-				
-                 double edges = EdgeCount;
-
-                 foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
-                     {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
-                     }
-
-                 foreach (int i in ClusterIDs)
-                 {
-                     a[i] = 0;
-                     foreach (int j in ClusterIDs)
-						if(i!=j)
-                         	a[i] += e[i, j];
-                 }
-                 foreach (int j in ClusterIDs)
-	                 {
-	                     b[j] = 0;
-	                     foreach (int i in ClusterIDs)
-	                         b[j] += e[i, j];
-	                 }	
-	                double sumF = 0.0;	
-	                foreach (int i in ClusterIDs)
-			{	
-			     sumF=sumF+	a[i]*b[i];
-	                     Q += e[i, i] - a[i]*b[i];
-                        }	
-				
-			
-					if((1-sumF)==0) return 0;
-				    else return Q/(1-sumF);
-             }
-            
-        }
-		
-		public double NewmanModularityWithoutEiiUqws
-         {
-             get
-             {
-                double Q = 0d;
-				
-				int max_id = int.MinValue;
-				
-				foreach(int i in ClusterIDs)
-					max_id = Math.Max(i, max_id);
-
-                 // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
-                 double[,] e = new double[max_id+1, max_id+1];
-
-                 // entry a[i] contains the fraction of edges that connect to community i
-                 double[] a = new double[max_id+1];
-
-                 double edges = EdgeCount;
-
-                 foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
-                     {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
-                     }
-
-                 foreach (int i in ClusterIDs)
-                 {
-                     a[i] = 0;
-                     foreach (int j in ClusterIDs)
-						if(i!=j)
-                         	a[i] += e[i, j];
-                 }
-                 double sumF = 0.0;	
-	                foreach (int i in ClusterIDs)
-			{	
-			     sumF=sumF+	Math.Pow(a[i], 2d);
-	                     Q += e[i, i] - Math.Pow(a[i], 2d);
-                        }	
-				
-			        if((1-sumF)==0) return 0;
-				    else return Q/(1-sumF);
-             }
-            
-        }
-		
-		/// <summary>
-		/// Returns the modularity Q of the network, as defined by Mark Newman et al. 
-		/// </summary>
-		/// <value>
-		/// The modularity of the network between -1 and 1
-		/// </value>
-         public double NewmanModularityD
-         {
-             get
-             {
-                double Q = 0d;
-				
-				int max_id = int.MinValue;
-				
-				foreach(int i in ClusterIDs)
-					max_id = Math.Max(i, max_id);
-
-                 // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
-                 double[,] e = new double[max_id+1, max_id+1];
-
-                 // entry a[i] contains the fraction of edges that connect to community i COLUMN
-                 double[] a = new double[max_id+1];
-				
-				 // entry b[i] contains the fraction of edges that connect to community i ROW
-                 double[] b = new double[max_id+1];
-
-                 double edges = EdgeCount;
-
-                 foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
-                     {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
-                     }
-               
-					foreach (int i in ClusterIDs)
+				 foreach (int i in ClusterIDs)
 	                 {
 	                     a[i] = 0;
 	                     foreach (int j in ClusterIDs)
 	                         a[i] += e[i, j];
 	                 }
 						
-					foreach (int j in ClusterIDs)
-	                 {
-	                     b[j] = 0;
-	                     foreach (int i in ClusterIDs)
-	                         b[j] += e[i, j];
-	                 }	
-	                foreach (int i in ClusterIDs)
-	                     Q += e[i, i] - a[i]*b[i];	
+				 double sumF = 0.0;	
+	             foreach (int i in ClusterIDs)
+					 {	
+			     		sumF += a[i]*a[i];
+	                    Q    += e[i, i]-a[i]*a[i];
+                     }	
 				
-			
-					return Q;
-             }
-            
+			     if((1-sumF)==0) return 0;
+				 else return Q/(1-sumF);
+             }  
         }
-		
-		/// <summary>
-		/// Returns the modularity Q of the network, as defined by Mark Newman et al. 
-		/// </summary>
-		/// <value>
-		/// The modularity of the network between -1 and 1
-		/// </value>
-         public double NewmanModularityU
-         {
-             get
-             {
-                double Q = 0d;
-				
-				int max_id = int.MinValue;
-				
-				foreach(int i in ClusterIDs)
-					max_id = Math.Max(i, max_id);
-
-                 // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
-                 double[,] e = new double[max_id+1, max_id+1];
-
-                 // entry a[i] contains the fraction of edges that connect to community i COLUMN
-                 double[] a = new double[max_id+1];
-				
-				
-                 double edges = EdgeCount;
-
-                 foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
-                     {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
-                     }
-               
-                 foreach (int i in ClusterIDs)
-                 {
-                     a[i] = 0;
-                     foreach (int j in ClusterIDs)
-                         a[i] += e[i, j];
-                 }
-                 foreach (int i in ClusterIDs)
-                     Q += e[i, i] - Math.Pow(a[i], 2d);
-				
-					return Q;
-             
-			}
-        }
-		
-		public double NewmanModularityWithoutEiiD
-         {
-             get
-             {
-                double Q = 0d;
-				
-				int max_id = int.MinValue;
-				
-				foreach(int i in ClusterIDs)
-					max_id = Math.Max(i, max_id);
-
-                 // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
-                 double[,] e = new double[max_id+1, max_id+1];
-
-                 // entry a[i] contains the fraction of edges that connect to community i
-                 double[] a = new double[max_id+1];
-				
-				 // entry b[i] contains the fraction of edges that connect to community i ROW
-                 double[] b = new double[max_id+1];
-				
-                 double edges = EdgeCount;
-
-                 foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
-                     {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
-                     }
-
-                 foreach (int i in ClusterIDs)
-                 {
-                     a[i] = 0;
-                     foreach (int j in ClusterIDs)
-						if(i!=j)
-                         	a[i] += e[i, j];
-                 }
-                 foreach (int j in ClusterIDs)
-	                 {
-	                     b[j] = 0;
-	                     foreach (int i in ClusterIDs)
-	                         b[j] += e[i, j];
-	                 }	
-	                foreach (int i in ClusterIDs)
-	                     Q += e[i, i] - a[i]*b[i];
-                 return Q;
-             }
-            
-        }
-		
-		public double NewmanModularityWithoutEiiU
-         {
-             get
-             {
-                double Q = 0d;
-				
-				int max_id = int.MinValue;
-				
-				foreach(int i in ClusterIDs)
-					max_id = Math.Max(i, max_id);
-
-                 // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
-                 double[,] e = new double[max_id+1, max_id+1];
-
-                 // entry a[i] contains the fraction of edges that connect to community i
-                 double[] a = new double[max_id+1];
-
-                 double edges = EdgeCount;
-
-                 foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
-                     {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
-                     }
-
-                 foreach (int i in ClusterIDs)
-                 {
-                     a[i] = 0;
-                     foreach (int j in ClusterIDs)
-						if(i!=j)
-                         	a[i] += e[i, j];
-                 }
-                 foreach (int i in ClusterIDs)
-                     Q += e[i, i] - Math.Pow(a[i], 2d);
-                 return Q;
-             }
-            
-        }
-
-    }
+	}
 }
