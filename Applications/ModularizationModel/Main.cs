@@ -72,7 +72,6 @@ namespace ModularizationModel
 		
 		ClusterNetwork empirical_network;
 		
-		Dictionary<Vertex,int> empirical_module_assignments = new Dictionary<Vertex, int>();
 		Dictionary<Vertex,int> simulated_module_assignments = new Dictionary<Vertex, int>();
 		
 		Random r = new Random();
@@ -148,16 +147,19 @@ namespace ModularizationModel
 			n_edges=empirical_network.EdgeCount;
 			
 			n_modules_e=empirical_network.GetClustersCount;
-			n_modules_s=0;
+			n_modules_s=simulated_network.GetClustersCount;
 			
-			q_e=0d;
-			q_s=0d;
+			q_e=empirical_network.NewmanModularityDirected;
+			q_s=simulated_network.NewmanModularityDirected;
+			
 			o_p=0d;
 			o_m=0d;
+			
 			av_module_s_e=0d;
 			av_module_s_s=0d;
 			sd_module_s_e=0d;
 			sd_module_s_s=0d;
+			
 			av_n_module_s_e=0d;
 			av_n_module_s_s=0d;
 			sd_n_module_s_e=0d;
