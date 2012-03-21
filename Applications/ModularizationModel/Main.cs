@@ -15,7 +15,7 @@ namespace ModularizationModel
 		[Parameter(ParameterType.Input, "Temperature", 0)]
 		double T;
 		
-		[Parameter(ParameterType.Input, "Steps", 1000)]
+		[Parameter(ParameterType.Input, "Steps", 10000)]
 		int Steps;
 		
 		#pragma	warning disable 0414	
@@ -113,8 +113,6 @@ namespace ModularizationModel
 			}
 
 			simulated_module_assignments[v] = pos;	
-			
-			simulated_module_assignments=simulated_network.ResetClusters(simulated_module_assignments);
 		}
 		
 		public override void RunSimulation ()
@@ -134,7 +132,7 @@ namespace ModularizationModel
 			//shuffle the dictionary to provide a randomized assignment making sure all modules are present
 			Random rand = new Random();
 			simulated_module_assignments = simulated_module_assignments.OrderBy(x => rand.Next()).ToDictionary(item => item.Key, item => item.Value);
-			
+		
 			int time = 0;
 			
 			while (time < Steps)
@@ -142,6 +140,8 @@ namespace ModularizationModel
 				Change();
 				time++;
 			}
+		
+			simulated_network.ResetClusters(simulated_module_assignments);
 			
 			n_nodes=empirical_network.VertexCount;
 			n_edges=empirical_network.EdgeCount;

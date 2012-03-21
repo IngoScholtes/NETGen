@@ -313,37 +313,27 @@ namespace NETGen.NetworkModels.Cluster
 		/// <param name='m'>
 		/// The dictionary for vertices and respective modules. 
 		/// </param>
-        public Dictionary<Vertex,int> ResetClusters(Dictionary<Vertex,int> module_assignment)
+        public void ResetClusters(Dictionary<Vertex,int> module_assignment)
         {
-			Dictionary<int, int> moduleMapping = new Dictionary<int, int>();
-			
-			int new_module=0;
-			foreach(Vertex v in module_assignment.Keys)
-			{
-					if(!moduleMapping.ContainsKey(module_assignment[v]))
-						moduleMapping[module_assignment[v]]=new_module++;
-					
-					module_assignment[v]=moduleMapping[module_assignment[v]];
-					SetClusterForNode(v, moduleMapping[module_assignment[v]]);
-			}
-			
-			moduleMapping.Clear();
-			
-						
-			int N=GetClustersCount;
-						
-			for(int i=0; i<N; i++) 
+			//clean cluster assignments
+			for(int i=0; i<GetClustersCount; i++) 
 				_clusters[i].Clear();
 			_clusters.Clear();
 			
+			//shrink the clusterIDs if necessary
+			Dictionary<int, int> moduleMapping = new Dictionary<int, int>();
+			int new_module=0;
 			foreach(Vertex v in module_assignment.Keys)
 			{
-				if(!_clusters.ContainsKey(module_assignment[v]))
-						_clusters[module_assignment[v]] = new List<Vertex>();
-				_clusters[module_assignment[v]].Add(v);
+				if(!moduleMapping.ContainsKey(module_assignment[v])) 
+					moduleMapping[module_assignment[v]]=new_module++;
+				SetClusterForNode(v, moduleMapping[module_assignment[v]]);
+				
+				if(!_clusters.ContainsKey(GetClusterForNode(v)))
+					_clusters[GetClusterForNode(v)] = new List<Vertex>();
+				_clusters[GetClusterForNode(v)].Add(v);
 			}
-			
-			return module_assignment;
+			moduleMapping.Clear();
 		}
 		
 		/// <summary>
