@@ -334,6 +334,18 @@ namespace NETGen.NetworkModels.Cluster
 				_clusters[GetClusterForNode(v)].Add(v);
 			}
 			moduleMapping.Clear();
+			
+			IntraClusterEdges.Clear();
+			InterClusterEdges.Clear();
+			
+			foreach(Edge edge in Edges)
+			{
+				if(_clusterAssignment[edge.Source]!=_clusterAssignment[edge.Target])
+					InterClusterEdges.Add(edge);
+				else
+					IntraClusterEdges.Add(edge);
+			}
+			
 		}
 		
 		/// <summary>
@@ -345,9 +357,9 @@ namespace NETGen.NetworkModels.Cluster
 		/// <param name='v'>
 		/// The node for which the cluster ID shall be returned
 		/// </param>
-        public int SetClusterForNode(Vertex v, int c)
+        public void SetClusterForNode(Vertex v, int c)
         {
-            return _clusterAssignment[v]=c;
+            _clusterAssignment[v]=c;
         }
 		
 		/// <summary>
