@@ -379,6 +379,93 @@ namespace NETGen.NetworkModels.Cluster
         }
 		
 		/// <summary>
+		/// Gets the average node cluster size.
+		/// </summary>
+		/// <returns>
+		/// The average number of nodes in a cluster of given size
+		/// </returns>
+        public double GetAverageNodeClusterSize
+        {
+			get
+            {
+				
+				int N=GetClustersCount;
+				double result=0d;
+				int n_nodes=0;
+				for(int i=0;i<N;i++)
+				{
+					result+=GetClusterSize(i)*GetClusterSize(i);
+					n_nodes+=GetClusterSize(i);
+				}
+				return result/(double)n_nodes;
+			}
+        }
+		
+		/// <summary>
+		/// Gets the standard deviation of node cluster size.
+		/// </summary>
+		/// <returns>
+		/// The standard deviation for the number of nodes in a cluster of given size
+		/// </returns>
+        public double GetStandardDeviationNodeClusterSize
+        {
+			get
+            {
+				double av=GetAverageNodeClusterSize;
+				int N=GetClustersCount;
+				double result=0d;
+				int n_nodes=0;
+				for(int i=0;i<N;i++)
+				{
+					result+=Math.Pow((double)GetClusterSize(i)*GetClusterSize(i)-av,2.0d);
+					n_nodes+=GetClusterSize(i);
+				}
+				return Math.Sqrt(result/(double)n_nodes);
+			}
+        }
+		
+		/// <summary>
+		/// Gets the average cluster size.
+		/// </summary>
+		/// <returns>
+		/// The average number of nodes per cluster
+		/// </returns>
+        public double GetAverageClusterSize
+        {
+			get
+            {
+				int N=GetClustersCount;
+				double result=0d;
+				for(int i=0;i<N;i++)
+				{
+					result+=GetClusterSize(i);
+				}
+				return result/(double)N;
+			}
+        }
+		
+		/// <summary>
+		/// Gets the standard deviation of cluster size.
+		/// </summary>
+		/// <returns>
+		/// The standard deviation for the number of nodes per cluster
+		/// </returns>
+        public double GetStandardDeviationClusterSize
+        {
+			get
+            {
+				double av=GetAverageClusterSize;
+				int N=GetClustersCount;
+				double result=0d;
+				for(int i=0;i<N;i++)
+				{
+					result+=Math.Pow((double)GetClusterSize(i)-av,2.0d);
+				}
+				return Math.Sqrt(result/(double)N);
+			}
+        }
+		
+		/// <summary>
 		/// Returns the modularity Q of a directed network, as defined by Mark Newman et al. 
 		/// </summary>
 		/// <value>

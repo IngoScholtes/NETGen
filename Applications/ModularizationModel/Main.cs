@@ -12,7 +12,7 @@ namespace ModularizationModel
 {
 	public class ModularityModel : pyspgSimulation<ModularityModel>
 	{
-		[Parameter(ParameterType.Input, "Temperature", 0)]
+		[Parameter(ParameterType.Input, "Temperature", 0.005)]
 		double T;
 		
 		[Parameter(ParameterType.Input, "Steps", 10000)]
@@ -98,8 +98,8 @@ namespace ModularizationModel
 			
 			for(int i=0; i<simulated_network.GetClustersCount; i++)
 			{
-				module_probs[i] = Math.Exp( (double) ModuleDependencies[i] / T);
-				c+= Math.Exp( (double) ModuleDependencies[i] / T);
+				module_probs[i] = Math.Exp( -(double) ModuleDependencies[i] / T);
+				c+= Math.Exp( -(double) ModuleDependencies[i] / T);
 			}
 			
 			double rand = r.NextDouble()*c;
@@ -132,17 +132,19 @@ namespace ModularizationModel
 			//shuffle the dictionary to provide a randomized assignment making sure all modules are present
 			Random rand = new Random();
 			simulated_module_assignments = simulated_module_assignments.OrderBy(x => rand.Next()).ToDictionary(item => item.Key, item => item.Value);
-		
-			int time = 0;
 			
+			//run the simulation
+			int time = 0;
 			while (time < Steps)
 			{
 				Change();
 				time++;
 			}
-		
+			
+			//shrink the clusterIDs to account for the possibility of the existance of empty modules
 			simulated_network.ResetClusters(simulated_module_assignments);
 			
+			//results
 			n_nodes=empirical_network.VertexCount;
 			n_edges=empirical_network.EdgeCount;
 			
@@ -154,16 +156,40 @@ namespace ModularizationModel
 			
 			o_p=0d;
 			o_m=0d;
+			Vertex s_v;
+			Vertex s_w;
+			foreach(Vertex e_v in empirical_network.Vertices)
+				foreach(Vertex e_w in empirical_network.Vertices)
+				{
+					s_v=simulated_network.SearchVertex(e_v.Label);
+					s_w=simulated_network.SearchVertex(e_w.Label);
+					
+					if((simulated_network.GetClusterForNode(s_v)==simulated_network.GetClusterForNode(s_w))&&(empirical_network.GetClusterForNode(e_v)==empirical_network.GetClusterForNode(e_w)))
+					{
+						o_p++;
+					}
+					else
+					{
+						if((simulated_network.GetClusterForNode(s_v)!=simulated_network.GetClusterForNode(s_w))&&(empirical_network.GetClusterForNode(e_v)!=empirical_network.GetClusterForNode(e_w)))
+						{
+							o_m++;
+						}
+					}
+				}
+			o_p /= n_nodes*n_nodes;
+			o_m /= n_nodes*n_nodes;
 			
-			av_module_s_e=0d;
-			av_module_s_s=0d;
-			sd_module_s_e=0d;
-			sd_module_s_s=0d;
+			av_module_s_e = empirical_network.GetAverageClusterSize;
+			av_module_s_s = simulated_network.GetAverageClusterSize;
 			
-			av_n_module_s_e=0d;
-			av_n_module_s_s=0d;
-			sd_n_module_s_e=0d;
-			sd_n_module_s_s=0d;
+			sd_module_s_e = empirical_network.GetStandardDeviationClusterSize;
+			sd_module_s_s = simulated_network.GetStandardDeviationClusterSize;
+			
+			av_n_module_s_e = empirical_network.GetAverageNodeClusterSize;
+			av_n_module_s_s = simulated_network.GetAverageNodeClusterSize;
+			
+			sd_n_module_s_e = empirical_network.GetStandardDeviationNodeClusterSize;
+			sd_n_module_s_s = simulated_network.GetStandardDeviationNodeClusterSize;
 		}
 	}
 }
