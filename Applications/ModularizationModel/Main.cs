@@ -12,10 +12,10 @@ namespace ModularizationModel
 {
 	public class ModularityModel : pyspgSimulation<ModularityModel>
 	{
-		[Parameter(ParameterType.Input, "Temperature", 0.005)]
+		[Parameter(ParameterType.Input, "Temperature", 0)]
 		double T;
 		
-		[Parameter(ParameterType.Input, "Steps", 10000)]
+		[Parameter(ParameterType.Input, "Steps", 10000000)]
 		int Steps;
 		
 		#pragma	warning disable 0414	
