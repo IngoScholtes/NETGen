@@ -179,8 +179,8 @@ namespace ModularizationModel
 						}
 					}
 				}
-			o_p /= (n_nodes*n_nodes-n_nodes);
-			o_m /= (n_nodes*n_nodes-n_nodes);
+			o_p /= ((n_nodes*n_nodes)-n_nodes);
+			o_m /= ((n_nodes*n_nodes)-n_nodes);
 			
 			av_module_s_e = empirical_network.GetAverageClusterSize;
 			av_module_s_s = simulated_network.GetAverageClusterSize;

@@ -1,26 +1,21 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/ModularizationModel/Main.cs">
     <Files>
-      <File FileName="Applications/ModularizationModel/Main.cs" Line="76" Column="3" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="322" Column="25" />
+      <File FileName="Applications/ModularizationModel/Main.cs" Line="183" Column="29" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True" selected="True">
           <Node name="Applications" expanded="True">
-            <Node name="Demo" expanded="True" />
-            <Node name="ModularityComputation" expanded="True" />
             <Node name="ModularizationModel" expanded="True">
               <Node name="References" expanded="True" />
             </Node>
           </Node>
           <Node name="NETGen.NetworkModels" expanded="True">
-            <Node name="NETGen.NetworkModels.Cluster" expanded="True">
-              <Node name="Properties" expanded="True" />
-            </Node>
+            <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
           </Node>
-          <Node name="NETGen.pyspg" expanded="True" />
+          <Node name="NETGen.Core" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
