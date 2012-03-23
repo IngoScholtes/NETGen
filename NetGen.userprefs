@@ -2,8 +2,8 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Applications/ModularizationModel/Main.cs">
     <Files>
-      <File FileName="Applications/ModularizationModel/Main.cs" Line="179" Column="8" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="85" Column="41" />
+      <File FileName="Applications/ModularizationModel/Main.cs" Line="161" Column="29" />
+      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="587" Column="22" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -18,6 +18,7 @@
             <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
           </Node>
           <Node name="NETGen.Core" expanded="True" />
+          <Node name="NETGen.pyspg" expanded="True" />
           <Node name="NETGen.Visualization" expanded="True" />
         </State>
       </Pad>

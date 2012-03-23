@@ -150,18 +150,19 @@ namespace ModularizationModel
 			
 			//run the simulation
 			int time = 0;
-			System.IO.StreamWriter file = new System.IO.StreamWriter(PrjName + "out.txt");
+			
+			//System.IO.StreamWriter file = new System.IO.StreamWriter(PrjName + "out.txt");
 			while (time < Steps)
 			{
 				Change();
 				time++;
-				simulated_network.ResetClusters(simulated_module_assignments);
-				file.WriteLine("{0} {1} {2} {3} {4}",T, simulated_network.NewmanModularityDirected, simulated_network.EdgeCount, simulated_network.InterClusterEdgeNumber, simulated_network.IntraClusterEdgeNumber);
-				foreach(Vertex v in simulated_network.Vertices)
-					simulated_module_assignments[v] = simulated_network.GetClusterForNode(v);
+				//simulated_network.ResetClusters(simulated_module_assignments);
+				//file.WriteLine("{0} {1} {2} {3} {4}",T, simulated_network.NewmanModularityDirected, simulated_network.EdgeCount, simulated_network.InterClusterEdgeNumber, simulated_network.IntraClusterEdgeNumber);
+				//foreach(Vertex v in simulated_network.Vertices)
+				//	simulated_module_assignments[v] = simulated_network.GetClusterForNode(v);
 				
 			}
-			file.Close();
+			//file.Close();
 			
 			//shrink the clusterIDs to account for the possibility of the existance of empty modules
 			simulated_network.ResetClusters(simulated_module_assignments);
