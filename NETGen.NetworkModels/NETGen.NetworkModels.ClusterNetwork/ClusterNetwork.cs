@@ -56,7 +56,7 @@ namespace NETGen.NetworkModels.Cluster
 			
 			IntraClusterEdges = new List<Edge>(edges);
 			InterClusterEdges = new List<Edge>(edges);
-
+			
             InterClusterEdgeNumber = 0;
             IntraClusterEdgeNumber = 0;
 			
@@ -333,19 +333,28 @@ namespace NETGen.NetworkModels.Cluster
 					_clusters[GetClusterForNode(v)] = new List<Vertex>();
 				_clusters[GetClusterForNode(v)].Add(v);
 			}
+			
 			moduleMapping.Clear();
 			
 			IntraClusterEdges.Clear();
 			InterClusterEdges.Clear();
 			
+			InterClusterEdgeNumber = 0;
+            IntraClusterEdgeNumber = 0;
+			
 			foreach(Edge edge in Edges)
 			{
 				if(_clusterAssignment[edge.Source]!=_clusterAssignment[edge.Target])
+				{	
 					InterClusterEdges.Add(edge);
+					InterClusterEdgeNumber++;
+				}
 				else
+				{	
 					IntraClusterEdges.Add(edge);
+					IntraClusterEdgeNumber++;
+				}
 			}
-			
 		}
 		
 		/// <summary>

@@ -12,10 +12,13 @@ namespace ModularizationModel
 { 
 	public class ModularityModel : pyspgSimulation<ModularityModel>
 	{
-		[Parameter(ParameterType.Input, "Temperature", 0)]
+		[Parameter(ParameterType.Input, "Project Name", "")]
+		string PrjName;
+		
+		[Parameter(ParameterType.Input, "Temperature", 0.001)]
 		double T;
 		
-		[Parameter(ParameterType.Input, "Steps", 10000000)]
+		[Parameter(ParameterType.Input, "Steps", 50000)]
 		int Steps;
 		
 		#pragma	warning disable 0414	
@@ -24,6 +27,18 @@ namespace ModularizationModel
 		
 		[Parameter(ParameterType.Output, "Number of Edges")]
 		long n_edges;
+		
+		[Parameter(ParameterType.Output, "Number of Intermodule Edges Empirical")]
+		long n_inter_edges_e;
+		
+		[Parameter(ParameterType.Output, "Number of Intermodule Edges Simulated")]
+		long n_inter_edges_s;
+		
+		[Parameter(ParameterType.Output, "Number of Intramodule Edges Empirical")]
+		long n_intra_edges_e;
+		
+		[Parameter(ParameterType.Output, "Number of Intramodule Edges Simulated")]
+		long n_intra_edges_s;
 		
 		[Parameter(ParameterType.Output, "Number of Modules Empirical")]
 		long n_modules_e;
@@ -117,9 +132,9 @@ namespace ModularizationModel
 		
 		public override void RunSimulation ()
 		{
-			empirical_network = ClusterNetwork.LoadNetwork("network.edges", true);
+			empirical_network = ClusterNetwork.LoadNetwork(PrjName + "_network.edges", true);
 			
-			simulated_network = ClusterNetwork.LoadNetwork("network.edges", true);
+			simulated_network = ClusterNetwork.LoadNetwork(PrjName + "_network.edges", true);
 			
 			//assign module membership deterministically for the simulated network
 			int my_V=0;
@@ -135,11 +150,18 @@ namespace ModularizationModel
 			
 			//run the simulation
 			int time = 0;
+			System.IO.StreamWriter file = new System.IO.StreamWriter(PrjName + "out.txt");
 			while (time < Steps)
 			{
 				Change();
 				time++;
+				simulated_network.ResetClusters(simulated_module_assignments);
+				file.WriteLine("{0} {1} {2} {3} {4}",T, simulated_network.NewmanModularityDirected, simulated_network.EdgeCount, simulated_network.InterClusterEdgeNumber, simulated_network.IntraClusterEdgeNumber);
+				foreach(Vertex v in simulated_network.Vertices)
+					simulated_module_assignments[v] = simulated_network.GetClusterForNode(v);
+				
 			}
+			file.Close();
 			
 			//shrink the clusterIDs to account for the possibility of the existance of empty modules
 			simulated_network.ResetClusters(simulated_module_assignments);
@@ -193,6 +215,12 @@ namespace ModularizationModel
 			
 			sd_n_module_s_e = empirical_network.GetStandardDeviationNodeClusterSize;
 			sd_n_module_s_s = simulated_network.GetStandardDeviationNodeClusterSize;
+			
+			n_inter_edges_e = empirical_network.InterClusterEdgeNumber;
+			n_intra_edges_e = empirical_network.IntraClusterEdgeNumber;
+			
+			n_inter_edges_s = simulated_network.InterClusterEdgeNumber;
+			n_intra_edges_s = simulated_network.IntraClusterEdgeNumber;
 		}
 	}
 }

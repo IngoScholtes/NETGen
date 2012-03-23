@@ -2,12 +2,14 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Applications/ModularizationModel/Main.cs">
     <Files>
-      <File FileName="Applications/ModularizationModel/Main.cs" Line="183" Column="29" />
+      <File FileName="Applications/ModularizationModel/Main.cs" Line="179" Column="8" />
+      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="85" Column="41" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True" selected="True">
           <Node name="Applications" expanded="True">
+            <Node name="ConsensusHierarchy" expanded="True" />
             <Node name="ModularizationModel" expanded="True">
               <Node name="References" expanded="True" />
             </Node>
@@ -16,6 +18,7 @@
             <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
           </Node>
           <Node name="NETGen.Core" expanded="True" />
+          <Node name="NETGen.Visualization" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
