@@ -11,7 +11,7 @@ namespace NETGen.pyspg
 		public ParameterType Type { get; private set;}
 		public object DefaultValue { get; private set; }
 		
-		public ParameterAttribute(ParameterType type, string comment, object defaultValue = null)
+		public ParameterAttribute(ParameterType type, string comment, object defaultValue)
 		{
 			Comment = comment;
 			Type = type;

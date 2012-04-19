@@ -34,7 +34,7 @@ namespace NETGenVisualizer
 		private global::Gtk.Button btnComputeLayout;
 		private global::Gtk.ColorButton btnChoseHighlightNodeColor;
 		private global::Gtk.Button btnResetHighlights;
-        
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

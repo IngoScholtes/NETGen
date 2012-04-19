@@ -10,7 +10,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NETGen.NetworkModels.Cluster</RootNamespace>
     <AssemblyName>NETGen.NetworkModels.Cluster</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -38,8 +37,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MathNet.Numerics">
       <HintPath>..\..\lib\MathNet.Numerics.dll</HintPath>
     </Reference>
   </ItemGroup>

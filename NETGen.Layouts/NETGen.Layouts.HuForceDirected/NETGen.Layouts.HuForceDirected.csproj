@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>NETGen.Layouts.HuForceDirected</RootNamespace>
     <AssemblyName>NETGen.Layouts.HuForceDirected</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,8 +43,7 @@
     <Compile Include="HuForceDirectedLayout.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="CUDA.NET, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CUDA.NET">
       <HintPath>..\..\lib\CUDA.NET.dll</HintPath>
     </Reference>
   </ItemGroup>

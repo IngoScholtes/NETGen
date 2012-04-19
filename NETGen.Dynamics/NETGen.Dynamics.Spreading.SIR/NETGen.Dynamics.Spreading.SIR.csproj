@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>NETGen.Dynamics.Spreading.SIR</RootNamespace>
     <AssemblyName>NETGen.Dynamics.Spreading.SIR</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

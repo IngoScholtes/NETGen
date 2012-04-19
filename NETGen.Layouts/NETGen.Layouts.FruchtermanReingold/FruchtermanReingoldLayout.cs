@@ -45,13 +45,13 @@ namespace NETGen.Layouts.FruchtermanReingold
 				_vertexPositions[v] = new Vector3(network.NextRandomDouble() * width, network.NextRandomDouble() * height, 1d);
 				_newVertices.Add(v);
 			}
-			/*
+			
 			// Add vertex to _newVertices whenever one is added to the network
 			network.OnVertexAdded+=new Network.VertexUpdateHandler( delegate(Vertex v) {
 				_vertexPositions[v] = new Vector3(network.NextRandomDouble() * width, network.NextRandomDouble() * height, 1d);
 				_newVertices.Add(v);
 			});			
-			*/
+			
 		}
 		
 		[MethodImpl(MethodImplOptions.Synchronized)]
@@ -114,11 +114,14 @@ namespace NETGen.Layouts.FruchtermanReingold
 				{
 					Vertex v = e.Source;
 					Vertex w = e.Target;
-                    Vector3 delta = _vertexPositions[v] - _vertexPositions[w];
-					if(_newVertices.Contains(v))
-						disp[v] = disp[v] - (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
-					if(_newVertices.Contains(w))
-					disp[w] = disp[w] + (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
+                    if (_vertexPositions.ContainsKey(v) && _vertexPositions.ContainsKey(w))
+                    {
+                        Vector3 delta = _vertexPositions[v] - _vertexPositions[w];
+                        if (_newVertices.Contains(v))
+                            disp[v] = disp[v] - (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
+                        if (_newVertices.Contains(w))
+                            disp[w] = disp[w] + (delta / Vector3.Length(delta)) * attraction(Vector3.Length(delta), _k);
+                    }
 				});
 
                 // Limit to frame and include temperature cooling that reduces displacement step by step
@@ -167,7 +170,9 @@ namespace NETGen.Layouts.FruchtermanReingold
         /// <returns></returns>
 		public override Vector3 GetPositionOfNode(NETGen.Core.Vertex v)
 		{
-        	return _vertexPositions[v];
+            if (_vertexPositions.ContainsKey(v))
+                return _vertexPositions[v];
+            else return new Vector3();
 		}
 	}
 }

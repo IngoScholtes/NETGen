@@ -9,7 +9,6 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MonoParser</RootNamespace>
     <AssemblyName>MonoParser</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>none</DebugType>

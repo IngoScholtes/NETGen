@@ -8,7 +8,6 @@
     <ProjectGuid>{83540F86-4BD1-4FC3-9065-A5A838C66D50}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>NETGen.Dynamics.Synchronization</RootNamespace>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AssemblyName>NETGen.Dynamics.Synchronization.Kuramoto</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -39,8 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
-    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MathNet.Numerics">
       <HintPath>..\..\lib\MathNet.Numerics.dll</HintPath>
     </Reference>
   </ItemGroup>

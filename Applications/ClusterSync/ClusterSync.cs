@@ -57,26 +57,26 @@ public class ClusterSync : NETGen.pyspg.pyspgSimulation<ClusterSync>
 	[Parameter(ParameterType.Input, "StdDev of node frequencies in cluster", 1d/5d)]
 	double cluster_width_factor;
 	
-	[Parameter(ParameterType.OutputFile, "Evolution of cluster order and global order")]
+	[Parameter(ParameterType.OutputFile, "Evolution of cluster order and global order", null)]
 	string dynamics;
 	
 #pragma warning disable 0414
-	[Parameter(ParameterType.Output, "Final order")]
+    [Parameter(ParameterType.Output, "Final order", null)]
 	double finalOrderParam;
-	
-	[Parameter(ParameterType.Output, "integrated order, normalized by simulation time")]
+
+    [Parameter(ParameterType.Output, "integrated order, normalized by simulation time", null)]
 	double normalizerIntegratedOrder;
-	
-	[Parameter(ParameterType.Output, "Initial Density")]
+
+    [Parameter(ParameterType.Output, "Initial Density", null)]
 	double initialDensity;
-	
-	[Parameter(ParameterType.Output, "Final density")]
+
+    [Parameter(ParameterType.Output, "Final density", null)]
 	double finalDensity;
-	
-	[Parameter(ParameterType.Output, "Measured Newman modularity of the network")]
+
+    [Parameter(ParameterType.Output, "Measured Newman modularity of the network", null)]
 	double modularity_real;
-	
-	[Parameter(ParameterType.Output, "Time taken to synchronize")]
+
+    [Parameter(ParameterType.Output, "Time taken to synchronize", null)]
 	double time;	
 #pragma warning restore 0414	
 	

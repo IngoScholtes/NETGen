@@ -8,7 +8,6 @@
     <ProjectGuid>{04258183-C570-40D3-B0D0-043FFB443F30}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>LayoutTests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <RootNamespace>Tests</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

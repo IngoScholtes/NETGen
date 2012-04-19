@@ -19,14 +19,14 @@ namespace pyspgDemo
 		SomeDiscreteChoice SomeChoice;
 		
 #pragma	warning disable 0414
-		[Parameter(ParameterType.Output, "Some first output parameter")]
+		[Parameter(ParameterType.Output, "Some first output parameter", null)]
 		double result1;
 		
-		[Parameter(ParameterType.Output, "Some second output parameter")]
+		[Parameter(ParameterType.Output, "Some second output parameter", null)]
 		long result2;
 #pragma	warning restore 0414
 		
-		[Parameter(ParameterType.OutputFile, "The name of an output file to write data to")]
+		[Parameter(ParameterType.OutputFile, "The name of an output file to write data to", null)]
 		string output_file;
 		
 		public static void Main(string[] args) { Init(args); }

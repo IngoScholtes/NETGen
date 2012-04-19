@@ -6,7 +6,7 @@ namespace ConsensusHierarchy
 	{
 		private global::Gtk.Fixed fixed1;
 		private global::Gtk.HScale hscale1;
-        
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
@@ -23,11 +23,11 @@ namespace ConsensusHierarchy
 			this.hscale1.WidthRequest = 350;
 			this.hscale1.CanFocus = true;
 			this.hscale1.Name = "hscale1";
-			this.hscale1.Adjustment.Lower = 0.0001;
-			this.hscale1.Adjustment.Upper = 2;
-			this.hscale1.Adjustment.PageIncrement = 10;
-			this.hscale1.Adjustment.StepIncrement = 0.5;
-			this.hscale1.Adjustment.Value = 0.006;
+			this.hscale1.Adjustment.Lower = 0.0001D;
+			this.hscale1.Adjustment.Upper = 2D;
+			this.hscale1.Adjustment.PageIncrement = 10D;
+			this.hscale1.Adjustment.StepIncrement = 0.5D;
+			this.hscale1.Adjustment.Value = 0.006D;
 			this.hscale1.DrawValue = true;
 			this.hscale1.Digits = 5;
 			this.hscale1.ValuePos = ((global::Gtk.PositionType)(2));

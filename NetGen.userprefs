@@ -1,29 +1,18 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/ModularityComputation/Main.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" ActiveRuntime="Mono 2.10.6" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications\GraphMLVisualizer\VisualizerControl.cs">
     <Files>
-      <File FileName="../../repository/projects/Scientometrics/data/some output files/process.py" Line="25" Column="46" />
-      <File FileName="Applications/ConsensusHierarchy/Main.cs" Line="1" Column="1" />
-      <File FileName="Applications/ConsensusHierarchy/TemperatureWindow.cs" Line="1" Column="1" />
-      <File FileName="Applications/GrandCanonicalEnsemble/Main.cs" Line="1" Column="1" />
-      <File FileName="Applications/ClusterSync/ClusterSync.cs" Line="1" Column="1" />
-      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="400" Column="47" />
-      <File FileName="Applications/GrandCanonicalEnsemble/EQRewiring.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/DiscreteDynamics.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Visualization/PDFExporter.cs" Line="1" Column="1" />
-      <File FileName="Applications/Demo/Demo.cs" Line="1" Column="1" />
-      <File FileName="Applications/GraphMLVisualizer/Main.cs" Line="1" Column="1" />
-      <File FileName="Applications/GraphMLVisualizer/VisualizerControl.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Dynamics/NETGen.Dynamics.Synchronization.Epidemic/Kuramoto.cs" Line="1" Column="1" />
-      <File FileName="NETGen.Core/ContinuousDynamics.cs" Line="1" Column="1" />
-      <File FileName="Applications/ModularityComputation/Main.cs" Line="15" Column="12" />
+      <File FileName="Applications\GraphMLVisualizer\VisualizerControl.cs" Line="73" Column="29" />
+      <File FileName="NETGen.Visualization\NetworkVisualizer.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Applications" expanded="True">
-            <Node name="GrandCanonicalEnsemble" expanded="True" />
-            <Node name="ModularityComputation" expanded="True" selected="True" />
+            <Node name="ModularityComputation" expanded="True" />
+            <Node name="NETGenGUI" expanded="True" selected="True">
+              <Node name="References" expanded="True" />
+            </Node>
           </Node>
           <Node name="NETGen.Dynamics" expanded="True">
             <Node name="NETGen.Dynamics.Synchronization.Kuramoto" expanded="True" />

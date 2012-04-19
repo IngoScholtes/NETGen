@@ -26,7 +26,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <RootNamespace>Demo</RootNamespace>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -55,12 +54,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MathNet.Numerics">
       <HintPath>..\..\lib\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="OpenTK">
       <HintPath>..\..\lib\OpenTK.dll</HintPath>
     </Reference>
   </ItemGroup>

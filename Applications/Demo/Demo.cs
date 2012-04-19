@@ -52,6 +52,8 @@ class Demo
         network = new ClusterNetwork(nodes, edges, clusters, ClusterNetwork.GetMaxConnectedModularity(nodes, edges, clusters)-0.05d, true);
 		
 		Console.WriteLine("Created network with {0} vertices, {1} edges and modularity {2:0.00}", network.VertexCount, network.EdgeCount, network.NewmanModularity);
+
+        // Network.SaveToEdgeFile(network, "network.edges");
                     
 		// Run the real-time visualization
 		NetworkColorizer colorizer = new NetworkColorizer();

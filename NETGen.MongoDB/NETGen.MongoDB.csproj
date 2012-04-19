@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>NETGen.MongoDB</RootNamespace>
     <AssemblyName>NETGen.MongoDB</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -36,8 +35,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Norm, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Norm">
       <HintPath>..\lib\Norm.dll</HintPath>
     </Reference>
   </ItemGroup>

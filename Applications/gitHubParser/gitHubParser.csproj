@@ -9,7 +9,6 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>gitHubParser</RootNamespace>
     <AssemblyName>gitHubParser</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -25,19 +24,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Hammock, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System.Web" />
+    <Reference Include="Hammock">
       <HintPath>..\..\lib\Hammock.dll</HintPath>
     </Reference>
-    <Reference Include="Hammock.Extras, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Hammock.Extras">
       <HintPath>..\..\lib\Hammock.Extras.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
