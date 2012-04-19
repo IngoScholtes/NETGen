@@ -22,64 +22,64 @@ namespace ModularizationModel
 		int Steps;
 		
 		#pragma	warning disable 0414	
-		[Parameter(ParameterType.Output, "Number of Nodes")]
+		[Parameter(ParameterType.Output, "Number of Nodes", null)]
 		long n_nodes;
-		
-		[Parameter(ParameterType.Output, "Number of Edges")]
+
+        [Parameter(ParameterType.Output, "Number of Edges", null)]
 		long n_edges;
-		
-		[Parameter(ParameterType.Output, "Number of Intermodule Edges Empirical")]
+
+        [Parameter(ParameterType.Output, "Number of Intermodule Edges Empirical", null)]
 		long n_inter_edges_e;
-		
-		[Parameter(ParameterType.Output, "Number of Intermodule Edges Simulated")]
+
+        [Parameter(ParameterType.Output, "Number of Intermodule Edges Simulated", null)]
 		long n_inter_edges_s;
-		
-		[Parameter(ParameterType.Output, "Number of Intramodule Edges Empirical")]
+
+        [Parameter(ParameterType.Output, "Number of Intramodule Edges Empirical", null)]
 		long n_intra_edges_e;
-		
-		[Parameter(ParameterType.Output, "Number of Intramodule Edges Simulated")]
+
+        [Parameter(ParameterType.Output, "Number of Intramodule Edges Simulated", null)]
 		long n_intra_edges_s;
-		
-		[Parameter(ParameterType.Output, "Number of Modules Empirical")]
+
+        [Parameter(ParameterType.Output, "Number of Modules Empirical", null)]
 		long n_modules_e;
-		
-		[Parameter(ParameterType.Output, "Number of Modules Simulated")]
+
+        [Parameter(ParameterType.Output, "Number of Modules Simulated", null)]
 		long n_modules_s;
-		
-		[Parameter(ParameterType.Output, "Q Empirical")]
+
+        [Parameter(ParameterType.Output, "Q Empirical", null)]
 		double q_e;
 
-		[Parameter(ParameterType.Output, "Q Simulated")]
+        [Parameter(ParameterType.Output, "Q Simulated", null)]
 		double q_s;
-		
-		[Parameter(ParameterType.Output, "O Plus")]
+
+        [Parameter(ParameterType.Output, "O Plus", null)]
 		double o_p;
 
-		[Parameter(ParameterType.Output, "O Minus")]
+        [Parameter(ParameterType.Output, "O Minus", null)]
 		double o_m;
-		
-		[Parameter(ParameterType.Output, "Average Module Size Empirical")]
+
+        [Parameter(ParameterType.Output, "Average Module Size Empirical", null)]
 		double av_module_s_e;
-		
-		[Parameter(ParameterType.Output, "Average Module Size Simulated")]
+
+        [Parameter(ParameterType.Output, "Average Module Size Simulated", null)]
 		double av_module_s_s;
-		
-		[Parameter(ParameterType.Output, "Sd Module Size Empirical")]
+
+        [Parameter(ParameterType.Output, "Sd Module Size Empirical", null)]
 		double sd_module_s_e;
-		
-		[Parameter(ParameterType.Output, "Sd Module Size Simulated")]
+
+        [Parameter(ParameterType.Output, "Sd Module Size Simulated", null)]
 		double sd_module_s_s;
-		
-		[Parameter(ParameterType.Output, "Average Node Module Size Empirical")]
+
+        [Parameter(ParameterType.Output, "Average Node Module Size Empirical", null)]
 		double av_n_module_s_e;
-		
-		[Parameter(ParameterType.Output, "Average Node Module Size Simulated")]
+
+        [Parameter(ParameterType.Output, "Average Node Module Size Simulated", null)]
 		double av_n_module_s_s;
-		
-		[Parameter(ParameterType.Output, "Sd Node Module Size Empirical")]
+
+        [Parameter(ParameterType.Output, "Sd Node Module Size Empirical", null)]
 		double sd_n_module_s_e;
-		
-		[Parameter(ParameterType.Output, "Sd Node Module Size Simulated")]
+
+        [Parameter(ParameterType.Output, "Sd Node Module Size Simulated", null)]
 		double sd_n_module_s_s;
 		#pragma	warning restore 0414
 		
