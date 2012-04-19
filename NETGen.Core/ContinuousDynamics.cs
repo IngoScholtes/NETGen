@@ -105,6 +105,8 @@ namespace NETGen.Core
 		
 		public void WriteTimeSeries(string file)
 		{
+            System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("en-US");
+
 			if(file==null)
 			{
 				Logger.AddMessage(LogEntryType.Error, "Could not write time-series: 'null' given as filename.");
@@ -127,9 +129,9 @@ namespace NETGen.Core
 				{
 					if (_timeSeries.ContainsKey(t))
 					{
-						string line = t.ToString();
+						string line = t.ToString(ci.NumberFormat);
 						foreach(string col in _dataColumns)
-							line += string.Format("\t{0:0.0000}", _timeSeries[t][col]);
+							line += string.Format("\t" + _timeSeries[t][col].ToString(ci.NumberFormat));
 						line += "\n";
 						System.IO.File.AppendAllText(file, line);
 					}

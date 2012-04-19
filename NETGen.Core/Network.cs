@@ -232,9 +232,10 @@ namespace NETGen.Core
 		
 		public static void SaveToEdgeFile(Network n, string path)
         {
-			System.IO.File.CreateText(path);
+			System.IO.StreamWriter sw = System.IO.File.CreateText(path);
 			foreach(Edge e in n.Edges)
-				System.IO.File.AppendAllText(path, e.Source.Label + " " + e.Target.Label + "\n");
+				sw.WriteLine(e.Source.Label.Replace(" ", "_") + " " + e.Target.Label.Replace(" ", "_"));
+            sw.Close();
 		}
 		
 		static string ExtractNodeLabel (string s)

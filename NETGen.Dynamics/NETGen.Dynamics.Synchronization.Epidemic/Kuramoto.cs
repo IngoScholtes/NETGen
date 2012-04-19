@@ -73,7 +73,7 @@ namespace NETGen.Dynamics.Synchronization
 		/// </summary>
 		public Func<Vertex, Vertex[]> CouplingSelector = null;
 		
-		Dictionary<Vertex, int> _mapping;
+		public Dictionary<Vertex, int> _mapping;
 		
 		/// <summary>
 		/// Initializes a new synchronization experiment
