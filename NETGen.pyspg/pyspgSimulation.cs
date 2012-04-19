@@ -272,6 +272,8 @@ namespace NETGen.pyspg
 				return "val:float";
 			else if (t == typeof(long))
 				return "val:long";	
+			else if (t == typeof(string))
+				return "val:string";	
 			else if (t.IsEnum)
 				return "choice:string";
 			return "?";

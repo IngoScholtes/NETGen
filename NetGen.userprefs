@@ -1,29 +1,26 @@
 ﻿<Properties GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" ActiveRuntime="Mono 2.10.6" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Applications\GraphMLVisualizer\VisualizerControl.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Applications/ModularizationModel/Main.cs">
     <Files>
-      <File FileName="Applications\GraphMLVisualizer\VisualizerControl.cs" Line="73" Column="29" />
-      <File FileName="NETGen.Visualization\NetworkVisualizer.cs" Line="1" Column="1" />
+      <File FileName="Applications/ModularizationModel/Main.cs" Line="153" Column="4" />
+      <File FileName="NETGen.NetworkModels/NETGen.NetworkModels.ClusterNetwork/ClusterNetwork.cs" Line="1" Column="1" />
+      <File FileName="Applications/ConsensusHierarchy/Main.cs" Line="29" Column="20" />
+      <File FileName="NETGen.Visualization/NetworkVisualizer.cs" Line="148" Column="45" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
+        <State expanded="True" selected="True">
           <Node name="Applications" expanded="True">
-            <Node name="ModularityComputation" expanded="True" />
-            <Node name="NETGenGUI" expanded="True" selected="True">
+            <Node name="ConsensusHierarchy" expanded="True" />
+            <Node name="ModularizationModel" expanded="True">
               <Node name="References" expanded="True" />
             </Node>
-          </Node>
-          <Node name="NETGen.Dynamics" expanded="True">
-            <Node name="NETGen.Dynamics.Synchronization.Kuramoto" expanded="True" />
-          </Node>
-          <Node name="NETGen.Layouts" expanded="True">
-            <Node name="NETGen.Layouts.FruchtermanReingold" expanded="True" />
           </Node>
           <Node name="NETGen.NetworkModels" expanded="True">
             <Node name="NETGen.NetworkModels.Cluster" expanded="True" />
           </Node>
           <Node name="NETGen.Core" expanded="True" />
+          <Node name="NETGen.pyspg" expanded="True" />
           <Node name="NETGen.Visualization" expanded="True" />
         </State>
       </Pad>

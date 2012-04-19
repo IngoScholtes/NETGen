@@ -56,7 +56,7 @@ namespace NETGen.NetworkModels.Cluster
 			
 			IntraClusterEdges = new List<Edge>(edges);
 			InterClusterEdges = new List<Edge>(edges);
-
+			
             InterClusterEdgeNumber = 0;
             IntraClusterEdgeNumber = 0;
 			
@@ -125,8 +125,8 @@ namespace NETGen.NetworkModels.Cluster
 						_clusterAssignment.Remove(v);
 					}
 			}
-			
-			Logger.AddMessage(LogEntryType.Info, string.Format("Created cluster network with N = {0}, M = {1}, Q = {2:0.00}", VertexCount, EdgeCount, NewmanModularity));
+			///Qd desired, Qf final
+			Logger.AddMessage(LogEntryType.Info, string.Format("Created cluster network with N = {0}, M = {1}, Qd = {2:0.000}, Qf = {3:0.000}", VertexCount, EdgeCount, modularity, NewmanModularityUndirected));
         }     
 		
 		private ClusterNetwork()
@@ -139,6 +139,8 @@ namespace NETGen.NetworkModels.Cluster
 
             InterClusterEdgeNumber = 0;
             IntraClusterEdgeNumber = 0;
+			
+			
 		}
 		
 		/// <summary>
@@ -275,6 +277,20 @@ namespace NETGen.NetworkModels.Cluster
         }
 		
 		/// <summary>
+		/// Gets a count of cluster IDs
+		/// </summary>
+		/// <value>
+		/// The count of cluster Ids.
+		/// </value>
+        public int GetClustersCount
+        {
+            get
+            {
+                return _clusters.Keys.ToArray().Count();
+            }
+        }
+		
+		/// <summary>
 		/// Gets the cluster ID for a particular node.
 		/// </summary>
 		/// <returns>
@@ -286,6 +302,73 @@ namespace NETGen.NetworkModels.Cluster
         public int GetClusterForNode(Vertex v)
         {
             return _clusterAssignment[v];
+        }
+		
+		/// <summary>
+		/// Resets the cluster IDs.
+		/// </summary>
+		/// <returns>
+		/// Clean the list of clusters and respective nodes assigned to it. 
+		/// </returns>
+		/// <param name='m'>
+		/// The dictionary for vertices and respective modules. 
+		/// </param>
+        public void ResetClusters(Dictionary<Vertex,int> module_assignment)
+        {
+			//clean cluster assignments
+			for(int i=0; i<GetClustersCount; i++) 
+				_clusters[i].Clear();
+			_clusters.Clear();
+			
+			//shrink the clusterIDs if necessary
+			Dictionary<int, int> moduleMapping = new Dictionary<int, int>();
+			int new_module=0;
+			foreach(Vertex v in module_assignment.Keys)
+			{
+				if(!moduleMapping.ContainsKey(module_assignment[v])) 
+					moduleMapping[module_assignment[v]]=new_module++;
+				SetClusterForNode(v, moduleMapping[module_assignment[v]]);
+				
+				if(!_clusters.ContainsKey(GetClusterForNode(v)))
+					_clusters[GetClusterForNode(v)] = new List<Vertex>();
+				_clusters[GetClusterForNode(v)].Add(v);
+			}
+			
+			moduleMapping.Clear();
+			
+			IntraClusterEdges.Clear();
+			InterClusterEdges.Clear();
+			
+			InterClusterEdgeNumber = 0;
+            IntraClusterEdgeNumber = 0;
+			
+			foreach(Edge edge in Edges)
+			{
+				if(_clusterAssignment[edge.Source]!=_clusterAssignment[edge.Target])
+				{	
+					InterClusterEdges.Add(edge);
+					InterClusterEdgeNumber++;
+				}
+				else
+				{	
+					IntraClusterEdges.Add(edge);
+					IntraClusterEdgeNumber++;
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Sets the cluster ID for a particular node.
+		/// </summary>
+		/// <returns>
+		/// The ID of the cluster this node is member of 
+		/// </returns>
+		/// <param name='v'>
+		/// The node for which the cluster ID shall be returned
+		/// </param>
+        public void SetClusterForNode(Vertex v, int c)
+        {
+            _clusterAssignment[v]=c;
         }
 		
 		/// <summary>
@@ -317,12 +400,99 @@ namespace NETGen.NetworkModels.Cluster
         }
 		
 		/// <summary>
-		/// Returns the modularity Q of the network, as defined by Mark Newman et al. 
+		/// Gets the average node cluster size.
+		/// </summary>
+		/// <returns>
+		/// The average number of nodes in a cluster of given size
+		/// </returns>
+        public double GetAverageNodeClusterSize
+        {
+			get
+            {
+				
+				int N=GetClustersCount;
+				double result=0d;
+				int n_nodes=0;
+				for(int i=0;i<N;i++)
+				{
+					result+=GetClusterSize(i)*GetClusterSize(i);
+					n_nodes+=GetClusterSize(i);
+				}
+				return result/(double)n_nodes;
+			}
+        }
+		
+		/// <summary>
+		/// Gets the standard deviation of node cluster size.
+		/// </summary>
+		/// <returns>
+		/// The standard deviation for the number of nodes in a cluster of given size
+		/// </returns>
+        public double GetStandardDeviationNodeClusterSize
+        {
+			get
+            {
+				double av=GetAverageNodeClusterSize;
+				int N=GetClustersCount;
+				double result=0d;
+				int n_nodes=0;
+				for(int i=0;i<N;i++)
+				{
+					result+=Math.Pow((double)GetClusterSize(i)*GetClusterSize(i)-av,2.0d);
+					n_nodes+=GetClusterSize(i);
+				}
+				return Math.Sqrt(result/(double)n_nodes);
+			}
+        }
+		
+		/// <summary>
+		/// Gets the average cluster size.
+		/// </summary>
+		/// <returns>
+		/// The average number of nodes per cluster
+		/// </returns>
+        public double GetAverageClusterSize
+        {
+			get
+            {
+				int N=GetClustersCount;
+				double result=0d;
+				for(int i=0;i<N;i++)
+				{
+					result+=GetClusterSize(i);
+				}
+				return result/(double)N;
+			}
+        }
+		
+		/// <summary>
+		/// Gets the standard deviation of cluster size.
+		/// </summary>
+		/// <returns>
+		/// The standard deviation for the number of nodes per cluster
+		/// </returns>
+        public double GetStandardDeviationClusterSize
+        {
+			get
+            {
+				double av=GetAverageClusterSize;
+				int N=GetClustersCount;
+				double result=0d;
+				for(int i=0;i<N;i++)
+				{
+					result+=Math.Pow((double)GetClusterSize(i)-av,2.0d);
+				}
+				return Math.Sqrt(result/(double)N);
+			}
+        }
+		
+		/// <summary>
+		/// Returns the modularity Q of a directed network, as defined by Mark Newman et al. 
 		/// </summary>
 		/// <value>
 		/// The modularity of the network between -1 and 1
 		/// </value>
-         public double NewmanModularity
+         public double NewmanModularityDirected
          {
              get
              {
@@ -336,37 +506,68 @@ namespace NETGen.NetworkModels.Cluster
                  // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
                  double[,] e = new double[max_id+1, max_id+1];
 
-                 // entry a[i] contains the fraction of edges that connect to community i
+                 // entry a[i] contains the fraction of edges that connect to community i COLUMN
                  double[] a = new double[max_id+1];
+				
+				 // entry b[i] contains the fraction of edges that connect to community i ROW
+                 double[] b = new double[max_id+1];
 
                  double edges = EdgeCount;
-
+				
+				 foreach (int i in ClusterIDs)
+                 	foreach (int j in ClusterIDs)
+                    	{
+                        	e[i,j] = 0d;
+                     	}
+				
+				 foreach(Edge edge in InterClusterEdges)
+					{
+						e[GetClusterForNode(edge.Source), GetClusterForNode(edge.Target)]++;	
+					}
+				
+				 foreach(Edge edge in IntraClusterEdges)
+					{
+						e[GetClusterForNode(edge.Source), GetClusterForNode(edge.Target)]++;	
+					}
+				
                  foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
+                    foreach (int j in ClusterIDs)
                      {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
+                         e[i,j] /= edges;
                      }
-
-                 foreach (int i in ClusterIDs)
-                 {
-                     a[i] = 0;
-                     foreach (int j in ClusterIDs)
-                         a[i] += e[i, j];
-                 }
-                 foreach (int i in ClusterIDs)
-                     Q += e[i, i] - Math.Pow(a[i], 2d);
-                 return Q;
-             }
-            
+               
+				 foreach (int i in ClusterIDs)
+	                 {
+	                     a[i] = 0;
+	                     foreach (int j in ClusterIDs)
+	                         a[i] += e[i, j];
+	                 }
+						
+				 foreach (int j in ClusterIDs)
+	                 {
+	                     b[j] = 0;
+	                     foreach (int i in ClusterIDs)
+	                         b[j] += e[i, j];
+	                 }
+				 
+				 double sumF = 0.0;	
+	             foreach (int i in ClusterIDs)
+					 {	
+			     		sumF += a[i]*b[i];
+	                    Q    += e[i, i]-a[i]*b[i];
+                     }	
+				
+			     if((1-sumF)==0) return 0;
+				 else return Q/(1-sumF);
+             }  
         }
-		
-		public double NewmanModularityWithoutEii
+		/// <summary>
+		/// Returns the modularity Q of a undirected network, as defined by Mark Newman et al. 
+		/// </summary>
+		/// <value>
+		/// The modularity of the network between -1 and 1
+		/// </value>
+         public double NewmanModularityUndirected
          {
              get
              {
@@ -380,36 +581,51 @@ namespace NETGen.NetworkModels.Cluster
                  // entry e[i,j] will contain the fraction of edges linking vertices of community i to vertices of community j
                  double[,] e = new double[max_id+1, max_id+1];
 
-                 // entry a[i] contains the fraction of edges that connect to community i
+                 // entry a[i] contains the fraction of edges that connect to community i COLUMN
                  double[] a = new double[max_id+1];
-
-                 double edges = EdgeCount;
-
+				
+				 double edges = EdgeCount;
+				
+				 foreach (int i in ClusterIDs)
+                 	foreach (int j in ClusterIDs)
+                    	{
+                        	e[i,j] = 0d;
+                     	}
+				
+				 foreach(Edge edge in InterClusterEdges)
+					{
+						e[GetClusterForNode(edge.Source), GetClusterForNode(edge.Target)]++;
+						e[GetClusterForNode(edge.Target), GetClusterForNode(edge.Source)]++;
+					}
+				
+				 foreach(Edge edge in IntraClusterEdges)
+					{
+						e[GetClusterForNode(edge.Source), GetClusterForNode(edge.Target)]+=2;	
+					}
+				
                  foreach (int i in ClusterIDs)
-                     foreach (int j in ClusterIDs)
+                    foreach (int j in ClusterIDs)
                      {
-                         Vertex[] members = GetNodesInCluster(j);
-                         double count_ij = 0d;
-                         foreach (Vertex v in members)
-                             foreach (Vertex w in v.Neigbors)
-                                 if (GetClusterForNode(w) == i)
-                                     count_ij++;
-                         e[i, j] = count_ij / (2d*edges);
+                         e[i,j] /= 2d*edges;
                      }
-
-                 foreach (int i in ClusterIDs)
-                 {
-                     a[i] = 0;
-                     foreach (int j in ClusterIDs)
-						if(i!=j)
-                         	a[i] += e[i, j];
-                 }
-                 foreach (int i in ClusterIDs)
-                     Q += e[i, i] - Math.Pow(a[i], 2d);
-                 return Q;
-             }
-            
+               
+				 foreach (int i in ClusterIDs)
+	                 {
+	                     a[i] = 0;
+	                     foreach (int j in ClusterIDs)
+	                         a[i] += e[i, j];
+	                 }
+						
+				 double sumF = 0.0;	
+	             foreach (int i in ClusterIDs)
+					 {	
+			     		sumF += a[i]*a[i];
+	                    Q    += e[i, i]-a[i]*a[i];
+                     }	
+				
+			     if((1-sumF)==0) return 0;
+				 else return Q/(1-sumF);
+             }  
         }
-
-    }
+	}
 }

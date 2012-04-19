@@ -14,7 +14,7 @@ namespace NETGen.NetworkModels.Tests
 		public void TestClusterNetwork ()
 		{
 			ClusterNetwork network = new ClusterNetwork(2000, 5000, 100, 0.9d, false); 
-			Assert.LessOrEqual(Math.Abs(network.NewmanModularity - 0.9d), 0.02);
+			Assert.LessOrEqual(Math.Abs(network.NewmanModularityUndirected - 0.9d), 0.02);
 			Assert.LessOrEqual(Math.Abs(network.EdgeCount - 5000), 200);
 			Assert.AreEqual(network.VertexCount, 2000);
 			Assert.AreEqual(network.ClusterIDs.Length, 100);
